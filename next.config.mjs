@@ -2,9 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   productionBrowserSourceMaps: true,
-  // experimental: {
-  //   missingSuspenseWithCSRBailout: false,
-  // },
+
   images: {
     remotePatterns: [
       {
@@ -44,6 +42,17 @@ const nextConfig = {
         hostname: "assets.aceternity.com",
       },
     ],
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        net: false,
+        tls: false,
+        fs: false,
+        perf_hooks: false,
+      };
+    }  return config;
   },
 };
 
