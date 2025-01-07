@@ -14,32 +14,15 @@ export const DynamicButton = () => {
 
   return (
     <div className="relative cursor-pointer">
-      <SignedIn>
         <Link href={"/sync-user"} title="" role="button" className="mx-auto">
           <ShineBorder
             className="text-center text-sm font-bold  capitalize md:text-lg"
             color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
           >
-            Invest Now
+            Get Started
           </ShineBorder>
         </Link>
-      </SignedIn>
-      <SignedOut>
-        <ShineBorder
-          className="text-center text-sm font-bold  capitalize md:text-lg"
-          color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
-        >
-          <SignInButton
-            // mode="modal"
-            fallbackRedirectUrl={`/sync-user?ref=${ref}`}
-            forceRedirectUrl={`/sync-user?ref=${ref}`}
-            signUpFallbackRedirectUrl={`/sync-user?ref=${ref}`}
-            signUpForceRedirectUrl={`/sync-user?ref=${ref}`}
-          >
-            Invest Now
-          </SignInButton>
-        </ShineBorder>
-      </SignedOut>
+ 
     </div>
   );
 };

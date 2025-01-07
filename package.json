@@ -1,20 +1,20 @@
 {
-  "name": "techbros-money-site",
+  "name": "coin-spectrum",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": " prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx lib/db/migrate.ts",
+    "db:migrate": "drizzle-kit migrate",
     "db:drop": "drizzle-kit drop",
     "db:pull": "drizzle-kit introspect:pg",
     "db:studio": "drizzle-kit studio",
     "db:check": "drizzle-kit check:pg"
   },
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^5.1.4",
     "@clerk/nextjs": "^5.1.3",
     "@emailjs/browser": "^4.4.1",
     "@faker-js/faker": "^8.4.1",
@@ -61,7 +61,6 @@
     "react-lottie": "^1.2.4",
     "recharts": "^2.12.7",
     "sonner": "^1.4.41",
-    "supabase": "^1.172.2",
     "superjson": "^2.2.1",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
@@ -75,6 +74,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.14.2",
+    "@types/pg": "^8.11.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/react-lottie": "^1.2.10",
@@ -89,7 +89,9 @@
     "postcss": "^8.4.38",
     "postgres": "^3.4.4",
     "prisma": "^5.15.0",
+    "supabase": "^1.172.2",
     "tailwindcss": "^3.4.3",
+    "ts-node": "^10.9.2",
     "tsx": "^4.11.2",
     "typescript": "^5.4.5"
   }

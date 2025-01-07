@@ -1,5 +1,7 @@
 import { getUserAuth } from "@/lib/auth/utils";
-import { prisma } from "@/lib/db/prisma";
+import { db } from "@/lib/db";
+import { users } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import Link from "next/link";
 
@@ -10,17 +12,17 @@ const AdminMessage = async () => {
     return null;
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { role: true },
-  });
+  const user = await db.select({ role: users.role })
+    .from(users)
+    .where(eq(users.id, session.user.id))
+    .limit(1);
 
-  if (!user || user.role !== "admin") {
+  if (!user.length || user[0].role !== "admin") {
     return null;
   }
 
   return (
-    <div className="fixed top-[20%] right-4 bg-gray-300 text-red-500 px-4 py-2  text-xs rounded shadow">
+    <div className="fixed top-[20%] right-4 bg-gray-300 text-red-500 px-4 py-2 text-xs rounded shadow">
       <p>You are an admin.</p>
       <Link href="/adminDashboard" className="underline">
         Click to see the admin dashboard

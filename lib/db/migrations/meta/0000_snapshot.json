@@ -1,11 +1,11 @@
 {
-  "id": "22b64204-d8eb-41cd-b1c8-2699bbe45c36",
+  "id": "c95b8042-7ef2-41eb-9827-a0d9d9471934",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.Investment": {
-      "name": "Investment",
+    "public.investment": {
+      "name": "investment",
       "schema": "",
       "columns": {
         "id": {
@@ -16,7 +16,7 @@
         },
         "name": {
           "name": "name",
-          "type": "InvestmentName",
+          "type": "investment_name",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
@@ -27,8 +27,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "profitPercent": {
-          "name": "profitPercent",
+        "profit_percent": {
+          "name": "profit_percent",
           "type": "double precision",
           "primaryKey": false,
           "notNull": true
@@ -39,51 +39,51 @@
           "primaryKey": false,
           "notNull": true
         },
-        "principalReturn": {
-          "name": "principalReturn",
+        "principal_return": {
+          "name": "principal_return",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true
         },
-        "principalWithdraw": {
-          "name": "principalWithdraw",
+        "principal_withdraw": {
+          "name": "principal_withdraw",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true
         },
-        "creditAmount": {
-          "name": "creditAmount",
+        "credit_amount": {
+          "name": "credit_amount",
           "type": "double precision",
           "primaryKey": false,
           "notNull": true
         },
-        "depositFee": {
-          "name": "depositFee",
+        "deposit_fee": {
+          "name": "deposit_fee",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "debitAmount": {
-          "name": "debitAmount",
+        "debit_amount": {
+          "name": "debit_amount",
           "type": "double precision",
           "primaryKey": false,
           "notNull": true
         },
-        "durationDays": {
-          "name": "durationDays",
+        "duration_days": {
+          "name": "duration_days",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
-        "updatedAt": {
-          "name": "updatedAt",
+        "updated_at": {
+          "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
@@ -95,8 +95,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.TransactionHistory": {
-      "name": "TransactionHistory",
+    "public.transaction_history": {
+      "name": "transaction_history",
       "schema": "",
       "columns": {
         "id": {
@@ -105,21 +105,21 @@
           "primaryKey": true,
           "notNull": true
         },
-        "userId": {
-          "name": "userId",
+        "user_id": {
+          "name": "user_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "investmentId": {
-          "name": "investmentId",
+        "investment_id": {
+          "name": "investment_id",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
         "type": {
           "name": "type",
-          "type": "TransactionType",
+          "type": "transaction_type",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
@@ -136,15 +136,15 @@
           "primaryKey": false,
           "notNull": false
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
-        "updatedAt": {
-          "name": "updatedAt",
+        "updated_at": {
+          "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
@@ -153,12 +153,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "TransactionHistory_userId_User_id_fk": {
-          "name": "TransactionHistory_userId_User_id_fk",
-          "tableFrom": "TransactionHistory",
-          "tableTo": "User",
+        "transaction_history_user_id_user_id_fk": {
+          "name": "transaction_history_user_id_user_id_fk",
+          "tableFrom": "transaction_history",
+          "tableTo": "user",
           "columnsFrom": [
-            "userId"
+            "user_id"
           ],
           "columnsTo": [
             "id"
@@ -166,12 +166,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "TransactionHistory_investmentId_Investment_id_fk": {
-          "name": "TransactionHistory_investmentId_Investment_id_fk",
-          "tableFrom": "TransactionHistory",
-          "tableTo": "Investment",
+        "transaction_history_investment_id_investment_id_fk": {
+          "name": "transaction_history_investment_id_investment_id_fk",
+          "tableFrom": "transaction_history",
+          "tableTo": "investment",
           "columnsFrom": [
-            "investmentId"
+            "investment_id"
           ],
           "columnsTo": [
             "id"
@@ -183,8 +183,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.UserInvestment": {
-      "name": "UserInvestment",
+    "public.user_investment": {
+      "name": "user_investment",
       "schema": "",
       "columns": {
         "id": {
@@ -193,14 +193,14 @@
           "primaryKey": true,
           "notNull": true
         },
-        "userId": {
-          "name": "userId",
+        "user_id": {
+          "name": "user_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "investmentId": {
-          "name": "investmentId",
+        "investment_id": {
+          "name": "investment_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -211,15 +211,15 @@
           "primaryKey": false,
           "notNull": true
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
-        "updatedAt": {
-          "name": "updatedAt",
+        "updated_at": {
+          "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
@@ -228,12 +228,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "UserInvestment_userId_User_id_fk": {
-          "name": "UserInvestment_userId_User_id_fk",
-          "tableFrom": "UserInvestment",
-          "tableTo": "User",
+        "user_investment_user_id_user_id_fk": {
+          "name": "user_investment_user_id_user_id_fk",
+          "tableFrom": "user_investment",
+          "tableTo": "user",
           "columnsFrom": [
-            "userId"
+            "user_id"
           ],
           "columnsTo": [
             "id"
@@ -241,12 +241,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "UserInvestment_investmentId_Investment_id_fk": {
-          "name": "UserInvestment_investmentId_Investment_id_fk",
-          "tableFrom": "UserInvestment",
-          "tableTo": "Investment",
+        "user_investment_investment_id_investment_id_fk": {
+          "name": "user_investment_investment_id_investment_id_fk",
+          "tableFrom": "user_investment",
+          "tableTo": "investment",
           "columnsFrom": [
-            "investmentId"
+            "investment_id"
           ],
           "columnsTo": [
             "id"
@@ -258,8 +258,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.UserReferral": {
-      "name": "UserReferral",
+    "public.user_referral": {
+      "name": "user_referral",
       "schema": "",
       "columns": {
         "id": {
@@ -268,27 +268,27 @@
           "primaryKey": true,
           "notNull": true
         },
-        "referrerId": {
-          "name": "referrerId",
+        "referrer_id": {
+          "name": "referrer_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "referredUserId": {
-          "name": "referredUserId",
+        "referred_user_id": {
+          "name": "referred_user_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
-        "updatedAt": {
-          "name": "updatedAt",
+        "updated_at": {
+          "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
@@ -296,17 +296,17 @@
         }
       },
       "indexes": {
-        "UserReferral_referral_key": {
-          "name": "UserReferral_referral_key",
+        "user_referral_key": {
+          "name": "user_referral_key",
           "columns": [
             {
-              "expression": "referrerId",
+              "expression": "referrer_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
             },
             {
-              "expression": "referredUserId",
+              "expression": "referred_user_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -319,12 +319,12 @@
         }
       },
       "foreignKeys": {
-        "UserReferral_referrerId_User_id_fk": {
-          "name": "UserReferral_referrerId_User_id_fk",
-          "tableFrom": "UserReferral",
-          "tableTo": "User",
+        "user_referral_referrer_id_user_id_fk": {
+          "name": "user_referral_referrer_id_user_id_fk",
+          "tableFrom": "user_referral",
+          "tableTo": "user",
           "columnsFrom": [
-            "referrerId"
+            "referrer_id"
           ],
           "columnsTo": [
             "id"
@@ -332,12 +332,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "UserReferral_referredUserId_User_id_fk": {
-          "name": "UserReferral_referredUserId_User_id_fk",
-          "tableFrom": "UserReferral",
-          "tableTo": "User",
+        "user_referral_referred_user_id_user_id_fk": {
+          "name": "user_referral_referred_user_id_user_id_fk",
+          "tableFrom": "user_referral",
+          "tableTo": "user",
           "columnsFrom": [
-            "referredUserId"
+            "referred_user_id"
           ],
           "columnsTo": [
             "id"
@@ -349,8 +349,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.User": {
-      "name": "User",
+    "public.user": {
+      "name": "user",
       "schema": "",
       "columns": {
         "id": {
@@ -361,14 +361,14 @@
         },
         "role": {
           "name": "role",
-          "type": "UserRole",
+          "type": "user_role",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
-          "default": "'User'"
+          "default": "'user'"
         },
-        "firstName": {
-          "name": "firstName",
+        "first_name": {
+          "name": "first_name",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -379,14 +379,14 @@
           "primaryKey": false,
           "notNull": false
         },
-        "fullName": {
-          "name": "fullName",
+        "full_name": {
+          "name": "full_name",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "imageUrl": {
-          "name": "imageUrl",
+        "image_url": {
+          "name": "image_url",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -397,15 +397,15 @@
           "primaryKey": false,
           "notNull": true
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
-        "updatedAt": {
-          "name": "updatedAt",
+        "updated_at": {
+          "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
@@ -413,8 +413,8 @@
         }
       },
       "indexes": {
-        "User_username_key": {
-          "name": "User_username_key",
+        "user_username_key": {
+          "name": "user_username_key",
           "columns": [
             {
               "expression": "username",
@@ -428,8 +428,8 @@
           "method": "btree",
           "with": {}
         },
-        "User_email_key": {
-          "name": "User_email_key",
+        "user_email_key": {
+          "name": "user_email_key",
           "columns": [
             {
               "expression": "email",
@@ -450,34 +450,34 @@
     }
   },
   "enums": {
-    "public.InvestmentName": {
-      "name": "InvestmentName",
+    "public.investment_name": {
+      "name": "investment_name",
       "schema": "public",
       "values": [
-        "VIP1",
-        "VIP2",
-        "VIP3",
-        "VIP4",
-        "VIP5",
-        "VIP6",
-        "VIP7"
+        "vip1",
+        "vip2",
+        "vip3",
+        "vip4",
+        "vip5",
+        "vip6",
+        "vip7"
       ]
     },
-    "public.TransactionType": {
-      "name": "TransactionType",
+    "public.transaction_type": {
+      "name": "transaction_type",
       "schema": "public",
       "values": [
-        "Deposit",
-        "Withdrawal",
-        "Investment"
+        "deposit",
+        "withdrawal",
+        "investment"
       ]
     },
-    "public.UserRole": {
-      "name": "UserRole",
+    "public.user_role": {
+      "name": "user_role",
       "schema": "public",
       "values": [
-        "User",
-        "Admin"
+        "user",
+        "admin"
       ]
     }
   },
