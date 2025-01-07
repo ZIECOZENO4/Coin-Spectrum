@@ -220,13 +220,13 @@ const Navbar = () => {
       <div className="lg:text-sm container relative px-4 mx-auto">
         <div className="flex items-center justify-between">
           <Link href={"/"} className="flex items-center flex-shrink-0">
-            {/* <Image
+            <Image
               className="mr-2"
-              src={""}
+              src={"/cs.png"}
               width={40}
               height={40}
               alt="Logo"
-            /> */}
+            />
 
             <span className="text-sm tracking-tight dark:text-neutral-100">
               Coin Spectrum

@@ -88,6 +88,14 @@ export const users = pgTable("user", {
   emailIndex: uniqueIndex("user_email_key").on(users.email),
 }));
 
+export const userTrackers = pgTable("user_trackers", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  balance: doublePrecision("balance").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 
 export const userReferrals = pgTable("user_referral", {
   id: text("id").primaryKey(),
@@ -138,6 +146,68 @@ export const transactionHistory = pgTable("transaction_history", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+
+export const investmentPlans = pgTable("investment_plans", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  minAmount: integer("min_amount").notNull(),
+  maxAmount: integer("max_amount"),
+  roi: doublePrecision("roi").notNull(),
+  durationHours: integer("duration_hours").notNull(),
+  instantWithdrawal: boolean("instant_withdrawal").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const investmentTrackers = pgTable("investment_trackers", {
+  id: text("id").primaryKey(),
+  investmentId: text("investment_id").notNull().references(() => investments.id),
+  lastProfitUpdate: timestamp("last_profit_update").notNull(),
+  totalProfit: doublePrecision("total_profit").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const withdrawals = pgTable("withdrawals", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  amount: doublePrecision("amount").notNull(),
+  cryptoType: text("crypto_type").notNull(),
+  walletAddress: text("wallet_address").notNull(),
+  status: text("status").notNull().default("UNCONFIRMED"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+
+export const investmentStatuses = pgTable("investment_statuses", {
+  id: text("id").primaryKey(),
+  status: text("status").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const InvestmentStatusEnum = pgEnum('investment_status', ['CONFIRMED', 'SOLD', 'NOT_CONFIRMED']);
+export const imageProofs = pgTable("image_proofs", {
+  id: text("id").primaryKey(),
+  url: text("url").notNull(),
+  investmentId: text("investment_id").notNull().references(() => investments.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const Wallets = pgEnum('wallets', [
+  'BITCOIN',
+  'ETHEREUM',
+  'USDT',
+  // Add other wallet types as needed
+]);
+
+export const WithdrawalStatus = pgEnum('withdrawal_status', ['PENDING', 'COMPLETED', 'FAILED']); // Add all your status values
+// You can add these lines to your existing types
+export type InvestmentPlan = typeof investmentPlans.$inferSelect;
+export type InvestmentTracker = typeof investmentTrackers.$inferSelect;
+export type Withdrawal = typeof withdrawals.$inferSelect;
 export type User = InferSelectModel<typeof users>;
 export type Investment = InferSelectModel<typeof investments>;
 export type UserInvestment = InferSelectModel<typeof userInvestments>;

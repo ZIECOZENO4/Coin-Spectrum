@@ -11,7 +11,44 @@
  * 2. If the investment with the provided `id` is not found in the database, it returns a JSON
  */
 
-import { prisma } from "@/lib/db/prisma";
+// import { prisma } from "@/lib/db/prisma";
+// import { NextResponse } from "next/server";
+
+// export async function GET(request: Request) {
+//   const { searchParams } = new URL(request.url);
+//   const id = searchParams.get("id");
+
+//   if (!id) {
+//     return NextResponse.json({ error: "ID is required" }, { status: 400 });
+//   }
+
+//   try {
+//     const investment = await prisma.withdrawal.findUnique({
+//       where: { id },
+//       include: {
+//         user: true,
+//       },
+//     });
+
+//     if (!investment) {
+//       return NextResponse.json(
+//         { error: "Investment not found" },
+//         { status: 404 }
+//       );
+//     }
+
+//     return NextResponse.json(investment);
+//   } catch (error: any) {
+//     return NextResponse.json(
+//       { error: error.message || "An error occurred" },
+//       { status: 500 }
+//     );
+//   }
+// }
+
+import { db } from "@/lib/db";
+import { withdrawals, users } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -23,21 +60,21 @@ export async function GET(request: Request) {
   }
 
   try {
-    const investment = await prisma.withdrawal.findUnique({
-      where: { id },
-      include: {
+    const withdrawal = await db.query.withdrawals.findFirst({
+      where: eq(withdrawals.id, id),
+      with: {
         user: true,
       },
     });
 
-    if (!investment) {
+    if (!withdrawal) {
       return NextResponse.json(
-        { error: "Investment not found" },
+        { error: "Withdrawal not found" },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(investment);
+    return NextResponse.json(withdrawal);
   } catch (error: any) {
     return NextResponse.json(
       { error: error.message || "An error occurred" },

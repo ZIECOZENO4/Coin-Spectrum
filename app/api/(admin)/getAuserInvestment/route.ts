@@ -1,6 +1,49 @@
+// // /app/api/investments/route.ts
+
+// import { prisma } from "@/lib/db/prisma";
+// import { NextResponse } from "next/server";
+
+// export async function GET(request: Request) {
+//   const { searchParams } = new URL(request.url);
+//   const id = searchParams.get("id");
+
+//   if (!id) {
+//     return NextResponse.json({ error: "ID is required" }, { status: 400 });
+//   }
+
+//   try {
+//     const investment = await prisma.investment.findUnique({
+//       where: { id },
+//       include: {
+//         imageProofUrl: true,
+//         plan: true,
+//         user: true,
+//         status: true,
+//       },
+//     });
+
+//     if (!investment) {
+//       return NextResponse.json(
+//         { error: "Investment not found" },
+//         { status: 404 }
+//       );
+//     }
+
+//     return NextResponse.json(investment);
+//   } catch (error: any) {
+//     return NextResponse.json(
+//       { error: error.message || "An error occurred" },
+//       { status: 500 }
+//     );
+//   }
+// }
+
+
 // /app/api/investments/route.ts
 
-import { prisma } from "@/lib/db/prisma";
+import { db } from "@/lib/db";
+import { investments } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -12,9 +55,9 @@ export async function GET(request: Request) {
   }
 
   try {
-    const investment = await prisma.investment.findUnique({
-      where: { id },
-      include: {
+    const investment = await db.query.investments.findFirst({
+      where: eq(investments.id, id),
+      with: {
         imageProofUrl: true,
         plan: true,
         user: true,

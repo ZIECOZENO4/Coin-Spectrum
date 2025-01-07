@@ -26,7 +26,6 @@ import { useUploadThing } from "@/lib/uploadthing";
 import { Input } from "@/components/ui/input";
 import { useFetchOneInvestmentPlan } from "@/lib/tenstack-hooks/usefetchAnInvestmentPlan";
 import { useCreateInvestment } from "@/lib/tenstack-hooks/addAnewInvestment";
-import { InvestmentName, InvestmentNameEnum } from "@/lib/db/schema/schema";
 import { Wallets } from "@prisma/client";
 import { cryptocurrencies } from "./cryptoCurrencies";
 

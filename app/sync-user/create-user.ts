@@ -1,83 +1,160 @@
+// import { redirect } from "next/navigation";
+// import { prisma } from "@/lib/db/prisma";
+// import { getUserAuth } from "@/lib/auth/utils";
+// import { UserRole } from "@prisma/client";
+// import { createUserTracker } from "../_action/prisma-core-functionns";
+
+
+// export async function createUser(ref: string) {
+//   console.log("THIS IS THE REF FOR NOW inside of the backend ", ref);
+//   console.log("Entering createUser function"); // Log entry point of the function
+//   const { session } = await getUserAuth();
+//   console.log("Session obtained:", session); // Log the session object
+//   if (!session) {
+//     console.log("No session found, redirecting to login"); // Log redirection to login
+//     redirect("/sign-in");
+//   }
+//   const { user } = session;
+//   console.log("User extracted from session:", user); // Log the user object
+//   if (!user.email) {
+//     console.log("Email not provided, throwing error"); // Log error for missing email
+//     throw new Error("email must be provided");
+//   }
+
+//   console.log("Checking if user already exists"); // Log checking for existing user
+//   const existingUser = await prisma.user.findUnique({
+//     where: { id: user.id },
+//   });
+
+//   if (existingUser) {
+//     console.log("User already exists, returning existing user"); // Log returning existing user
+//     return existingUser;
+//   }
+
+//   console.log("Creating new authenticated user"); // Log creating new user
+//   console.log("Upserting authenticated user"); // Log upserting user
+//   const AuthenticatedUser = await prisma.user.upsert({
+//     where: {
+//       id: user.id,
+//     },
+//     update: {
+//       userName: user.userName,
+//       firstName: user.firstName,
+//       fullName: user.fullName,
+//       email: user.email,
+//       imageUrl: user.imageUrl,
+//       role: UserRole.user,
+//     },
+//     create: {
+//       id: user.id,
+//       userName: user.userName,
+//       firstName: user.firstName,
+//       fullName: user.fullName,
+//       email: user.email,
+//       imageUrl: user.imageUrl,
+//       role: UserRole.user,
+//     },
+//   });
+
+//   console.log("this isi the authenticateduser", AuthenticatedUser);
+//   console.log("Checking referral information"); // Log checking referral
+//   console.log("Checking referral information"); // Log checking referral
+//   try {
+//     if (ref && ref !== "noRef") {
+//       console.log("Updating user's referral information");
+//       await prisma.user.update({
+//         where: {
+//           id: AuthenticatedUser.id,
+//         },
+//         data: {
+//           referredById: ref,
+//         },
+//       });
+//     }
+//   } catch (error) {
+//     console.error("Error handling referral:", error);
+//   }
+
+//   console.log("Creating user tracker"); // Log creating user tracker
+//   await createUserTracker(session.user.id);
+
+//   console.log("Returning authenticated user:", AuthenticatedUser); // Log returning authenticated user
+//   return AuthenticatedUser;
+// }
+
+
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/db/prisma";
+import { db } from "@/lib/db";
+import { users } from "@/lib/db/schema";
 import { getUserAuth } from "@/lib/auth/utils";
-import { UserRole } from "@prisma/client";
-import { createUserTracker } from "../_action/prisma-core-functionns";
-// import { createUserTracker } from "../action/prisma-core-functions";
+import { eq } from "drizzle-orm";
+import { createUserTracker } from "../../app/_action/prisma-core-functionns";
 
 export async function createUser(ref: string) {
   console.log("THIS IS THE REF FOR NOW inside of the backend ", ref);
-  console.log("Entering createUser function"); // Log entry point of the function
+  console.log("Entering createUser function");
   const { session } = await getUserAuth();
-  console.log("Session obtained:", session); // Log the session object
+  console.log("Session obtained:", session);
   if (!session) {
-    console.log("No session found, redirecting to login"); // Log redirection to login
+    console.log("No session found, redirecting to login");
     redirect("/sign-in");
   }
   const { user } = session;
-  console.log("User extracted from session:", user); // Log the user object
+  console.log("User extracted from session:", user);
   if (!user.email) {
-    console.log("Email not provided, throwing error"); // Log error for missing email
+    console.log("Email not provided, throwing error");
     throw new Error("email must be provided");
   }
 
-  console.log("Checking if user already exists"); // Log checking for existing user
-  const existingUser = await prisma.user.findUnique({
-    where: { id: user.id },
-  });
+  console.log("Checking if user already exists");
+  const existingUser = await db.select().from(users).where(eq(users.id, user.id)).limit(1);
 
-  if (existingUser) {
-    console.log("User already exists, returning existing user"); // Log returning existing user
-    return existingUser;
+  if (existingUser.length > 0) {
+    console.log("User already exists, returning existing user");
+    return existingUser[0];
   }
 
-  console.log("Creating new authenticated user"); // Log creating new user
-  console.log("Upserting authenticated user"); // Log upserting user
-  const AuthenticatedUser = await prisma.user.upsert({
-    where: {
-      id: user.id,
-    },
-    update: {
-      userName: user.userName,
-      firstName: user.firstName,
-      fullName: user.fullName,
-      email: user.email,
-      imageUrl: user.imageUrl,
-      role: UserRole.user,
-    },
-    create: {
+  console.log("Creating new authenticated user");
+  console.log("Upserting authenticated user");
+  const AuthenticatedUser = await db.insert(users)
+    .values({
       id: user.id,
       userName: user.userName,
       firstName: user.firstName,
       fullName: user.fullName,
       email: user.email,
       imageUrl: user.imageUrl,
-      role: UserRole.user,
-    },
-  });
+      role: "user",
+    })
+    .onConflictDoUpdate({
+      target: users.id,
+      set: {
+        userName: user.userName,
+        firstName: user.firstName,
+        fullName: user.fullName,
+        email: user.email,
+        imageUrl: user.imageUrl,
+        role: "user",
+      },
+    })
+    .returning();
 
-  console.log("this isi the authenticateduser", AuthenticatedUser);
-  console.log("Checking referral information"); // Log checking referral
-  console.log("Checking referral information"); // Log checking referral
+  console.log("this is the authenticateduser", AuthenticatedUser[0]);
+  console.log("Checking referral information");
   try {
     if (ref && ref !== "noRef") {
       console.log("Updating user's referral information");
-      await prisma.user.update({
-        where: {
-          id: AuthenticatedUser.id,
-        },
-        data: {
-          referredById: ref,
-        },
-      });
+      await db.update(users)
+        .set({ referredById: ref })
+        .where(eq(users.id, AuthenticatedUser[0].id));
     }
   } catch (error) {
     console.error("Error handling referral:", error);
   }
 
-  console.log("Creating user tracker"); // Log creating user tracker
+  console.log("Creating user tracker");
   await createUserTracker(session.user.id);
 
-  console.log("Returning authenticated user:", AuthenticatedUser); // Log returning authenticated user
-  return AuthenticatedUser;
+  console.log("Returning authenticated user:", AuthenticatedUser[0]);
+  return AuthenticatedUser[0];
 }

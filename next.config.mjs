@@ -41,7 +41,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "loremflickr.com",
+        hostname: "assets.aceternity.com",
       },
     ],
   },

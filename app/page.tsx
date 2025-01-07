@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import ImagesSliderDemo from "@/components/hero-section";
 import StackitInvestment from "@/components/hero-section";
 import Section from "@/components/sections-page";
+import { TimelineDemo } from "@/components/timeline";
 import React from "react";
 
 const HomePage = () => {
@@ -21,6 +22,9 @@ const HomePage = () => {
       </div>
       <div className="mt-10">
         <Section />
+      </div>
+      <div className="div">
+        <TimelineDemo />
       </div>
       <div className="">
         <MarqueeDemo />
