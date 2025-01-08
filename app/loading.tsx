@@ -1,7 +1,15 @@
-import Loader from "@/components/loader";
+import './loading.css';
 
 export default function Loading() {
   return (
-    <Loader className="flex items-center justify-center w-screen h-screen" />
+   /* From Uiverse.io by Nawsome */ 
+<div className="loader">
+  <div className="loader__bar"></div>
+  <div className="loader__bar"></div>
+  <div className="loader__bar"></div>
+  <div className="loader__bar"></div>
+  <div className="loader__bar"></div>
+  <div className="loader__ball"></div>
+</div>
   );
 }

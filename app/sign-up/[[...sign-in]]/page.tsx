@@ -230,7 +230,7 @@ export default function SignupFormDemo() {
           type="submit"
           disabled={isPending}
         >
-          {isPending ? 'Creating account...' : `Sign up &rarr;`}
+          {isPending ? 'Creating account...' : `Sign up and Sync`}
           
           <BottomGradient />
         </button>

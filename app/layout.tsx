@@ -11,6 +11,7 @@ import { Providers } from "./tenstack-provider";
 import Loader from "@/components/loader";
 import AdminMessage from "./adminMessage";
 import NotificationComponent from "./notifications";
+import Loading from "./loading";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -65,7 +66,7 @@ export default function RootLayout({
                   <Loader className="flex items-center justify-center w-screen h-screen" />
                 </ClerkLoading>
                 <ClerkLoaded>
-                  <Suspense fallback={<div>Loading...</div>}>
+                  <Suspense fallback={<div><Loading /></div>}>
                     <AdminMessage />
                   </Suspense>
                   <NotificationComponent disabledPaths={[]} />
