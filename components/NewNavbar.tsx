@@ -100,11 +100,20 @@ const Navbar = () => {
             </span>
           </Link>
           <ul className="ml-14 lg:flex hidden space-x-12 dark:text-neutral-100">
-            {navItems.map((item, index) => (
-              <li key={index}>
-                <Link href={item.href}>{item.label}</Link>
-              </li>
-            ))}
+          {navItems.map((item, index) => (
+          <li key={index} className="relative">
+            <Link 
+              href={item.href}
+              className={`${
+                pathname === item.href
+                  ? "text-yellow-600 after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-full after:h-[2px] after:bg-yellow-600"
+                  : ""
+              }`}
+            >
+              {item.label}
+            </Link>
+          </li>
+        ))}
           </ul>
           <div className="lg:flex items-center justify-center hidden space-x-12">
             <AuthButtons />
@@ -133,11 +142,20 @@ const Navbar = () => {
         {mobileDrawerOpen && (
           <div className="bg-neutral-50 dark:bg-neutral-900 lg:hidden fixed right-0 z-20 flex flex-col items-center justify-center w-full p-12">
             <ul className="space-y-4 dark:text-neutral-100">
-              {navItems.map((item, index) => (
-                <li key={index}>
-                  <Link href={item.href}>{item.label}</Link>
-                </li>
-              ))}
+            {navItems.map((item, index) => (
+          <li key={index} className="relative">
+            <Link 
+              href={item.href}
+              className={`${
+                pathname === item.href
+                  ? "text-yellow-600 after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-full after:h-[2px] after:bg-yellow-600"
+                  : ""
+              }`}
+            >
+              {item.label}
+            </Link>
+          </li>
+        ))}
             </ul>
             <div className="flex space-x-6 mt-8">
               <AuthButtons />
