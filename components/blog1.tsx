@@ -35,7 +35,7 @@ const Blog1 = () => {
               <div className="max-w-[370px] mx-auto mb-10">
                 <div className="rounded overflow-hidden mb-8">
                   <img
-                    src="/images/bfx1.jpg"
+                    src="/m1.jpg"
                     alt="image"
                     className="w-full"
                   />
@@ -96,7 +96,7 @@ const Blog1 = () => {
               <div className="max-w-[370px] mx-auto mb-10">
                 <div className="rounded overflow-hidden mb-8">
                   <img
-                    src="/images/bfx2.jpg"
+                    src="/m2.jpg"
                     alt="image"
                     className="w-full"
                   />
@@ -158,7 +158,7 @@ const Blog1 = () => {
               <div className="max-w-[370px] mx-auto mb-10">
                 <div className="rounded overflow-hidden mb-8">
                   <img
-                    src="/images/bfx4.jpg"
+                    src="/m78.jpg"
                     alt="image"
                     className="w-full"
                   />

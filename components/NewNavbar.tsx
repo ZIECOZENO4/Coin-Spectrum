@@ -17,8 +17,8 @@ import {
 import { ModeToggle } from "./ui/ThemeToggle";
 import MenuIcon from "./dashboard/menuIcon"; // Ensure this import is correct
 export const navItems = [
-  { label: "Home", href: "/dashboard" },
-  { label: "Features", href: "/features" },
+  { label: "Home", href: "/" },
+  { label: "Services", href: "/features" },
   { label: "investments", href: "/invest" },
   { label: "Trades", href: "/trade" },
   { label: "About us", href: "/about" },

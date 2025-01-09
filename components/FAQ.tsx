@@ -42,10 +42,10 @@ const FAQ = () => {
   ];
 
   return (
-    <div className=" mx-auto p-2  text-center text-black">
-        <p  className=" text-md text-black -mb-1 font-bold">Find Answers</p>
+    <div className=" mx-auto p-2  text-center text-white">
+        <p  className=" text-md text-white -mb-1 font-bold">Find Answers</p>
       <TypewriterEffectSmooth words={words} />
-      <p className=" text-xs text-black mb-3">Find answers to yours questions, by checking out the frequent questions asked by miners investors you.</p>
+      <p className=" text-xs text-white mb-3">Find answers to yours questions, by checking out the frequent questions asked by miners investors you.</p>
       <div className="space-y-4">
         {faqData.map((faq, index) => (
           <motion.div
@@ -56,7 +56,7 @@ const FAQ = () => {
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
             <motion.button
-              className={`w-full flex bg-yellow-800 bg-opacity-50 shadow-md rounded-lg text-black justify-between items-center p-6 focus:outline-none ${
+              className={`w-full flex bg-yellow-800 bg-opacity-50 shadow-md rounded-lg text-white justify-between items-center p-6 focus:outline-none ${
                 openIndex === index ? '' : ''
               }`}
               onClick={() => toggleAnswer(index)}
@@ -87,7 +87,7 @@ const FAQ = () => {
                 animate={{ opacity: 1, height: 'auto' }}
                 transition={{ duration: 0.3 }}
               >
-                <p className="text-black">{faq.answer}</p>
+                <p className="text-white">{faq.answer}</p>
               </motion.div>
             )}
           </motion.div>

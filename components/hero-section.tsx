@@ -10,16 +10,14 @@ import { DynamicButton } from "./dynamic-button";
 
 function ImagesSliderDemo() {
   const images = [
-    "/Solace-8.jpeg",
-    "/Solace-8.jpeg",
-    "/Solace-8.jpeg",
-    "/Solace-8.jpeg",
-    "/Solace-8.jpeg",
-    "/Solace-8.jpeg",
-    "/Solace-8.jpeg",
-    "/Solace-8.jpeg",
-    "/Solace-8.jpeg",
-    "/Solace-8.jpeg",
+    "/m22.jpg",
+   "/m71.jpg",
+   "/m78.jpg",
+   "/m89.jpg",
+   "/m9.jpg",
+   "/m7.jpg",
+   "/m2.jpg",
+   "/m1.jpg",
 
   
   ];

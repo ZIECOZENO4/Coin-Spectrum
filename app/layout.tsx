@@ -70,9 +70,9 @@ export default function RootLayout({
                   <Loader className="flex items-center justify-center w-screen h-screen" />
                 </ClerkLoading>
                 <ClerkLoaded>
-                  <Suspense fallback={<div><Loading /></div>}>
+               
                     <AdminMessage />
-                  </Suspense>
+         
                   <NotificationComponent disabledPaths={[]} />
                   <div className="bg-neutral-200 dark:bg-neutral-950 min-h-screen">
                   <Rate3 />
