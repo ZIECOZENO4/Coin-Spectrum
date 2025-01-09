@@ -4,28 +4,34 @@ import { FocusCards } from "@/components/ui/focus-cards";
 export function FocusCardsDemo() {
   const cards = [
     {
-      title: "Forest Adventure",
-      src: "https://images.unsplash.com/photo-1518710843675-2540dd79065c?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "PAXFUL",
+      src: "/exchenger-1.png",
+      url: 'https://paxful.com/roots/buy-bitcoin',
     },
     {
-      title: "Valley of life",
-      src: "https://images.unsplash.com/photo-1600271772470-bd22a42787b3?q=80&w=3072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "COINMAMA",
+      src: "/exchenger-2.png",
+      url: 'https://www.coinmama.com/',
     },
     {
-      title: "Sala behta hi jayega",
-      src: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?q=80&w=3070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "DIGATRADE",
+      src: "/exchenger-3.png",
+      url: 'https://digatrade.com/',
     },
     {
-      title: "Camping is for pros",
-      src: "https://images.unsplash.com/photo-1486915309851-b0cc1f8a0084?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "24xBTC",
+      src: "/exchenger-4.png",
+      url: 'https://24xbtc.com/',
     },
     {
-      title: "The road not taken",
-      src: "https://images.unsplash.com/photo-1507041957456-9c397ce39c97?q=80&w=3456&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "CEX.IO",
+      src: "/exchenger-9.png",
+      url: 'https://cex.io/',
     },
     {
-      title: "The First Rule",
-      src: "https://assets.aceternity.com/the-first-rule.png",
+      title: "BITNOVO",
+      src: "/exchenger-16.png",
+      url: 'https://www.bitnovo.com/comprar-bitcoins',
     },
   ];
 
