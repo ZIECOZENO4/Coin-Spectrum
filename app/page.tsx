@@ -2,6 +2,7 @@
 import { AnimatedListDemo } from "@/components/animated-list-calc";
 import Blog1 from "@/components/blog1";
 import MarqueeDemo from "@/components/comments";
+import FAQ from "@/components/FAQ";
 import Features from "@/components/features";
 import Footer from "@/components/Footer";
 import ImagesSliderDemo from "@/components/hero-section";
@@ -29,6 +30,9 @@ const HomePage = () => {
       </div>
       <div className="div">
         <Blog1 />
+      </div>
+      <div className="div">
+        <FAQ />
       </div>
       <div className="">
         <MarqueeDemo />
