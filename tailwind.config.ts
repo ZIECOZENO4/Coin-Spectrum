@@ -13,50 +13,7 @@ module.exports = {
       },
     },
     extend: {
-      // fontSize: {
-      //   xs: ['0.75rem', { lineHeight: '1rem' }],
-      //   sm: ['0.875rem', { lineHeight: '1.25rem' }],
-      //   base: ['1rem', { lineHeight: '1.5rem' }], // default font size and line height
-      //   lg: ['1.125rem', { lineHeight: '1.75rem' }],
-      //   xl: ['1.25rem', { lineHeight: '1.75rem' }],
-      //   '2xl': ['1.5rem', { lineHeight: '2rem' }],
-      //   '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
-      //   '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
-      //   '5xl': ['3rem', { lineHeight: '1' }],
-      //   '6xl': ['3.75rem', { lineHeight: '1' }],
-      //   '7xl': ['4.5rem', { lineHeight: '1' }],
-      //   '8xl': ['6rem', { lineHeight: '1' }],
-      //   '9xl': ['8rem', { lineHeight: '1' }],
-      // },
-      // // Override font weights here
-      // fontWeight: {
-      //   thin: 100,
-      //   extralight: 200,
-      //   light: 300,
-      //   normal: 400, // default font weight
-      //   medium: 500,
-      //   semibold: 600,
-      //   bold: 700,
-      //   extrabold: 800,
-      //   black: 900,
-      // },
-      // // Override line heights here
-      // lineHeight: {
-      //   none: '1',
-      //   tight: '1.25',
-      //   snug: '1.375',
-      //   normal: '1.5', // default line height
-      //   relaxed: '1.625',
-      //   loose: '2',
-      //   3: '.75rem',
-      //   4: '1rem',
-      //   5: '1.25rem',
-      //   6: '1.5rem',
-      //   7: '1.75rem',
-      //   8: '2rem',
-      //   9: '2.25rem',
-      //   10: '2.5rem',
-      // },
+
       fontSize: {
         xxs: [".5rem", { lineHeight: "0.8rem" }],
         xs: ["0.64rem", { lineHeight: "1rem" }], // 80% of 0.75rem
@@ -170,12 +127,23 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: 0 },
         },
+        spotlight: {
+          "0%": {
+            opacity: 0,
+            transform: "translate(-72%, -62%) scale(0.5)",
+          },
+          "100%": {
+            opacity: 1,
+            transform: "translate(-50%,-40%) scale(1)",
+          },
+        }
       },
       animation: {
         marquee: "marquee var(--duration) linear infinite",
         "marquee-vertical": "marquee-vertical var(--duration) linear infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        spotlight: "spotlight 2s ease .75s 1 forwards",
       },
     },
   },

@@ -4,6 +4,17 @@ import { MotionDiv } from "./ui/animateOnEnter";
 
 const sectionsData = [
   {
+    title: "Welcome to Coin Spectrum trading and Investment Platform",
+    description:
+      "Join the Coin Spectrum Investment Platform and unlock the potential for significant returns. By investing a small amount, you can access high-yield opportunities that were once only available to elite investors. Our platform leverages cutting-edge technology to provide secure, transparent, and profitable investment options. Take the first step towards financial independence with Coin Spectrum.",
+    buttonText1: "Learn More",
+    buttonText2: "Explore Now",
+    imageUrl: "https://youtu.be/41JCpzvnn_0?si=Hqku2vk1zYPuWzfS",
+    reverse: false,
+    link1: "/dashboard",
+    link2: "/dashboard",
+  },
+  {
     title: "Maximize Your Earnings with Coin Spectrum",
     description:
       "At Coin Spectrum, we offer investment opportunities that maximize your earnings. Our advanced algorithms and expert analysis ensure that your investments are strategically placed for optimal growth. Whether you're a seasoned investor or just starting out, our platform is designed to help you achieve your financial goals. Discover how you can grow your wealth with us.",
@@ -46,8 +57,18 @@ const sectionsData = [
     reverse: false,
     link1: "/invest",
     link2: "/dashboard",
-  }
-
+  },
+  {
+    title: "24/7 Customer Support",
+    description:
+      "At Coin Spectrum, we believe in providing exceptional customer service. Our dedicated support team is available 24/7 to assist you with any questions or concerns. We are here to ensure your investment journey is smooth and successful. Connect with us anytime and experience our commitment to your satisfaction.",
+    buttonText1: "Contact Us",
+    buttonText2: "Support Center",
+    imageUrl: "/m78.jpg",
+    reverse: true,
+    link1: "/about",
+    link2: "/dashboard/support",
+  },
  
 ];
 

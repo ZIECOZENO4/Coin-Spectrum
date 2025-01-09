@@ -12,6 +12,20 @@ const nextConfig = {
         hostname: "mxjyswfblmzljdjizuar.supabase.co",
       },
       {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+        pathname: '/vi/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'youtu.be',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ytimg.com',
+        pathname: '/**',
+      },
+      {
         protocol: "https",
         hostname: "tailus.io",
       },

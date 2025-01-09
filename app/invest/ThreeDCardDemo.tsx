@@ -16,52 +16,36 @@ interface CardData {
   
 const cardData = [
   {
-    title: "Make things float in air",
-    description: "Hover over this card to unleash the power of CSS perspective",
-    imageSrc: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    linkText: "Try now →",
-    linkHref: "https://twitter.com/mannupaaji",
-    buttonText: "Sign up"
+    title: "Why Invest in Cannabis",
+    description: "Coin Specturm is the world top pioneer for market in Cannabis",
+    imageSrc: "/cs.jpg",
+    linkText: "Learn More →",
+    linkHref: "/dashboard/investment",
+    buttonText: "Start investing"
   },
   {
-    title: "Explore the cosmos",
-    description: "Discover the wonders of the universe with our interactive space tours",
-    imageSrc: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2662&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    title: "Why Invest in Real Estate",
+    description: "Coin Spectrum is one of the biggest real estate company in the world.",
+    imageSrc: "/cs1.jpg",
     linkText: "Start exploring →",
-    linkHref: "https://nasa.gov",
-    buttonText: "Book tour"
+    linkHref: "/dashboard/investment",
+    buttonText: "Start Investing"
   },
   {
-    title: "Master the art of cooking",
-    description: "Learn culinary secrets from world-renowned chefs",
-    imageSrc: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    linkText: "View recipes →",
-    linkHref: "https://foodnetwork.com",
-    buttonText: "Enroll now"
+    title: "Why Invest in Stocks",
+    description: "Invest on the stocks of Coin Spectrum as it high market value",
+    imageSrc: "/cs2.jpg",
+    linkText: "View Charts →",
+    linkHref: "/dashboard/investment",
+    buttonText: "Invest now"
   },
   {
-    title: "Dive into the ocean",
-    description: "Explore the depths of the sea and discover marine life",
-    imageSrc: "https://images.unsplash.com/photo-1682687982501-1e58ab814714?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    linkText: "Start diving →",
-    linkHref: "https://oceanconservancy.org",
-    buttonText: "Book dive"
-  },
-  {
-    title: "Capture the moment",
-    description: "Learn photography techniques from professional photographers",
-    imageSrc: "https://images.unsplash.com/photo-1554048612-b6a482bc67e5?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    linkText: "Start shooting →",
-    linkHref: "https://nationalgeographic.com",
-    buttonText: "Join workshop"
-  },
-  {
-    title: "Code your future",
-    description: "Build the skills you need for a successful career in tech",
-    imageSrc: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2672&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    linkText: "Start coding →",
-    linkHref: "https://github.com",
-    buttonText: "Enroll now"
+    title: "Why Invest in Forex and Crypto Assets",
+    description: "Your no 1 broker platform, completing around 2000 trades per day.",
+    imageSrc: "/cs4.jpg",
+    linkText: "Learn More →",
+    linkHref: "/dashboard/investment",
+    buttonText: "Inest Now"
   }
 ];
 

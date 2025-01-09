@@ -22,15 +22,11 @@ const HomePage = () => {
       <div className="flex flex-col items-center justify-centers">
         <AnimatedListDemo />
       </div>
-      <div className="mt-10">
-        <Section />
-      </div>
+      
       <div className="div">
         <TimelineDemo />
       </div>
-      <div className="div">
-        <Blog1 />
-      </div>
+ 
       <div className="div">
         <FAQ />
       </div>

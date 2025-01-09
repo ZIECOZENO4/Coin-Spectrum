@@ -2,7 +2,7 @@ import React from 'react'
 import './video.css'
 const Videos = () => {
   return (
-    <div className='flex md:flex-row flex-col justify-between'>
+    <div className='flex md:flex-row flex-col justify-between align-middle gap-4'>
     <div className="card">
       <div className="card__view">
         <div className="card__view__data">
