@@ -46,7 +46,7 @@ function TradingViewWidget() {
 
   return (
     <div className="flex flex-col mt-4 my-8 md:my-11">
-         <h2 className=' text-4xl font-bold py-2  text-[#FFD700] font-serif text-center md:text-[60px]'>COIN SPECTRUM OFFERS THE BEST TRADING TOOLS.</h2>
+         <h2 className=' text-4xl font-bold py-2  text-slate-300 font-serif text-center md:text-[60px]'>COIN SPECTRUM OFFERS THE BEST TRADING TOOLS.</h2>
     <div className="tradingview-widget-container  w-[90vw]" ref={container} style={{ height: "300%", width: "90%" }}>
       <div className="tradingview-widget-container__widget   w-[90vw]" style={{ height: "calc(300% - 32px)", width: "90%" }}></div>
       <div className="tradingview-widget-copyright" ></div>

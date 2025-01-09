@@ -1,5 +1,6 @@
 // import { AnimatedListDemo } from "@/components/aminated-list";
 import { AnimatedListDemo } from "@/components/animated-list-calc";
+import Blog1 from "@/components/blog1";
 import MarqueeDemo from "@/components/comments";
 import Features from "@/components/features";
 import Footer from "@/components/Footer";
@@ -25,6 +26,9 @@ const HomePage = () => {
       </div>
       <div className="div">
         <TimelineDemo />
+      </div>
+      <div className="div">
+        <Blog1 />
       </div>
       <div className="">
         <MarqueeDemo />
