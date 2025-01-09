@@ -19,8 +19,9 @@ import MenuIcon from "./dashboard/menuIcon"; // Ensure this import is correct
 export const navItems = [
   { label: "Home", href: "/dashboard" },
   { label: "Features", href: "/features" },
-  { label: "Services", href: "/services" },
-  { label: "Testimonials", href: "/testimonials" },
+  { label: "investments", href: "/invest" },
+  { label: "Trades", href: "/trade" },
+  { label: "About us", href: "/about" },
 ];
 
 const AuthButtons = () => {

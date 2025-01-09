@@ -12,6 +12,10 @@ import Loader from "@/components/loader";
 import AdminMessage from "./adminMessage";
 import NotificationComponent from "./notifications";
 import Loading from "./loading";
+import Rate3 from "@/components/rate3";
+import GoogleTranslate from "@/components/GoogleTranslate";
+
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -70,9 +74,13 @@ export default function RootLayout({
                     <AdminMessage />
                   </Suspense>
                   <NotificationComponent disabledPaths={[]} />
-                  <div className="bg-neutral-200 dark:bg-neutral-950">
+                  <div className="bg-neutral-200 dark:bg-neutral-950 min-h-screen">
+                  <Rate3 />
                     {children}
                   </div>
+                  <div className=" w-full align-middle items-center flex flex-row justify-center flex-wrap">
+              <GoogleTranslate />
+              </div>
                 </ClerkLoaded>
                 <Toaster richColors />
               </ProvidersProgressBar>
