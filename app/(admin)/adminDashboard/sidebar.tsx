@@ -94,7 +94,7 @@ const Sidebar: React.FC = () => {
               <div className="p-2.5 mt-1 flex items-center rounded-md">
                 <User2Icon className="px-2 py-1 bg-blue-600 rounded-md" />
                 <h1 className="text-[15px] ml-3 text-xl text-gray-200 font-bold">
-                  Stackit
+                  Admins
                 </h1>
               </div>
               <hr className="my-2 text-gray-600" />

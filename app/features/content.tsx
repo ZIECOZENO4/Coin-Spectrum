@@ -8,28 +8,28 @@ import { useState, useEffect } from "react";
 
 const features = [
   {
-    name: "Support",
+    name: "Crypto and Forex",
     icon: "🛠️",
-    description: "Coin Spectrum offers 24/7 expert support to guide you through your crypto journey.",
-    image: "/m78.jpg"
+    description: "Your no 1 broker platform, completing around 2000 trades per day.",
+    image: "/cs4.jpg"
   },
   {
-    name: "Investment",
+    name: "Real Estate",
     icon: "💰",
-    description: "Diverse investment options tailored to your financial goals only on Coin Spectrum.",
-    image: "/m7.jpg"
+    description: "Coin Spectrum is one of the biggest real estate company in the world.",
+    image: "/cs1.jpg"
   },
   {
-    name: "Trades",
+    name: "Stocks",
     icon: "📊",
-    description: "Coin Spectrum offers Efficient and secure trading platform for all your crypto needs.",
-    image: "/m4.jpg"
+    description: "Invest on the stocks of Coin Spectrum as it high market value",
+    image: "/cs2.jpg"
   },
   {
-    name: "Referral Income",
+    name: "Cannabis",
     icon: "🤝",
-    description: "Earn rewards by inviting friends to join Coin Spectrum.",
-    image: "/m22.jpg"
+    description: "Coin Specturm is the world top pioneer for market in Cannabis",
+    image: "/cs.jpg"
   },
 ];
 

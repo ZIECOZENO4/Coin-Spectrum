@@ -32,7 +32,7 @@ export default function FeaturesGrid() {
       icon: MessageSquare,
       title: "Customer support 24/7",
       description:
-        "Our support team is available to answer to all Questions regarding the Gain Capital Limited investors portal, account issues and casual inquires.",
+        "Our support team is available to answer to all Questions regarding the COIN SPECTRUM investors portal, account issues and casual inquires.",
     },
     {
       icon: Boxes,

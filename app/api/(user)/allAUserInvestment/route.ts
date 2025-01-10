@@ -63,7 +63,6 @@
 
 // export const revalidate = 0;
 
-
 import { getUserId } from "./../../../../lib/auth/utils";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
@@ -74,54 +73,92 @@ export async function GET(req: NextRequest) {
   console.log("Received GET request for investments API");
   const { searchParams } = req.nextUrl;
   const userId = getUserId();
-  const page = searchParams.get("page") || "1";
-  const limit = searchParams.get("limit") || "10";
+  const page = searchParams.get("page") ?? "1";
+  const limit = searchParams.get("limit") ?? "10";
 
   if (!userId) {
-    return NextResponse.json({ error: "User ID is required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "User ID is required" }, 
+      { status: 400 }
+    );
   }
 
-  console.log("Query parameters:", { userId, page, limit });
-
   try {
-    const pageNumber = parseInt(page);
-    const pageSize = parseInt(limit);
+    const pageNumber = Math.max(1, parseInt(page));
+    const pageSize = Math.max(1, parseInt(limit));
     const skip = (pageNumber - 1) * pageSize;
 
-    console.log(
-      `Calculated pagination: pageNumber=${pageNumber}, pageSize=${pageSize}, skip=${skip}`
-    );
-
-    console.log("Fetching investments from database...");
-    const fetchedInvestments = await db.select({
-      investment: investments,
-      plan: investmentPlans,
-      status: investmentStatuses,
-    })
-    .from(investments)
-    .leftJoin(investmentPlans, eq(investments.planId, investmentPlans.id))
-    .leftJoin(investmentStatuses, eq(investments.id, investmentStatuses.investmentId))
-    .where(eq(investments.userId, userId))
-    .limit(pageSize)
-    .offset(skip);
-
-    console.log("Fetched investments:", fetchedInvestments);
-    console.log("Counting total investments for pagination...");
-    const totalInvestmentsResult = await db
-      .select({ count: sql<number>`count(*)` })
+    const [fetchedInvestments, totalInvestmentsResult] = await Promise.all([
+      db.select({
+        id: investments.id,
+        name: investments.name,
+        price: investments.price,
+        profitPercent: investments.profitPercent,
+        rating: investments.rating,
+        principalReturn: investments.principalReturn,
+        principalWithdraw: investments.principalWithdraw,
+        creditAmount: investments.creditAmount,
+        depositFee: investments.depositFee,
+        debitAmount: investments.debitAmount,
+        durationDays: investments.durationDays,
+        createdAt: investments.createdAt,
+        updatedAt: investments.updatedAt,
+        plan: {
+          id: investmentPlans.id,
+          name: investmentPlans.name,
+          minAmount: investmentPlans.minAmount,
+          maxAmount: investmentPlans.maxAmount,
+          roi: investmentPlans.roi,
+          durationHours: investmentPlans.durationHours,
+          instantWithdrawal: investmentPlans.instantWithdrawal
+        },
+        status: {
+          id: investmentStatuses.id,
+          status: investmentStatuses.status
+        }
+      })
       .from(investments)
-      .where(eq(investments.userId, userId));
+      .leftJoin(
+        investmentPlans, 
+        eq(investments.id, investmentPlans.id)
+      )
+      .leftJoin(
+        investmentStatuses, 
+        eq(investments.id, investmentStatuses.id)
+      )
+      .limit(pageSize)
+      .offset(skip),
 
-    const totalInvestments = totalInvestmentsResult[0].count;
+      db.select({ 
+        count: sql<number>`cast(count(*) as integer)` 
+      })
+      .from(investments)
+    ]);
+
+    if (!fetchedInvestments) {
+      throw new Error("Failed to fetch investments");
+    }
+
+    const totalInvestments = totalInvestmentsResult[0]?.count ?? 0;
     const totalPages = Math.ceil(totalInvestments / pageSize);
 
-    console.log("Sending response with investments and total pages");
-    return NextResponse.json({ investments: fetchedInvestments, totalPages });
+    return NextResponse.json({
+      investments: fetchedInvestments.map(inv => ({
+        ...inv,
+        plan: inv.plan ?? null,
+        status: inv.status ?? null
+      })),
+      totalPages,
+      currentPage: pageNumber,
+      totalItems: totalInvestments
+    });
   } catch (error) {
-    console.error("Error occurred while fetching investments:", error);
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.log("Sending error response with message:", errorMessage);
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    console.error("Error fetching investments:", error);
+    const errorMessage = error instanceof Error ? error.message : "Internal server error";
+    return NextResponse.json(
+      { error: errorMessage }, 
+      { status: 500 }
+    );
   }
 }
 
