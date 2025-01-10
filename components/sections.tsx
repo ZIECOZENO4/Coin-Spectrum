@@ -40,7 +40,7 @@ const HeroSection: React.FC<SectionProps> = ({
   const videoId = isYouTube ? getYouTubeId(imageUrl) : null;
 
   return (
-    <div className={`flex ${reverse ? 'flex-row-reverse' : 'flex-row'} w-full gap-8 p-6`}>
+    <div className={`flex ${reverse ? 'flex-col md:flex-row-reverse' : 'md:flex-row flex-col'} w-full gap-8 p-6`}>
       <div className="flex-1">
         <h2 className="text-2xl font-bold mb-4">{title}</h2>
         <p className="mb-6">{description}</p>

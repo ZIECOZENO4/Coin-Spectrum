@@ -3,7 +3,7 @@ import React from "react";
 const Blog1 = () => {
   return (
     <div>
-      <section className="py-5 md:pt-10 px-6 md:px-10 ">
+      <section className="py-5 md:pt-10 px-2 md:px-10 ">
         <div className="container">
           <div className="flex flex-wrap justify-center -mx-4">
             <div className="w-full px-4">
@@ -134,20 +134,20 @@ const Blog1 = () => {
                         hover:text-primary
                         "
                     >
-                      How to earn more money an investor on Binance FX
+                      How to earn more money an investor on Coin Spectrum
                     </a>
                   </h3>
                   <p className="text-base text-slate-300">
-                    Unlock the potential of your investments with Binance FX by
+                    Unlock the potential of your investments with Coin Spectrum by
                     exploring diverse earning strategies tailored for every type
                     of investor. Whether you&apos;re interested in staking
                     cryptocurrencies, participating in liquidity pools, or
-                    leveraging automated investment plans, Binance offers a
+                    leveraging automated investment plans, Coin Spectrum offers a
                     plethora of options to enhance your investment portfolio.
                     This guide will walk you through various methods such as
                     DeFi staking, Auto-Invest plans, and Dual Investment
                     opportunities, helping you to maximize returns while
-                    managing risks effectively. Dive into the world of Binance
+                    managing risks effectively. Dive into the world of Coin Spectrum
                     FX and start optimizing your investment strategy today for
                     better financial growth tomorrow.
                   </p>

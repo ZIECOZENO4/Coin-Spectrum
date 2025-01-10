@@ -10,7 +10,7 @@ export function FocusCardsDemo() {
     },
     {
       title: "COINMAMA",
-      src: "/exchenger-2.png",
+      src: "/ws3.jpg",
       url: 'https://www.coinmama.com/',
     },
     {
@@ -25,7 +25,7 @@ export function FocusCardsDemo() {
     },
     {
       title: "CEX.IO",
-      src: "/exchenger-9.png",
+      src: "/ws7.jpg",
       url: 'https://cex.io/',
     },
     {

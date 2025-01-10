@@ -96,7 +96,7 @@ export default function TradingOptions() {
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
           <Image
-            src="/placeholder.svg?height=900&width=600"
+            src="/tr2.jpg"
             alt="City skyline"
             fill
             className="object-cover rounded-lg"
@@ -117,7 +117,7 @@ export default function TradingOptions() {
               transition={{ delay: 1.2 }}
             >
               <Image
-                src="/placeholder.svg?height=60&width=200"
+                src="/tr4.jpg"
                 alt="Trade Options Logo"
                 width={200}
                 height={60}

@@ -10,26 +10,26 @@ const features = [
   {
     name: "Support",
     icon: "🛠️",
-    description: "24/7 expert support to guide you through your crypto journey.",
-    image: "/support.jpg"
+    description: "Coin Spectrum offers 24/7 expert support to guide you through your crypto journey.",
+    image: "/m78.jpg"
   },
   {
     name: "Investment",
     icon: "💰",
-    description: "Diverse investment options tailored to your financial goals.",
-    image: "/investment.jpg"
+    description: "Diverse investment options tailored to your financial goals only on Coin Spectrum.",
+    image: "/m7.jpg"
   },
   {
     name: "Trades",
     icon: "📊",
-    description: "Efficient and secure trading platform for all your crypto needs.",
-    image: "/trades.jpg"
+    description: "Coin Spectrum offers Efficient and secure trading platform for all your crypto needs.",
+    image: "/m4.jpg"
   },
   {
     name: "Referral Income",
     icon: "🤝",
     description: "Earn rewards by inviting friends to join Coin Spectrum.",
-    image: "/referral.jpg"
+    image: "/m22.jpg"
   },
 ];
 
@@ -73,7 +73,7 @@ export default function FeaturesHero() {
               {features[activeFeature].description}
             </p>
             <div className="mt-6">
-              <Link href="/signup" className="block px-3 py-2 font-semibold text-center text-white transition-colors duration-200 transform bg-blue-500 rounded-md md:inline hover:bg-blue-400">
+              <Link href="/signup" className="block px-3 py-2 font-semibold text-center text-black transition-colors duration-200 transform bg-yellow-400 rounded-md md:inline hover:bg-yellow-600">
                 Get Started
               </Link>
             </div>

@@ -6,7 +6,7 @@ const dummyAgents = [
   {
     _id: "1",
     name: "John Doe",
-    image: { asset: { _ref: "image-1" } },
+    image: '/ab1.jpg',
     role: "CEO",
     linkedin: "https://linkedin.com/in/johndoe",
     twitter: "https://twitter.com/johndoe"
@@ -14,7 +14,7 @@ const dummyAgents = [
   {
     _id: "2",
     name: "Jane Smith",
-    image: { asset: { _ref: "image-2" } },
+    image: '/ab2.jpg',
     role: "CTO",
     linkedin: "https://linkedin.com/in/janesmith",
     twitter: "https://twitter.com/janesmith"
@@ -22,7 +22,7 @@ const dummyAgents = [
   {
     _id: "3",
     name: "Mike Johnson",
-    image: { asset: { _ref: "image-3" } },
+    image: '/ab3.jpg',
     role: "Lead Developer",
     linkedin: "https://linkedin.com/in/mikejohnson",
     twitter: "https://twitter.com/mikejohnson"
@@ -30,7 +30,7 @@ const dummyAgents = [
   {
     _id: "4",
     name: "Emily Brown",
-    image: { asset: { _ref: "image-4" } },
+    image: '/ab1.jpg',
     role: "Marketing Manager",
     linkedin: "https://linkedin.com/in/emilybrown",
     twitter: "https://twitter.com/emilybrown"
@@ -38,7 +38,7 @@ const dummyAgents = [
   {
     _id: "5",
     name: "David Lee",
-    image: { asset: { _ref: "image-5" } },
+    image: '/ab1.jpg',
     role: "Financial Analyst",
     linkedin: "https://linkedin.com/in/davidlee",
     twitter: "https://twitter.com/davidlee"
@@ -46,7 +46,7 @@ const dummyAgents = [
   {
     _id: "6",
     name: "Sarah Wilson",
-    image: { asset: { _ref: "image-6" } },
+    image: '/ab1.jpg',
     role: "Customer Support Lead",
     linkedin: "https://linkedin.com/in/sarahwilson",
     twitter: "https://twitter.com/sarahwilson"
@@ -64,7 +64,7 @@ const TeamCard = () => {
             <img
               alt={agent.name}
               className="h-[300px] w-full object-cover transition-all duration-300 group-hover:scale-105"
-              src={`https://via.placeholder.com/300x300?text=${agent.name}`}
+              src={agent.image}
             />
             <div className="p-4">
               <h3 className="text-xl md:text-3xl font-semibold">{agent.name}</h3>

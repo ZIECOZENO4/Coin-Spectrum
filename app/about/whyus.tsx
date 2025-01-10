@@ -47,15 +47,15 @@ const WhyUs = () => {
                             </div>
                             <div className="mt-6  relative z-10 space-y-2">
                                 <h2 className="text-lg font-medium text-gray-800 transition group-hover:text-purple-950 dark:text-white">Secure by default</h2>
-                                <p className="dark:text-gray-300 text-gray-700">Binance FX prioritizes security as a fundamental aspect of its platform, ensuring that user funds and data are protected by default. This commitment to security is evident through multiple layers of protection:
+                                <p className="dark:text-gray-300 text-gray-700">Coin Spectrum prioritizes security as a fundamental aspect of its platform, ensuring that user funds and data are protected by default. This commitment to security is evident through multiple layers of protection:
 
-Advanced Encryption: Binance FX employs state-of-the-art encryption technologies to secure user data and transactions. This prevents unauthorized access and ensures that sensitive information remains confidential.
+Advanced Encryption: Coin Spectrum employs state-of-the-art encryption technologies to secure user data and transactions. This prevents unauthorized access and ensures that sensitive information remains confidential.
 <br />
-Two-Factor Authentication (2FA): By requiring 2FA, Binance FX adds an extra layer of security that helps in verifying the identity of users before allowing access to accounts. This significantly reduces the risk of unauthorized access.
+Two-Factor Authentication (2FA): By requiring 2FA, Coin Spectrum adds an extra layer of security that helps in verifying the identity of users before allowing access to accounts. This significantly reduces the risk of unauthorized access.
 <br />
 Regular Audits: The platform undergoes regular security audits conducted by independent third-party companies. These audits help in identifying and mitigating potential vulnerabilities, ensuring the platform remains secure against evolving threats.
 <br />
-Risk Management Systems: Binance FX utilizes sophisticated risk management systems that monitor and manage the risks associated with currency trading. These systems help in detecting and preventing suspicious activities, thereby protecting user investments.
+Risk Management Systems: Coin Spectrum utilizes sophisticated risk management systems that monitor and manage the risks associated with currency trading. These systems help in detecting and preventing suspicious activities, thereby protecting user investments.
 </p>
                             </div>
                         </div>
@@ -87,9 +87,9 @@ Risk Management Systems: Binance FX utilizes sophisticated risk management syste
                             </div>
                             <div className="mt-14 relative z-10 space-y-2">
                                 <h2 className="text-lg font-medium text-gray-800 transition group-hover:text-purple-950 dark:text-white">Fast Transactions</h2>
-                                <p className="dark:text-gray-300 text-gray-700">Binance FX ensures that transactions are processed quickly, which is a crucial feature for traders who need to respond swiftly to market changes. The platform's efficiency in transaction processing can be attributed to several factors:
+                                <p className="dark:text-gray-300 text-gray-700">Coin Spectrum ensures that transactions are processed quickly, which is a crucial feature for traders who need to respond swiftly to market changes. The platform's efficiency in transaction processing can be attributed to several factors:
                                 <br />
-High-Performance Engine: Binance FX is built on a robust trading engine that can handle a large volume of transactions simultaneously without lag. This is essential for maintaining speed even during peak trading times.
+High-Performance Engine: Coin Spectrum is built on a robust trading engine that can handle a large volume of transactions simultaneously without lag. This is essential for maintaining speed even during peak trading times.
 <br />
 Optimized Order Matching: The platform uses an advanced order matching system that quickly pairs buy and sell orders with minimal delay. This efficiency is vital for executing trades at the desired prices without significant slippage.
 <br />
@@ -107,13 +107,13 @@ Streamlined User Experience: The user interface is designed to facilitate quick 
                                     </div>
                                 <div className="space-y-2">
                                     <h2 className="text-lg font-medium text-gray-800 transition group-hover:text-purple-950 dark:text-white">Rapid Increase of users and investors.</h2>
-                                    <p className="dark:text-gray-300 text-gray-700">Binance FX has experienced a rapid increase in its user base and investor interest, driven by several key factors:
+                                    <p className="dark:text-gray-300 text-gray-700">Coin Spectrum has experienced a rapid increase in its user base and investor interest, driven by several key factors:
                                     <br />
-Long-Term Optimism: According to a survey conducted by Binance Research, a significant majority of institutional investors (88%) have expressed long-term optimism about the future of cryptocurrencies. This positive outlook is encouraging more users and investors to engage with platforms like Binance FX, expecting stable growth and future profitability.
+Long-Term Optimism: According to a survey conducted by Binance Research, a significant majority of institutional investors (88%) have expressed long-term optimism about the future of cryptocurrencies. This positive outlook is encouraging more users and investors to engage with platforms like Coin Spectrum, expecting stable growth and future profitability.
 <br />
-Increased Crypto Allocation: The same survey revealed that over the past year, nearly half of the investors (47.1%) maintained their crypto allocations, while over a third (35.6%) increased their investments in digital assets. This trend indicates growing confidence in the crypto market, attracting more users to Binance FX as they seek platforms that can support their investment strategies effectively.
+Increased Crypto Allocation: The same survey revealed that over the past year, nearly half of the investors (47.1%) maintained their crypto allocations, while over a third (35.6%) increased their investments in digital assets. This trend indicates growing confidence in the crypto market, attracting more users to Coin Spectrum as they seek platforms that can support their investment strategies effectively.
 <br />
-Infrastructure and Technology Investment: A significant portion of investors (53.9%) identified infrastructure as a crucial sector, with many also focusing on Layer 1 and Layer 2 technologies. Binance FX's commitment to advancing these technologies likely contributes to its appeal among institutional investors, who are looking for platforms that support innovative and scalable crypto solutions.</p>
+Infrastructure and Technology Investment: A significant portion of investors (53.9%) identified infrastructure as a crucial sector, with many also focusing on Layer 1 and Layer 2 technologies. Coin Spectrum's commitment to advancing these technologies likely contributes to its appeal among institutional investors, who are looking for platforms that support innovative and scalable crypto solutions.</p>
                                 </div>
                             </div>
                             <div className="overflow-hidden relative mt-6 sm:mt-auto h-fit -mb-[34px] -mr-[34px] sm:ml-6 py-6 p-6 border rounded-tl-lg dark:bg-white/5 dark:border-white/10">
@@ -148,7 +148,7 @@ Infrastructure and Technology Investment: A significant portion of investors (53
                                     </div>
                                 <div className="space-y-2">
                                     <h2 className="text-lg font-medium text-gray-800 transition group-hover:text-purple-950 dark:text-white">Incredible Profit from referrals.</h2>
-                                    <p className="dark:text-gray-300 text-gray-700">Binance FX offers a lucrative referral program that significantly benefits its users, making it an attractive feature for both new and existing participants.</p>
+                                    <p className="dark:text-gray-300 text-gray-700">Coin Spectrum offers a lucrative referral program that significantly benefits its users, making it an attractive feature for both new and existing participants.</p>
                                 </div>
                             </div>
                             <div className="mt-6 relative sm:-mr-[--card-padding] sm:-my-8 before:absolute before:w-px before:inset-0 before:mx-auto before:bg-gray-200 dark:before:bg-gray-800">
