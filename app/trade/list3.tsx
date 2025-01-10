@@ -109,7 +109,7 @@ export default function TradingOptions() {
               animate={{ opacity: 1 }}
               transition={{ delay: 1 }}
             >
-              INNOVATION IS WRITTEN IN OUR CODE 👋
+              WELCOME TO THE HOME OF TRADERS 👋
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
