@@ -16,12 +16,12 @@ interface CardData {
   
 const cardData = [
   {
-    title: "Why Invest in Cannabis",
-    description: "Coin Specturm is the world top pioneer for market in Cannabis",
-    imageSrc: "/cs.jpg",
+    title: "Why Invest in Forex and Crypto Assets",
+    description: "Your no 1 broker platform, completing around 2000 trades per day.",
+    imageSrc: "/cs4.jpg",
     linkText: "Learn More →",
     linkHref: "/dashboard/investment",
-    buttonText: "Start investing"
+    buttonText: "Inest Now"
   },
   {
     title: "Why Invest in Real Estate",
@@ -40,12 +40,12 @@ const cardData = [
     buttonText: "Invest now"
   },
   {
-    title: "Why Invest in Forex and Crypto Assets",
-    description: "Your no 1 broker platform, completing around 2000 trades per day.",
-    imageSrc: "/cs4.jpg",
+    title: "Why Invest in Cannabis",
+    description: "Coin Specturm is the world top pioneer for market in Cannabis",
+    imageSrc: "/cs.jpg",
     linkText: "Learn More →",
     linkHref: "/dashboard/investment",
-    buttonText: "Inest Now"
+    buttonText: "Start investing"
   }
 ];
 

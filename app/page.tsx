@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import ImagesSliderDemo from "@/components/hero-section";
 import StackitInvestment from "@/components/hero-section";
 import Section from "@/components/sections-page";
+import Section2 from "@/components/sections-page2";
 import { TimelineDemo } from "@/components/timeline";
 import React from "react";
 
@@ -22,7 +23,7 @@ const HomePage = () => {
       <div className="flex flex-col items-center justify-centers">
         <AnimatedListDemo />
       </div>
-      
+      <Section2 />
       <div className="div">
         <TimelineDemo />
       </div>

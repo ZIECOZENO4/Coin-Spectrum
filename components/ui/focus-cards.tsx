@@ -48,6 +48,7 @@ Card.displayName = "Card";
 
 type Card = {
   title: string;
+  url: string;
   src: string;
 };
 
@@ -57,7 +58,7 @@ export function FocusCards({ cards }: { cards: Card[] }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-5xl mx-auto md:px-8 w-full">
       {cards.map((card, index) => (
-        <Link href={}>
+        <Link href={card.url}>
          <Card
           key={card.title}
           card={card}
