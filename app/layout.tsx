@@ -1,3 +1,4 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -15,12 +16,65 @@ import Loading from "./loading";
 import Rate3 from "@/components/rate3";
 import GoogleTranslate from "@/components/GoogleTranslate";
 
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "CoinSpectrum.com",
-  description: "Your best trading broker and investment platform ",
+  metadataBase: new URL('https://www.coinspectrum.net'),
+  title: {
+    template: '%s | COIN SPECTRUM',
+    default: 'COIN SPECTRUM - Your only trust investment and broker platform.',
+  },
+  description: 'COIN SPECTRUM is an investment and trading platform for all users all over the world',
+  keywords: ['Investment', 'Trading', 'Referral'],
+  authors: [{ name: 'COIN SPECTRUM' }],
+  creator: 'COIN SPECTRUM',
+  publisher: 'COIN SPECTRUM',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://www.coinspectrum.net',
+    siteName: 'COIN SPECTRUM',
+    title:  'COIN SPECTRUM - Your only trust investment and broker platform.',
+    description:  'COIN SPECTRUM is an investment and trading platform for all users all over the world',
+    images: [
+      {
+        url: 'https://www.coinspectrum.net/seo.png',
+        width: 1200,
+        height: 630,
+        alt: 'Site Preview Image',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'COIN SPECTRUM',
+    description:  'COIN SPECTRUM is an investment and trading platform for all users all over the world',
+    images: ['https://www.coinspectrum.net/seo.png'],
+    creator: '@yourtwitter',
+  },
+  verification: {
+    google: 'your-google-verification-code',
+    yandex: 'your-yandex-verification-code',
+    yahoo: 'your-yahoo-verification-code',
+  },
+  alternates: {
+    canonical: 'https://www.coinspectrum.net',
+    languages: {
+      'en-US': 'https://www.coinspectrum.net/en-US',
+      'es-ES': 'https://www.coinspectrum.net/es-ES',
+    },
+  },
 };
 
 export default function RootLayout({
@@ -29,26 +83,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <ClerkProvider
         appearance={{
           elements: {
-            // Styling primary buttons with a green color and dark mode aesthetics
             formButtonPrimary:
               "bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded text-sm",
-            // Styling input fields for dark mode with a focus state in green
             input:
               "bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-green-500 focus:border-transparent rounded-lg text-sm",
-            // Styling labels for dark mode with a lighter text color for contrast
             label: "text-gray-300 font-semibold text-sm",
-
-            // Additional elements can be styled here to match the dark mode theme
           },
-          // Defining global variables for dark mode and green as the primary color
           variables: {
-            colorPrimary: "#10b981", // Using Tailwind's green-500 as the primary color
-            colorBackground: "#1f2937", // Using Tailwind's gray-800 for background color in dark mode
-            colorText: "#f9fafb", // Using a light color for text in dark mode for contrast
+            colorPrimary: "#10b981",
+            colorBackground: "#1f2937",
+            colorText: "#f9fafb",
             borderRadius: "10px",
             fontSize: "14px",
           },
@@ -64,23 +117,19 @@ export default function RootLayout({
             <Providers>
               <ProvidersProgressBar>
                 <Navbar />
-
-                {/* {children} */}
                 <ClerkLoading>
                   <Loader className="flex items-center justify-center w-screen h-screen" />
                 </ClerkLoading>
                 <ClerkLoaded>
-               
-                    <AdminMessage />
-         
+                  <AdminMessage />
                   <NotificationComponent disabledPaths={[]} />
                   <div className="bg-neutral-200 dark:bg-neutral-950 min-h-screen">
-                  <Rate3 />
+                    <Rate3 />
                     {children}
                   </div>
-                  <div className=" w-full align-middle items-center flex flex-row justify-center flex-wrap">
-              <GoogleTranslate />
-              </div>
+                  <div className="w-full align-middle items-center flex flex-row justify-center flex-wrap">
+                    <GoogleTranslate />
+                  </div>
                 </ClerkLoaded>
                 <Toaster richColors />
               </ProvidersProgressBar>
