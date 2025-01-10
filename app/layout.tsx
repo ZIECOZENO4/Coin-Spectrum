@@ -89,6 +89,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>
+      <script src="//code.tidio.co/hry7v33ulf36eo4ksprdkbfvoaw568wi.js" async></script>
       <ClerkProvider
         appearance={{
           elements: {
