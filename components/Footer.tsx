@@ -40,7 +40,7 @@ ultimate{" "}
   <div className=" px-4 pt-8 mx-auto sm:px-6 lg:px-8">
     <div className="sm:flex sm:items-center sm:justify-between">
       <div className="flex justify-center text-teal-300 sm:justify-start">
-     <img alt="" className="rounded-full" src="/favi.jpg" width="40" height="40" />
+     <img alt="" className="rounded-full" src="/cs.png" width="40" height="40" />
       </div>
 
       <motion.div
