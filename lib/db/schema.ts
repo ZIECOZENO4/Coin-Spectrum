@@ -49,20 +49,6 @@ export const InvestmentName = pgEnum("investment_name", [
   "vip7",
 ]);
 
-// export const users = pgTable("user", {
-//   id: text("id").primaryKey(),
-//   role: UserRole("role").notNull().default("user"),
-//   firstName: text("first_name"),
-//   username: text("username"),
-//   fullName: text("full_name"),
-//   imageUrl: text("image_url"),
-//   email: text("email").notNull(),
-//   createdAt: timestamp("created_at").notNull().defaultNow(),
-//   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-// }, (users) => ({
-//   usernameIndex: uniqueIndex("user_username_key").on(users.username),
-//   emailIndex: uniqueIndex("user_email_key").on(users.email),
-// }));
 export const users = pgTable("user", {
   id: text("id").primaryKey(),
   role: UserRole("role").notNull().default("user"),
@@ -146,6 +132,36 @@ export const transactionHistory = pgTable("transaction_history", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const kyc = pgTable("kyc", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  firstName: varchar("first_name", { length: 255 }).notNull(),
+  lastName: varchar("last_name", { length: 255 }).notNull(),
+  dateOfBirth: timestamp("date_of_birth").notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  phoneNumber: varchar("phone_number", { length: 20 }),
+  streetAddress: varchar("street_address", { length: 255 }),
+  city: varchar("city", { length: 100 }),
+  state: varchar("state", { length: 100 }),
+  postalCode: varchar("postal_code", { length: 20 }),
+  country: varchar("country", { length: 100 }),
+  idType: varchar("id_type", { length: 50 }).notNull(), // passport, national_id, drivers_license
+  idNumber: varchar("id_number", { length: 255 }).notNull(),
+  idDocumentUrl: text("id_document_url"),
+  proofOfAddressUrl: text("proof_of_address_url"),
+  selfieUrl: text("selfie_url"),
+  status: varchar("status", { length: 50 }).notNull().default('pending'), // pending, approved, rejected
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const kycRelations = relations(kyc, ({ one }) => ({
+  user: one(users, {
+    fields: [kyc.userId],
+    references: [users.id],
+  }),
+}))[1]
 
 export const investmentPlans = pgTable("investment_plans", {
   id: text("id").primaryKey(),
