@@ -53,9 +53,8 @@ const UserReferralDashboard: React.FC = () => {
           How Referrals Work
         </h3>
         <p className="dark:text-gray-300 text-base text-gray-600">
-          Earn $300 for each valid referral! When someone you refer purchases an
-          investment plan using your unique referral link, you will receive a
-          N300 bonus. Share your link with friends and family to maximize your
+          Earn $100 for each valid referral! When someone you refer purchases an
+          investment plan using your unique referral link. Share your link with friends and family to maximize your
           earnings potential.
         </p>
       </div>
