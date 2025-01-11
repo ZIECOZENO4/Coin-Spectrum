@@ -13,7 +13,7 @@ function InvestmentPage({ searchParams }: { searchParams: { id: string } }) {
       {id ? (
         <div className="flex flex-col justify-center items-center w-full p-4">
           <h2 className="text-2xl font-bold mb-4 sm:text-3xl text-center">
-            Investment Detail
+            Investment Details
           </h2>
           <Suspense
             fallback={

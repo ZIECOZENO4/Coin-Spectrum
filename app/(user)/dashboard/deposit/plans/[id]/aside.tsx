@@ -31,11 +31,11 @@ const InvestmentPlanCard: React.FC<InvestmentPlanCardProps> = ({ id }) => {
 
   const renderStars = () => {
     const stars = [];
-    for (let i = 0; i < (investmentPlan.rating || 0); i++) {
+    for (let i = 0; i < 5; i++) {
       stars.push(<FaStar key={i} className="text-xs text-yellow-500" />);
     }
     return stars;
-  };
+  };  
 
   return (
     <div className="flex flex-col lg:flex-row items-center justify-center p-4 lg:p-8">
@@ -51,14 +51,14 @@ const InvestmentPlanCard: React.FC<InvestmentPlanCardProps> = ({ id }) => {
               <p className="text-sm">{investmentPlan.name}</p>
             </div>
             <div className="flex justify-between mb-2">
-              <p className="text-xs font-medium">Hourly Profit:</p>
+              <p className="text-xs font-medium">ROI:</p>
               <p className="text-xs">
-                {investmentPlan.profitPercent} %
+                {investmentPlan.roi} %
               </p>
             </div>
             <div className="flex justify-between mb-4">
-              <p className="text-xs font-medium">Price:</p>
-              <p className="text-xs">{investmentPlan.priceRange}</p>
+              <p className="text-xs font-medium">Price Range:</p>
+              <p className="text-xs">${investmentPlan.minAmount} - ${investmentPlan.maxAmount}</p>
             </div>
           </div>
           <div className="w-full">

@@ -18,7 +18,7 @@ function InvestmentPage({ params }: { params: { id: string } }) {
     <div className="w-full mb-10 flex justify-center items-center min-h-screen">
       <div className="flex flex-col items-center">
         <h2 className="text-2xl font-bold mb-4 sm:text-3xl text-center">
-          Investment Detail
+          Investment Details
         </h2>
         <Suspense
           fallback={

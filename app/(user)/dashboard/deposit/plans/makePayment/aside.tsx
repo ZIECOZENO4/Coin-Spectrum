@@ -45,6 +45,7 @@ const InvestmentPlanCard: React.FC<InvestmentPlanCardProps> = ({ id }) => {
   const [transactionId, setTransactionId] = useState("");
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [amount, setAmount] = useState("");
   const [copied, setCopied] = useState(false);
   const router = useRouter();
   const createInvestmentMutation = useCreateInvestment();
@@ -57,11 +58,11 @@ const InvestmentPlanCard: React.FC<InvestmentPlanCardProps> = ({ id }) => {
 
   const renderStars = () => {
     const stars = [];
-    for (let i = 0; i < investmentPlan.rating; i++) {
+    for (let i = 0; i < 5; i++) {
       stars.push(<FaStar key={i} className="text-xs text-yellow-500" />);
     }
     return stars;
-  };
+  };  
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles: File[]) => {
@@ -110,7 +111,7 @@ const InvestmentPlanCard: React.FC<InvestmentPlanCardProps> = ({ id }) => {
 
     const investmentData = {
       investmentPlanId: investmentPlan.id,
-      amount: investmentPlan.price,
+      amount: amount,
       imageUrl: imageData.url,
       imageId: imageData.id,
       transactionId,
@@ -124,7 +125,7 @@ const InvestmentPlanCard: React.FC<InvestmentPlanCardProps> = ({ id }) => {
         createInvestmentMutation.mutateAsync(
           {
             id: investmentPlan.id,
-            amount: investmentPlan.price,
+            amount: amount,
             imageUrl: imageData.url,
             imageId: imageData.id,
             transactionId,
@@ -184,13 +185,24 @@ const InvestmentPlanCard: React.FC<InvestmentPlanCardProps> = ({ id }) => {
             <p className="text-sm font-medium">Wallet Address:</p>
             <div className="flex flex-row items-center justify-center gap-1">
               <p className="text-[8px]">
-                {selectedCrypto === "none" ? (
-                  <p className="text-sm">Choose the crypto type to transfer to</p>
-                ) : (
-                  cryptocurrencies.find(
-                    (crypto) => crypto.name === selectedCrypto
-                  )?.address || <p className="text-sm">Choose the crypto type to transfer to</p>
-                )}
+              {selectedCrypto === "none" ? (
+  <p className="text-sm">Choose the crypto type to transfer to</p>
+) : (
+  <p className="text-sm">
+    {(() => {
+      const address = cryptocurrencies.find(
+        (crypto) => crypto.name === selectedCrypto
+      )?.address;
+      if (!address) return "Choose the crypto type to transfer to";
+      
+      const start = address.slice(0, 8);
+      const end = address.slice(-8);
+      return `${start}...${end}`;
+    })()}
+  </p>
+)}
+
+
               </p>
               <Button onClick={handleCopyClick} className="ml-2">
                 {copied ? <FaCheck className="text-green-500" /> : <FaCopy />}
@@ -223,7 +235,7 @@ const InvestmentPlanCard: React.FC<InvestmentPlanCardProps> = ({ id }) => {
 
           <div>
             <p className="text-2xl font-bold">
-              {formatCurrency(investmentPlan.price)}
+            Min:  {formatCurrency(investmentPlan.minAmount)}
             </p>
           </div>
         </div>
@@ -235,12 +247,12 @@ const InvestmentPlanCard: React.FC<InvestmentPlanCardProps> = ({ id }) => {
           </div>
           <div className="flex flex-col md:flex-row justify-between mb-2">
             <p className="text-sm font-medium">Price Range:</p>
-            <p className="text-sm">{investmentPlan.priceRange}</p>
+            <p className="text-sm">{investmentPlan.minAmount} - {investmentPlan.maxAmount}</p>
           </div>
           <div className="flex flex-col md:flex-row justify-between mb-2">
-            <p className="text-sm font-medium">Profit:</p>
+            <p className="text-sm font-medium">ROI Percent:</p>
             <p className="text-sm">
-              {investmentPlan.profitPercent}% after {investmentPlan.durationDays} day/s
+              {investmentPlan.roi}% after {investmentPlan.durationHours} hrs
             </p>
           </div>
           <div className="flex flex-col md:flex-row justify-between mb-2">
@@ -248,20 +260,16 @@ const InvestmentPlanCard: React.FC<InvestmentPlanCardProps> = ({ id }) => {
             <p className="text-sm">Yes</p>
           </div>
           <div className="flex flex-col md:flex-row justify-between mb-2">
-            <p className="text-sm font-medium">Principal Withdraw:</p>
-            <p className="text-sm">Not available</p>
+            <p className="text-sm font-medium">Instant Withdraw:</p>
+            <p className="text-sm">Yes available</p>
           </div>
           <div className="flex flex-col md:flex-row justify-between mb-2">
             <p className="text-sm font-medium">Credit Amount:</p>
-            <p className="text-sm">${investmentPlan.price.toLocaleString()}</p>
+            <p className="text-sm">${investmentPlan.minAmount.toLocaleString()}</p>
           </div>
           <div className="flex flex-col md:flex-row justify-between mb-2">
             <p className="text-sm font-medium">Deposit Fee:</p>
             <p className="text-sm">0.00% + $0.00 (min. $0.00 max. $0.00)</p>
-          </div>
-          <div className="flex flex-col md:flex-row justify-between mb-2">
-            <p className="text-sm font-medium">Affiliate Profit:</p>
-            <p className="text-sm">{investmentPlan.affiliate}%</p>
           </div>
         </div>
 
@@ -300,6 +308,14 @@ const InvestmentPlanCard: React.FC<InvestmentPlanCardProps> = ({ id }) => {
             placeholder="Transaction ID"
             value={transactionId}
             onChange={(e) => setTransactionId(e.target.value)}
+            className="w-full p-2 mb-2  rounded"
+          />
+           <Input
+            type="number"
+            min={investmentPlan.minAmount}
+            placeholder="Amount"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
             className="w-full p-2 mb-2  rounded"
           />
           <Input
