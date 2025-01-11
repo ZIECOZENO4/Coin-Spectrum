@@ -11,6 +11,7 @@ import Section from "@/components/sections-page";
 import Section2 from "@/components/sections-page2";
 import { TimelineDemo } from "@/components/timeline";
 import React from "react";
+import GetInTouch from "./getintouch";
 
 const HomePage = () => {
   return (
@@ -33,6 +34,9 @@ const HomePage = () => {
       </div>
       <div className="">
         <MarqueeDemo />
+      </div>
+      <div className="div">
+        <GetInTouch />
       </div>
       <div className="div">
         <Footer />

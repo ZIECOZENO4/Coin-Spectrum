@@ -10,7 +10,7 @@ const WhyUs = () => {
         WHY US?
         </h1>
         <p className="text-neutral-500 max-w-lg mx-auto my-2 text-sm text-center relative z-10">
-          Why should invest and trade your assets on COIN SPECTRUM?
+          Why you should invest and trade your assets on COIN SPECTRUM?
         </p>
             <div className="relative">
                 <div className="relative grid gap-3 grid-cols-6">

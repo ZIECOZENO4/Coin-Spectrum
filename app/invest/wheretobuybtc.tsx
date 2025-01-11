@@ -31,7 +31,7 @@ export function FocusCardsDemo() {
     {
       title: "CRYPTO.COM",
       src: "/ws2.jpg",
-      url: '#',
+      url: 'https://crypto.com ',
     },
   ];
 

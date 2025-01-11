@@ -34,7 +34,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "components/Contact.jsx", "components/ui/globe.jsx"  ],
+, "components/Contact.jsx", "components/ui/globe.jsx", "app/(user)/dashboard/TradingViewWidget2.jsx"  ],
   "exclude": [
     "node_modules"
   ]

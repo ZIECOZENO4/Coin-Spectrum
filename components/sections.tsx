@@ -1,11 +1,7 @@
-
-
 'use client'
-// sections.tsx
 import React from 'react';
 import Image from 'next/image';
 import YouTubePreview from './YouTubePreview';
-
 
 const getYouTubeId = (url: string): string | null => {
   const regExp = /^.*(?:youtu.be\/|v\/|e\/|u\/\w+\/|embed\/|v=)([^#\&\?]*).*/;
@@ -13,7 +9,6 @@ const getYouTubeId = (url: string): string | null => {
   return match && match[1];
 };
 
-// types.ts
 interface SectionProps {
   title: string;
   description: string;
@@ -24,7 +19,6 @@ interface SectionProps {
   link1: string;
   link2: string;
 }
-
 
 const HeroSection: React.FC<SectionProps> = ({
   title,
@@ -51,10 +45,7 @@ const HeroSection: React.FC<SectionProps> = ({
       </div>
       <div className="flex-1">
         {isYouTube && videoId ? (
-          <YouTubePreview 
-            videoId={videoId}
-            onClick={() => window.open(imageUrl, '_blank')}
-          />
+          <YouTubePreview videoId={videoId} />
         ) : (
           <Image
             src={imageUrl}
