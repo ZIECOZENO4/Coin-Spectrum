@@ -18,7 +18,7 @@ const Contact = () => {
   });
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
-  const resend = new Resend(process.env.RESEND_API_KEY);
+  const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,18 +37,7 @@ const Contact = () => {
       await resend.emails.send({
         from: 'support@coinspectrum.net',
         to: 'support@coinspectrum.net',
-        subject: `New Contact Form Submission from ${form.name}`,
-        react: WelcomeEmail({ 
-          userFirstName: form.name,
-          userEmail: form.email,
-          message: form.message,
-          userDetails: user ? JSON.stringify({
-            id: user.id,
-            email: user.primaryEmailAddress,
-            firstName: user.firstName,
-            lastName: user.lastName
-          }) : undefined
-        })
+        subject: `New Contact Form Submission from ${form.name}`,     
       });
 
       await resend.emails.send({
