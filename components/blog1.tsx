@@ -148,7 +148,7 @@ const Blog1 = () => {
                     DeFi staking, Auto-Invest plans, and Dual Investment
                     opportunities, helping you to maximize returns while
                     managing risks effectively. Dive into the world of Coin Spectrum
-                    FX and start optimizing your investment strategy today for
+                     and start optimizing your investment strategy today for
                     better financial growth tomorrow.
                   </p>
                 </div>
