@@ -13,6 +13,7 @@ import {
   FaSignOutAlt,
   FaChartArea,
   FaMoneyBillWave,
+  FaUserShield,
 } from "react-icons/fa";
 import { useWindowSize } from "@uidotdev/usehooks";
 import { motion, AnimatePresence } from "framer-motion";
@@ -154,7 +155,7 @@ const Sidebar: React.FC = () => {
                           "/dashboard/deposit/plans"
                         )}`}
                       >
-                        Deposit Now
+                        Deposit (Invest)
                       </Link>
                       <Link
                         href={"/dashboard/deposit/investments"}
@@ -220,7 +221,7 @@ const Sidebar: React.FC = () => {
                           "/dashboard/withdraw/pending"
                         )}`}
                       >
-                        Withdraw Now
+                        Pending Withdrawals
                       </Link>
                     </motion.div>
                   )}
@@ -237,7 +238,17 @@ const Sidebar: React.FC = () => {
                     Referral
                   </span>
                 </Link>
-
+                <Link
+                  href={"/dashboard/Kyc"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/dashboard/Kyc"
+                  )}`}
+                >
+                  <FaUserShield /> 
+                  <span className="text-[15px] ml-4 text-gray-200">
+                   Start Kyc
+                  </span>
+                </Link>
                 <Link
                   href={"/dashboard/history"}
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
