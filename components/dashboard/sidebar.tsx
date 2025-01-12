@@ -128,7 +128,7 @@ const Sidebar: React.FC = () => {
                   <FaChartArea />
                   <div className="flex justify-between w-full items-center">
                     <span className="text-[15px] ml-4 text-gray-200">
-                      Deposit
+                      Deposit (Invest)
                     </span>
                     <motion.span
                       initial={{ rotate: isDropdownOpen ? 0 : 180 }}
@@ -155,7 +155,7 @@ const Sidebar: React.FC = () => {
                           "/dashboard/deposit/plans"
                         )}`}
                       >
-                        Deposit (Invest)
+                        Quick Investment
                       </Link>
                       <Link
                         href={"/dashboard/deposit/investments"}
@@ -163,7 +163,7 @@ const Sidebar: React.FC = () => {
                           "/dashboard/deposit/investments"
                         )}`}
                       >
-                        Investments
+                       All Investments
                       </Link>
                     </motion.div>
                   )}
@@ -324,7 +324,7 @@ const Sidebar: React.FC = () => {
                 <FaChartArea />
                 <div className="flex justify-between w-full items-center">
                   <span className="text-[15px] ml-4 text-gray-200">
-                    Deposit
+                    Deposit (Invest)
                   </span>
                   <motion.span
                     initial={{ rotate: isDropdownOpen ? 0 : 180 }}
@@ -351,7 +351,7 @@ const Sidebar: React.FC = () => {
                         "/dashboard/deposit/plans"
                       )}`}
                     >
-                      Deposit Now
+                      Quick Investment
                     </Link>
                     <Link
                       href={"/dashboard/deposit/investments"}
@@ -359,7 +359,7 @@ const Sidebar: React.FC = () => {
                         "/dashboard/deposit/investments"
                       )}`}
                     >
-                      Investments
+                     All Investments
                     </Link>
                   </motion.div>
                 )}
