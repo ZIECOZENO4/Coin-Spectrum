@@ -11,9 +11,9 @@ export function ProgressSteps({ currentStep, steps }: ProgressStepsProps) {
     <div className="w-full py-4">
       <div className="flex justify-between relative">
         {/* Progress Line */}
-        <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 -translate-y-1/2" />
+        <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-yellow-200 -translate-y-1/2" />
         <motion.div 
-          className="absolute top-1/2 left-0 h-0.5 bg-blue-500 -translate-y-1/2"
+          className="absolute top-1/2 left-0 h-0.5 bg-yellow-500 -translate-y-1/2"
           initial={{ width: "0%" }}
           animate={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
           transition={{ duration: 0.3 }}
@@ -24,16 +24,16 @@ export function ProgressSteps({ currentStep, steps }: ProgressStepsProps) {
           <div key={step} className="relative flex flex-col items-center">
             <motion.div
               className={`w-8 h-8 rounded-full flex items-center justify-center relative z-10 
-                ${index < currentStep ? 'bg-blue-500' : 
-                  index === currentStep ? 'bg-blue-500' : 'bg-gray-200'}`}
+                ${index < currentStep ? 'bg-yellow-600' : 
+                  index === currentStep ? 'bg-yellow-600' : 'bg-yellow-300'}`}
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.2 }}
             >
               {index < currentStep ? (
-                <Check className="w-5 h-5 text-white" />
+                <Check className="w-5 h-5 text-black" />
               ) : (
-                <span className={`text-sm ${index === currentStep ? 'text-white' : 'text-gray-500'}`}>
+                <span className={`text-sm ${index === currentStep ? 'text-black' : 'text-gray-500'}`}>
                   {index + 1}
                 </span>
               )}

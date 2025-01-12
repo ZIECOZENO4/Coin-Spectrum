@@ -11,6 +11,7 @@ import {
   FaSignOutAlt,
   FaChartArea,
   FaMoneyBillWave,
+  FaUserShield,
 } from "react-icons/fa";
 import { useWindowSize } from "@uidotdev/usehooks";
 import { motion, AnimatePresence } from "framer-motion";
@@ -206,7 +207,7 @@ const Sidebar: React.FC = () => {
           <div className="p-2.5 mt-1 flex items-center rounded-md">
             <User2Icon className="px-2 py-1 bg-blue-600 rounded-md" />
             <h1 className="text-[15px] ml-3 text-xl text-gray-200 font-bold">
-              Stackit
+              Admin
             </h1>
           </div>
           <hr className="my-2 text-gray-600" />
@@ -265,7 +266,17 @@ const Sidebar: React.FC = () => {
               <FaEnvelope />
               <span className="text-[15px] ml-4 text-gray-200">History</span>
             </Link>
-
+            <Link
+                  href={"/dashboard/Kyc"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/dashboard/Kyc"
+                  )}`}
+                >
+                  <FaUserShield /> 
+                  <span className="text-[15px] ml-4 text-gray-200">
+                   Start Kyc
+                  </span>
+                </Link>
             <Link
               href={"/dashboard/support"}
               className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(

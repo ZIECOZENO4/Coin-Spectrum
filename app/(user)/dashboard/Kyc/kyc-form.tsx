@@ -474,13 +474,13 @@ export default function KYCForm() {
   }
 
   return (
-    <div className="min-h-screen bg-yellow-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto border border-slate-800">
         <Card className="p-6">
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-6">
               <div className="text-center">
-                <h2 className="text-2xl font-bold">KYC Registration</h2>
+                <h2 className="text-2xl font-bold text-yellow-500">KYC Registration</h2>
                 <p className="text-gray-500 mt-2">Complete your verification process</p>
               </div>
 
@@ -503,7 +503,7 @@ export default function KYCForm() {
               </Button>
 
               {currentStep === steps.length - 1 ? (
-                <Button type="submit" className="bg-green-600 hover:bg-green-700">
+                <Button type="submit" className="bg-yellow-400 hover:bg-yellow-600 text-black">
                   Submit
                 </Button>
               ) : (

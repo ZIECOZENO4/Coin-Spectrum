@@ -8,7 +8,8 @@ import {
   uniqueIndex,
   pgEnum,
 } from "drizzle-orm/pg-core";
-import { InferSelectModel } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
+import { varchar } from "drizzle-orm/mysql-core";
 
 export const UserRole = pgEnum("user_role", ["user", "admin"]);
 
@@ -47,6 +48,14 @@ export const InvestmentName = pgEnum("investment_name", [
   "vip5",
   "vip6",
   "vip7",
+]);
+
+export const KycStatus = pgEnum("kyc_status", ["pending", "approved", "rejected"]);
+
+export const IdType = pgEnum("id_type", [
+  "passport",
+  "national_id", 
+  "drivers_license"
 ]);
 
 export const users = pgTable("user", {
@@ -132,28 +141,35 @@ export const transactionHistory = pgTable("transaction_history", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+
 export const kyc = pgTable("kyc", {
   id: text("id").primaryKey(),
-  userId: text("user_id").notNull().references(() => users.id),
-  firstName: varchar("first_name", { length: 255 }).notNull(),
-  lastName: varchar("last_name", { length: 255 }).notNull(),
-  dateOfBirth: timestamp("date_of_birth").notNull(),
-  email: varchar("email", { length: 255 }).notNull(),
-  phoneNumber: varchar("phone_number", { length: 20 }),
-  streetAddress: varchar("street_address", { length: 255 }),
-  city: varchar("city", { length: 100 }),
-  state: varchar("state", { length: 100 }),
-  postalCode: varchar("postal_code", { length: 20 }),
-  country: varchar("country", { length: 100 }),
-  idType: varchar("id_type", { length: 50 }).notNull(), // passport, national_id, drivers_license
-  idNumber: varchar("id_number", { length: 255 }).notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id)
+    .unique(), // Ensure one KYC per user
+    firstName: text("first_name"),
+    lastName: text("last_name"),
+    dateOfBirth: timestamp("date_of_birth"),
+    email: text("email")
+      .unique()
+      .notNull(),
+    phoneNumber: text("phone_number"),
+    streetAddress: text("street_address"),
+    city: text("city"),
+    state: text("state"),
+    postalCode: text("postal_code"),
+    country: text("country"),
+  idType: IdType("id_type").notNull(),
+  idNumber: text("id_number").notNull().unique(),
   idDocumentUrl: text("id_document_url"),
   proofOfAddressUrl: text("proof_of_address_url"),
   selfieUrl: text("selfie_url"),
-  status: varchar("status", { length: 50 }).notNull().default('pending'), // pending, approved, rejected
+  status: text("status").notNull().default('pending'),
   notes: text("notes"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow()
+  
 });
 
 export const kycRelations = relations(kyc, ({ one }) => ({
@@ -161,7 +177,7 @@ export const kycRelations = relations(kyc, ({ one }) => ({
     fields: [kyc.userId],
     references: [users.id],
   }),
-}))[1]
+}));
 
 export const investmentPlans = pgTable("investment_plans", {
   id: text("id").primaryKey(),
