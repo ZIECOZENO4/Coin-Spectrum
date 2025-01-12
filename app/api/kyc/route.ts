@@ -1,6 +1,5 @@
 // app/api/kyc/route.ts
-import { db } from "@/db";
-import { kyc, users } from "@/db/schema";
+
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { Resend } from 'resend';
@@ -8,6 +7,8 @@ import { KYCEmail } from "@/emails/kyc-email";
 import { eq } from 'drizzle-orm';
 import { z } from "zod";
 import { v4 as uuidv4 } from 'uuid';
+import { db } from "@/lib/db";
+import { kyc, users } from "@/lib/db/schema";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 

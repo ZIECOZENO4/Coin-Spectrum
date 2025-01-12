@@ -1,6 +1,6 @@
 // app/api/kyc/status/route.ts
-import { db } from "@/db"
-import { kyc, users } from "@/db/schema"
+import { db } from "@/lib/db";
+import { kyc, users } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import { eq } from "drizzle-orm"
