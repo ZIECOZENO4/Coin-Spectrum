@@ -24,12 +24,13 @@ export default function Home() {
       <Suspense fallback={<SkeletonDemo />}>
         <InvestmentDashboard userId={userId} runUntimed={false} />
         <StatsDashboard userId={userId} runUntimed={false} />
-      </Suspense>
-      <UserBalances />
-      {/* <TradingViewWidget2 />
+        <UserBalances />
+      <TradingViewWidget2 />
       <TradingViewWidget />
       <TradingViewWidget3 />
-      <TradingViewScreener /> */}
+      <TradingViewScreener />
+      </Suspense>
+
     </main>
   );
 }
