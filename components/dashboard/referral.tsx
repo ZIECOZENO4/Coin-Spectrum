@@ -3,12 +3,20 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Card } from "@/components/ui/card"
-import { Check, Copy } from 'lucide-react'
+import { useCopyToClipboard } from "@uidotdev/usehooks"
+import { useReferralData } from "@/lib/tenstack-hooks/useRefferals"
+import { FaCheck, FaCopy } from "react-icons/fa"
+
+interface ReferralData {
+  referralLink: string
+  referrerId: string
+  referredUserId: string
+}
 
 export default function ReferralCard() {
-  const [copied, setCopied] = useState(false)
   const [particles, setParticles] = useState<{ x: number; y: number }[]>([])
-  const referralLink = "https://gaincapitallimited.co/?ref="
+  const { data: referralData } = useReferralData<ReferralData>()
+  const [copiedText, copyToClipboard] = useCopyToClipboard()
 
   const createParticles = (x: number, y: number) => {
     const newParticles = Array.from({ length: 20 }, () => ({
@@ -17,19 +25,6 @@ export default function ReferralCard() {
     }))
     setParticles(newParticles)
     setTimeout(() => setParticles([]), 1000)
-  }
-
-  const handleCopy = async (e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    createParticles(rect.x + rect.width / 2, rect.y + rect.height / 2)
-    
-    try {
-      await navigator.clipboard.writeText(referralLink)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
-      console.error("Failed to copy text: ", err)
-    }
   }
 
   return (
@@ -43,7 +38,7 @@ export default function ReferralCard() {
           <motion.h2
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="text-xl font-semibold"
+            className="text-xl font-semibold text-white"
           >
             Your Referral Link
           </motion.h2>
@@ -54,72 +49,49 @@ export default function ReferralCard() {
             transition={{ delay: 0.2 }}
             className="relative"
           >
-            <div className="p-3 bg-gray-800 rounded-lg border border-gray-200 font-mono text-sm break-all">
-              {referralLink}
+            <div className="p-3 bg-gray-800 rounded-lg border border-gray-700 font-mono text-sm break-all text-white">
+              {referralData?.referralLink}
             </div>
           </motion.div>
 
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleCopy}
-            className="w-full relative bg-yellow-500 text-black py-6 rounded-lg font-medium 
-                     transition-colors hover:bg-yellow-600 focus:outline-none focus:ring-2 
-                     focus:ring-yellow-500 focus:ring-offset-2"
-          >
-            <AnimatePresence mode="wait">
-              {copied ? (
-                <motion.div
-                  key="check"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  exit={{ scale: 0 }}
-                  className="absolute inset-0 flex items-center justify-center"
-                >
-                  <Check className="mr-2 h-5 w-5" />
-                  Copied!
-                </motion.div>
+          <AnimatePresence mode="wait">
+            <motion.button
+              disabled={!!copiedText}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.95 }}
+              className={`
+                w-full py-4 rounded-lg font-medium 
+                flex items-center justify-center gap-2
+                transition-colors duration-300
+                ${copiedText 
+                  ? 'bg-green-500 text-white' 
+                  : 'bg-yellow-500 hover:bg-yellow-600 text-black'}
+                focus:outline-none focus:ring-2 
+                focus:ring-yellow-500 focus:ring-offset-2
+                disabled:opacity-50 disabled:cursor-not-allowed
+              `}
+              onClick={async () => {
+                if (referralData?.referralLink) {
+                  await copyToClipboard(referralData.referralLink)
+                  createParticles(window.innerWidth / 2, window.innerHeight / 2)
+                }
+              }}
+            >
+              {copiedText ? (
+                <>
+                  <FaCheck className="text-lg" />
+                  <span>Copied!</span>
+                </>
               ) : (
-                <motion.div
-                  key="copy"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  exit={{ scale: 0 }}
-                  className="absolute inset-0 flex items-center justify-center"
-                >
-                  <Copy className="mr-2 h-5 w-5" />
-                  Copy Link
-                </motion.div>
+                <>
+                  <FaCopy className="text-lg" />
+                  <span>Copy Link</span>
+                </>
               )}
-            </AnimatePresence>
-          </motion.button>
-
-          {/* Particle Effects */}
-          <AnimatePresence>
-            {particles.map((particle, i) => (
-              <motion.div
-                key={i}
-                initial={{ 
-                  x: particle.x,
-                  y: particle.y,
-                  scale: 0,
-                  opacity: 1 
-                }}
-                animate={{
-                  x: particle.x + (Math.random() - 0.5) * 200,
-                  y: particle.y - 200,
-                  scale: 1,
-                  opacity: 0
-                }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="fixed w-2 h-2 bg-yellow-500 rounded-full pointer-events-none"
-              />
-            ))}
+            </motion.button>
           </AnimatePresence>
         </Card>
       </motion.div>
     </div>
   )
 }
-

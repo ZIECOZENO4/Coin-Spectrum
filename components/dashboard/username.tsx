@@ -1,11 +1,15 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { useUser } from "@clerk/nextjs"
 
 export default function AnimatedWelcome() {
-  const text = "Welcome, User"
+  const { user } = useUser()
+  const text = `Welcome, ${user ? 
+    (user.username || user.firstName || "User").charAt(0).toUpperCase() + 
+    (user.username || user.firstName || "User").slice(1) 
+    : "User"}`
   
-  // Container animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -17,7 +21,6 @@ export default function AnimatedWelcome() {
     }
   }
   
-  // Letter animation variants
   const letterVariants = {
     hidden: { 
       opacity: 0,
@@ -36,7 +39,6 @@ export default function AnimatedWelcome() {
     }
   }
 
-  // Hover animation variants
   const hoverVariants = {
     hover: {
       scale: 1.2,
@@ -87,7 +89,6 @@ export default function AnimatedWelcome() {
           ))}
         </div>
         
-        {/* Animated background glow effect */}
         <motion.div
           className="absolute inset-0 -z-10 blur-3xl"
           animate={{
@@ -107,4 +108,3 @@ export default function AnimatedWelcome() {
     </div>
   )
 }
-

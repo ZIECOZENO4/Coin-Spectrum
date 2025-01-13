@@ -23,13 +23,13 @@ export default function Home() {
     <main className="w-full ">
       <Suspense fallback={<SkeletonDemo />}>
         <InvestmentDashboard userId={userId} runUntimed={false} />
-        <StatsDashboard />
+        <StatsDashboard userId={userId} runUntimed={false} />
       </Suspense>
       <UserBalances />
-      <TradingViewWidget2 />
+      {/* <TradingViewWidget2 />
       <TradingViewWidget />
       <TradingViewWidget3 />
-      <TradingViewScreener />
+      <TradingViewScreener /> */}
     </main>
   );
 }

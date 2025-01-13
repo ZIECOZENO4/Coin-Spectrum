@@ -20,7 +20,7 @@ const Footer = () => {
 >
 ultimate{" "}
   <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-200">
-    Trading Platform
+    Investment Platform
   </span>
 </span>
 

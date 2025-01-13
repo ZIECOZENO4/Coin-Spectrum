@@ -1,42 +1,41 @@
-// import React from "react";
-// import DashboardCard from "./card";
 
-// interface BalanceInfo {
-//   label: string;
-//   balance: string;
-// }
-
-// const balanceData: BalanceInfo[] = [
-//   { label: "Available Balance", balance: "$1234.56" },
-//   { label: "Profits", balance: "$567.89" },
-//   { label: "Total Withdrawal", balance: "$345.67" },
-// ];
-
-// const BalanceDashboard: React.FC = () => {
-//   return (
-//     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-32 p-4 mx-auto ">
-//       {balanceData.map((item, index) => (
-//         <DashboardCard key={index} label={item.label} balance={item.balance} />
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default BalanceDashboard;
 "use client";
 import React from "react";
 import DashboardCard from "./card";
 import useProcessInvestments from "@/lib/tenstack-hooks/cachedUseProcessInvestments";
 import { formatCurrency } from "@/lib/formatCurrency";
-import BalanceCard from "./card1";
 import AnimatedWelcome from "./username";
+import { motion } from "framer-motion"
+import { Area, AreaChart, ResponsiveContainer } from "recharts"
+import { Card } from "@/components/ui/card"
+import { useRouter } from "next/navigation"
+import { FaMoneyBillTransfer, FaMoneyBillTrendUp } from "react-icons/fa6"
+import KycStatus from "./kyc-status";
+
+
+const chartdata = Array.from({ length: 50 }, (_, i) => ({
+  value: Math.random() * 100 + 50
+}))
 
 export const InvestmentDashboard: React.FC<{
   userId: string;
   runUntimed?: boolean;
 }> = ({ userId, runUntimed }) => {
+  const router = useRouter()
   const { data, isLoading, error } = useProcessInvestments(userId, runUntimed);
+ 
 
+  const buttonVariants = {
+    hover: {
+      scale: 1.05,
+      transition: { duration: 0.2 }
+    },
+    tap: {
+      scale: 0.95,
+      rotate: [0, -5, 5, -5, 0],
+      transition: { duration: 0.5 }
+    }
+  }
   return (
     // <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-32 p-4 mx-auto">
     //   <DashboardCard
@@ -56,27 +55,116 @@ export const InvestmentDashboard: React.FC<{
     //     balance={`${formatCurrency(data?.totalWithdrawal || 0)}`}
     //   />
     // </div>
-    <div className="div">
-        <div className="relative w-[95vw]   xs:w-72 sm:w-full md:w-full h-auto  bg-orange-500 rounded-lg overflow-hidden shadow-lg">
-      <div
-        className="absolute inset-0 bg-orange-600"
-        style={{ clipPath: "polygon(0 0, 100% 0, 100% 50%, 50% 100%, 0 50%)" }}
-      ></div>
-      <div className="p-2 md:p-4">
+    <div className="w-full bg-black align-middle gap-4 space-y-4">
+        <div className="p-2 md:p-4">
       <AnimatedWelcome />
       </div>
-        <div className="flex md:flex-row flex-col p-2 md:p-6 gap-6 justify-between ">
-        <BalanceCard />
-        <BalanceCard />
-        </div>
-      <div
-        className="absolute bottom-0 left-0 right-0 bg-black text-white px-4 py-2"
-        style={{ clipPath: "polygon(0 0, 100% 0, 85% 100%, 0 100%)" }}
+        <div className="flex md:flex-row flex-col p-2 md:p-6 gap-6 justify-center align-middle ">
+        <div className="flex items-center justify-center h-auto">
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="w-full "
       >
-      
-      </div>
-    
+        <Card className="relative overflow-hidden bg-gradient-to-b from-gray-900 to-gray-800 border-gray-800">
+          <div className="relative z-10 p-6 space-y-6">
+            {/* KYC Status */}
+            <motion.div
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="text-gray-400 flex flex-row gap-2 md:gap-4"
+            >
+              Your KYC status is: <span className=""> <KycStatus /></span>
+            </motion.div>
+
+            {/* Balance Section */}
+            <div className="space-y-2">
+              <motion.div
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="text-gray-400"
+              >
+                Total Balance
+              </motion.div>
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.4, type: "spring" }}
+                className="text-4xl font-bold text-white"
+              >
+                {`${formatCurrency(data?.userBalance || 0)}`}
+              </motion.div>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex flex-row gap-4 items-center justify-center">
+      <motion.button 
+        variants={buttonVariants}
+        whileHover="hover"
+        whileTap="tap"
+        onClick={() => router.push('/deposit')}
+        className="inline-flex items-center gap-3 px-5 py-3 font-semibold text-black rounded-full whitespace-nowrap overflow-hidden transition-colors duration-300 bg-yellow-400 hover:bg-yellow-500 cursor-pointer shadow-lg"
+      >
+        <span className="relative flex-shrink-0 w-[25px] h-[25px] bg-white rounded-full grid place-items-center overflow-hidden text-yellow-400 group-hover:text-yellow-500">
+          <FaMoneyBillTrendUp 
+            className="w-4 h-4 transition-transform duration-300 ease-in-out group-hover:translate-x-[150%] group-hover:-translate-y-[150%]"
+          />
+          <FaMoneyBillTrendUp 
+            className="w-4 h-4 absolute -translate-x-[150%] translate-y-[150%] transition-transform duration-300 ease-in-out delay-100 group-hover:translate-x-0 group-hover:translate-y-0"
+          />
+        </span>
+        Deposit
+      </motion.button>
+
+      <motion.button 
+        variants={buttonVariants}
+        whileHover="hover"
+        whileTap="tap"
+        onClick={() => router.push('/withdrawal')}
+        className="inline-flex items-center gap-3 px-5 py-3 font-semibold text-white rounded-full whitespace-nowrap overflow-hidden transition-colors duration-300 bg-black hover:bg-gray-800 cursor-pointer shadow-lg"
+      >
+        <span className="relative flex-shrink-0 w-[25px] h-[25px] bg-white rounded-full grid place-items-center overflow-hidden text-black group-hover:text-gray-800">
+          <FaMoneyBillTransfer 
+            className="w-4 h-4 transition-transform duration-300 ease-in-out group-hover:translate-x-[150%] group-hover:-translate-y-[150%]"
+          />
+          <FaMoneyBillTransfer 
+            className="w-4 h-4 absolute -translate-x-[150%] translate-y-[150%] transition-transform duration-300 ease-in-out delay-100 group-hover:translate-x-0 group-hover:translate-y-0"
+          />
+        </span>
+        Withdrawal
+      </motion.button>
     </div>
+
+          </div>
+
+          {/* Background Chart */}
+          <div className="absolute inset-0 opacity-20">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartdata}>
+                <defs>
+                  <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#60A5FA" stopOpacity={0.5} />
+                    <stop offset="100%" stopColor="#60A5FA" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <Area
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#60A5FA"
+                  fill="url(#chartGradient)"
+                  strokeWidth={2}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+      </motion.div>
+    </div>
+    
+        </div>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { FaDollarSign, FaMoneyBillWave, FaChartLine } from "react-icons/fa";
+import { FaDollarSign, FaMoneyBillWave, FaChartLine, FaExchangeAlt } from "react-icons/fa";
 
 type UserBalanceCardProps = {
   title: string;
@@ -56,7 +56,9 @@ const UserBalances: React.FC = () => {
   const routeToInvest = () => {
     router.push("/dashboard/deposit/plans");
   };
-
+  const routeToTrade = () => {
+    router.push("/dashboard/trades");
+  };
   const routeToWithdraw = () => {
     router.push("/dashboard/withdraw");
   };
@@ -66,7 +68,12 @@ const UserBalances: React.FC = () => {
   };
 
   const balances = [
-    { title: "What is it?", value: "Description goes here" },
+    { title: "Trade Now", 
+      value: "",
+      icon: <FaExchangeAlt />,
+      isClickable: true,
+      onClick: routeToTrade,
+     },
     {
       title: "Invest",
       value: "",

@@ -2,23 +2,61 @@
 
 import { motion } from "framer-motion"
 import { Card } from "@/components/ui/card"
+import { useRouter } from "next/navigation"
 import ReferralCard from "./referral"
 import LoginActivities from "./activity"
+import useProcessInvestments from "@/lib/tenstack-hooks/cachedUseProcessInvestments"
+import { useReferralData } from "@/lib/tenstack-hooks/useRefferals"
 
-const statsData = [
-  { label: "Active Deposits", value: "$0.00" },
-  { label: "Total Trades", value: "$0.00" },
-  { label: "Total Deposits", value: "$0.00" },
-  { label: "Total Withdrawals", value: "$0.00" },
-]
+interface StatsData {
+  label: string
+  value: string | number
+}
 
-const cardData = [
-  { label: "Total Commission", value: "$0" },
-  { label: "Total Referrals", value: "0" },
-  { label: "Active Referrals", value: "0" },
-]
+interface ProcessedData {
+  withdrawableBalance: number
+  totalWithdrawal: number
+  totalProfit: number
+  totalDeposit: number // Added this field
+}
 
-export default function StatsDashboard() {
+interface ReferralData {
+  referrals: Array<any> // Replace 'any' with your referral type
+}
+
+interface StatsDashboardProps {
+  userId: string
+  runUntimed?: boolean
+}
+
+const formatCurrency = (amount: number): string => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  }).format(amount)
+}
+
+const StatsDashboard: React.FC<StatsDashboardProps> = ({ userId, runUntimed }) => {
+  const router = useRouter()
+  const { data, isLoading, error } = useProcessInvestments<ProcessedData>(userId, runUntimed)
+  const { data: referralData = { referrals: [] } } = useReferralData<ReferralData>()
+
+  // Calculate net profit
+  const netProfit = (data?.totalDeposit || 0) - (data?.totalWithdrawal || 0)
+
+  const statsData: StatsData[] = [
+    { label: "Withdrawable Balance", value: formatCurrency(data?.withdrawableBalance || 0) },
+    { label: "Total Trades", value: "$0.00" },
+    { label: "Total Profits", value: formatCurrency(data?.totalWithdrawal || 0) },
+    { label: "Total Withdrawals", value: formatCurrency(data?.totalProfit || 0) },
+  ]
+
+  const cardData: StatsData[] = [
+    { label: "Total Net Profit", value: formatCurrency(netProfit) },
+    { label: "Total Referrals", value: referralData.referrals.length },
+    { label: "Active Referrals", value: referralData.referrals.length },
+  ]
+
   return (
     <div className="min-h-screen bg-black p-6">
       <motion.div
@@ -26,7 +64,6 @@ export default function StatsDashboard() {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-md mx-auto space-y-6"
       >
-        {/* Top Stats Grid */}
         <div className="grid grid-cols-2 gap-6">
           {statsData.map((stat, index) => (
             <motion.div
@@ -58,7 +95,6 @@ export default function StatsDashboard() {
           ))}
         </div>
 
-        {/* Card Stats */}
         {cardData.map((card, index) => (
           <motion.div
             key={card.label}
@@ -94,7 +130,6 @@ export default function StatsDashboard() {
                 </motion.p>
               </motion.div>
               
-              {/* Decorative elements */}
               <motion.div
                 className="absolute top-2 right-2 w-2 h-2 bg-yellow-400 rounded-full"
                 animate={{ 
@@ -117,3 +152,4 @@ export default function StatsDashboard() {
   )
 }
 
+export default StatsDashboard
