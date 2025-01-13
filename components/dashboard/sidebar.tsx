@@ -419,7 +419,7 @@ const Sidebar: React.FC = () => {
                 className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
                   "/dashboard/trades"
                 )}`}
-                onClick={toggleDropdown}
+                onClick={toggleTradeDropdown}
               >
                 <FaChartArea />
                 <div className="flex justify-between w-full items-center">
@@ -427,8 +427,8 @@ const Sidebar: React.FC = () => {
                     Trades (USD)
                   </span>
                   <motion.span
-                    initial={{ rotate: isDropdownOpen ? 0 : 180 }}
-                    animate={{ rotate: isDropdownOpen ? 180 : 0 }}
+                    initial={{ rotate: isTradeDropdownOpen ? 0 : 180 }}
+                    animate={{ rotate: isTradeDropdownOpen ? 180 : 0 }}
                     transition={{ duration: 0.3 }}
                     className="text-sm"
                   >
@@ -437,7 +437,7 @@ const Sidebar: React.FC = () => {
                 </div>
               </div>
               <AnimatePresence>
-                {isDropdownOpen && (
+                {isTradeDropdownOpen && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
