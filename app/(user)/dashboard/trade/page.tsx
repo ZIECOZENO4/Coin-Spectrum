@@ -10,9 +10,7 @@ const TradePage = () => {
     <div>
         <div className="">
         <div className="">
-          <div className="">
-          <TradingViewSymbolInfo />
-          </div>
+         
           <div className="">
           <TradingViewWidget2  />
           </div>
