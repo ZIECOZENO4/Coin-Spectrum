@@ -57,7 +57,7 @@ const UserBalances: React.FC = () => {
     router.push("/dashboard/deposit/plans");
   };
   const routeToTrade = () => {
-    router.push("/dashboard/trades");
+    router.push("/dashboard/trade");
   };
   const routeToWithdraw = () => {
     router.push("/dashboard/withdraw");

@@ -36,9 +36,9 @@ const formatCurrency = (amount: number): string => {
   }).format(amount)
 }
 
-const StatsDashboard: React.FC<StatsDashboardProps> = ({ userId, runUntimed }) => {
+const StatsDashboard: React.FC<StatsDashboardProps> = ({ userId }) => {
   const router = useRouter()
-  const { data, isLoading, error } = useProcessInvestments<ProcessedData>(userId, runUntimed)
+  const { data, isLoading, error } = useProcessInvestments<ProcessedData>(userId)
   const { data: referralData = { referrals: [] } } = useReferralData<ReferralData>()
 
   // Calculate net profit

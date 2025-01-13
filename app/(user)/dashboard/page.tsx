@@ -16,6 +16,8 @@ import { ErrorBoundary } from 'react-error-boundary';
 import Loader from "@/components/loader";
 import Loading from "@/app/loading";
 import ReferralCard from "@/components/dashboard/referral";
+import TradingViewSymbolInfo from "./trade/TradingViewSymbolInfo";
+import TradingViewFinancials from "./trade/TradingViewFinancials";
 
 export default function Home() {
   const userId = getUserId();
@@ -26,13 +28,24 @@ export default function Home() {
   return (
     <main className="w-full">
       <Suspense fallback={<SkeletonDemo />}>
-          <InvestmentDashboard userId={userId} runUntimed={false} />
-          <StatsDashboard userId={userId} runUntimed={false} />
+      <div className="flex flex-col md:flex-row justify-center md:justify-between">
+      <InvestmentDashboard userId={userId}/>
+      <StatsDashboard userId={userId}  />
+      </div>
+
             <UserBalances />
-            <TradingViewWidget2 />
-            <TradingViewWidget />
-            <TradingViewWidget3 />
-            <TradingViewScreener />
+ <div>
+        <div className="">
+        <div className="">
+          <div className="">
+          <TradingViewSymbolInfo />
+          </div>
+         <div className=""> 
+          <TradingViewFinancials />
+          </div>
+        </div>
+      </div>
+        </div>
       </Suspense>
     </main>
   );

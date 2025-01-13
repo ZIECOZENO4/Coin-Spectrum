@@ -11,6 +11,7 @@ import { Card } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { FaMoneyBillTransfer, FaMoneyBillTrendUp } from "react-icons/fa6"
 import KycStatus from "./kyc-status";
+import TradingViewWidget2 from "@/app/(user)/dashboard/TradingViewWidget2";
 
 
 const chartdata = Array.from({ length: 50 }, (_, i) => ({
@@ -20,9 +21,9 @@ const chartdata = Array.from({ length: 50 }, (_, i) => ({
 export const InvestmentDashboard: React.FC<{
   userId: string;
   runUntimed?: boolean;
-}> = ({ userId, runUntimed }) => {
+}> = ({ userId }) => {
   const router = useRouter()
-  const { data, isLoading, error } = useProcessInvestments(userId, runUntimed);
+  const { data, isLoading, error } = useProcessInvestments(userId);
  
 
   const buttonVariants = {
@@ -164,6 +165,9 @@ export const InvestmentDashboard: React.FC<{
       </motion.div>
     </div>
     
+        </div>
+        <div className="hidden md:flex md:flex-col md:w-full md:h-auto md:py-4">
+          <TradingViewWidget2 />
         </div>
     </div>
   );

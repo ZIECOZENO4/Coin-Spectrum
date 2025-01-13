@@ -50,7 +50,7 @@ ultimate{" "}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
           <p className="text-gray-400 text-sm">
-            &copy; Coin Spectrum All rights reserved 2019.
+            &copy; Coin Spectrum All rights reserved 2025.
           </p>
           <p className="text-gray-400 text-sm mt-2">
             <Link href="#" className="text-gray-400 hover:text-white">

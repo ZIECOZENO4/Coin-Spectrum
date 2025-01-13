@@ -11,9 +11,7 @@ const GetInTouch = () => {
                         <h1 className="text-4xl sm:text-5xl text-yellow-500 font-extrabold tracking-tight">
                         Contact Us  
                         </h1>
-                        <p className="text-normal text-lg sm:text-2xl font-medium text-gray-600 dark:text-gray-400 mt-2">
-                            Fill in the form to start a conversation
-                        </p>
+                    
 
                         <div className="flex items-center mt-8 text-gray-600 dark:text-gray-400">
                             <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" className="w-8 h-8 text-gray-500">
@@ -41,6 +39,9 @@ const GetInTouch = () => {
                     <h1 className="text-4xl sm:text-5xl text-yellow-500 font-extrabold tracking-tight">
                                 Get in touch
                         </h1>
+                        <p className="text-normal text-lg sm:text-2xl font-medium text-gray-600 dark:text-gray-400 mt-2">
+                            Fill in the form to start a conversation
+                        </p>
                         <div className="flex flex-col">
                             <label className="hidden">Full Name</label>
                             <input type="name" name="name" id="name" placeholder="Full Name" className="w-100 mt-2 py-3 px-3 rounded-lg bg-black border border-gray-400 dark:border-gray-700 text-gray-800 font-semibold focus:border-yellow-500 focus:outline-none" />

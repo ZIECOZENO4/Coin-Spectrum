@@ -32,7 +32,6 @@ const TradePage = () => {
   <TradedAssets />
   <TradingOptions />
   <TradingViewWidget />
-  <TradingViewScreenerWidget />
   <div className="div">
         <Blog1 />
       </div>

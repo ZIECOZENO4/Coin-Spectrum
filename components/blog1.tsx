@@ -56,7 +56,7 @@ const Blog1 = () => {
                      mb-5
                      "
                   >
-                    Dec 22, 2023
+                    Jan 1, 2025
                   </span>
                   <h3>
                     <a
@@ -117,7 +117,7 @@ const Blog1 = () => {
                      mb-5
                      "
                   >
-                    Mar 15, 2023
+                     Dec 22, 2024
                   </span>
                   <h3>
                     <a
@@ -179,7 +179,7 @@ const Blog1 = () => {
                      mb-5
                      "
                   >
-                    Jan 05, 2023
+                  Dec 05, 2024
                   </span>
                   <h3>
                     <a
