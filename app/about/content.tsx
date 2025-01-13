@@ -39,7 +39,7 @@ const PageContent = () => {
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16 17l-4 4m0 0l-4-4m4 4V3"></path>
                 </svg>
                 <div className="abg-orange-400 mx-auto w-fit overflow-hidden rounded-[6rem] rounded-br-none rounded-tl-none">
-                     <img src="https://placehold.co/400x400" />
+                     <img src="/chart.jpeg" />
                 </div>
             </div>
         </div>

@@ -3,7 +3,7 @@ import React from 'react'
 const GetInTouch = () => {
   return (
     <div>
-        <div className="relative flex items-top justify-center bg-black sm:items-center sm:pt-0">
+        <div className="relative flex items-top justify-start md:justify-center bg-black sm:items-center sm:pt-0">
         <div className="max-w-6xl mx-auto sm:px-6 lg:px-8">
             <div className="mt-8 overflow-hidden">
                 <div className="grid grid-cols-1 md:grid-cols-2">
@@ -38,6 +38,9 @@ const GetInTouch = () => {
                     </div>
 
                     <form className="p-4 flex flex-col justify-center">
+                    <h1 className="text-4xl sm:text-5xl text-yellow-500 font-extrabold tracking-tight">
+                            Contact Us
+                        </h1>
                         <div className="flex flex-col">
                             <label className="hidden">Full Name</label>
                             <input type="name" name="name" id="name" placeholder="Full Name" className="w-100 mt-2 py-3 px-3 rounded-lg bg-black border border-gray-400 dark:border-gray-700 text-gray-800 font-semibold focus:border-yellow-500 focus:outline-none" />

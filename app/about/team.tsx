@@ -26,30 +26,6 @@ const dummyAgents = [
     role: "Lead Developer",
     linkedin: "https://linkedin.com/in/mikejohnson",
     twitter: "https://twitter.com/mikejohnson"
-  },
-  {
-    _id: "4",
-    name: "Emily Brown",
-    image: '/ab1.jpg',
-    role: "Marketing Manager",
-    linkedin: "https://linkedin.com/in/emilybrown",
-    twitter: "https://twitter.com/emilybrown"
-  },
-  {
-    _id: "5",
-    name: "David Lee",
-    image: '/ab1.jpg',
-    role: "Financial Analyst",
-    linkedin: "https://linkedin.com/in/davidlee",
-    twitter: "https://twitter.com/davidlee"
-  },
-  {
-    _id: "6",
-    name: "Sarah Wilson",
-    image: '/ab1.jpg',
-    role: "Customer Support Lead",
-    linkedin: "https://linkedin.com/in/sarahwilson",
-    twitter: "https://twitter.com/sarahwilson"
   }
 ];
 

@@ -19,7 +19,7 @@ import MenuIcon from "./dashboard/menuIcon"; // Ensure this import is correct
 export const navItems = [
   { label: "Home", href: "/" },
   { label: "Services", href: "/features" },
-  { label: "investments", href: "/invest" },
+  { label: "Investments", href: "/invest" },
   { label: "Trades", href: "/trade" },
   { label: "About us", href: "/about" },
 ];
