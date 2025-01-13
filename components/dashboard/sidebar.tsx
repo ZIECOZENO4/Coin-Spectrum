@@ -174,7 +174,7 @@ const Sidebar: React.FC = () => {
                 </AnimatePresence>
                 <div
                 className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
-                  "/dashboard/trades"
+                  "/dashboard/trade"
                 )}`}
                 onClick={toggleTradeDropdown}
               >
@@ -203,17 +203,17 @@ const Sidebar: React.FC = () => {
                     className="leading-7 text-left text-sm font-thin flex flex-col mt-2 w-4/5 mx-auto"
                   >
                     <Link
-                      href={"/dashboard/trades"}
+                      href={"/dashboard/trade"}
                       className={`cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1 ${isActive(
-                        "/dashboard/trades"
+                        "/dashboard/trade"
                       )}`}
                     >
                       All Trades
                     </Link>
                     <Link
-                      href={"/dashboard/trades/copy-trades"}
+                      href={"/dashboard/trade/copy-trade"}
                       className={`cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1 ${isActive(
-                        "/dashboard/trades/copy-trades"
+                        "/dashboard/trade/copy-trade"
                       )}`}
                     >
                      Copy Trades
@@ -446,17 +446,17 @@ const Sidebar: React.FC = () => {
                     className="leading-7 text-left text-sm font-thin flex flex-col mt-2 w-4/5 mx-auto"
                   >
                     <Link
-                      href={"/dashboard/trades"}
+                      href={"/dashboard/trade"}
                       className={`cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1 ${isActive(
-                        "/dashboard/trades"
+                        "/dashboard/trade"
                       )}`}
                     >
                       All Trades
                     </Link>
                     <Link
-                      href={"/dashboard/trades/copy-trades"}
+                      href={"/dashboard/trade/copy-trade"}
                       className={`cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1 ${isActive(
-                        "/dashboard/trades/copy-trades"
+                        "/dashboard/trade/copy-trade"
                       )}`}
                     >
                      Copy Trades

@@ -25,7 +25,6 @@ type Card = {
   src: string;
   title: string;
   category: string;
-  content: React.ReactNode;
 };
 
 export const CarouselContext = createContext<{
@@ -231,7 +230,7 @@ export const Card = ({
               >
                 {card.title}
               </motion.p>
-              <div className="py-10">{card.content}</div>
+           
             </motion.div>
           </div>
         )}
