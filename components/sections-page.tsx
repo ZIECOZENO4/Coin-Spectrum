@@ -42,7 +42,7 @@ const sectionsData = [
       "Coin Spectrum offers a variety of flexible investment plans to suit your needs. Whether you're looking for short-term gains or long-term growth, our platform has a plan that's right for you. Explore our investment options and choose the plan that aligns with your financial goals. Start investing today and watch your wealth grow.",
     buttonText1: "Explore Plans",
     buttonText2: "Get Started",
-    imageUrl: "/m7.jpg",
+    imageUrl: "/cd.jpg",
     reverse: false,
     link1: "/invest",
     link2: "/dashboard",

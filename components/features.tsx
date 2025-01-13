@@ -9,9 +9,9 @@ interface CountUpData {
 
 export default function Features() {
   const countUpData: CountUpData[] = [
-    { value: 1000000, prefix: "$", text: "Amount Raised from Investors" },
-    { value: 500, prefix: "~", text: "Number of Investors" },
-    { value: 5, prefix: "", text: "Years in Operation" },
+    { value: 100000000, prefix: "$", text: "Amount Raised from Investors" },
+    { value: 500000, prefix: "~", text: "Number of Investors" },
+    { value: 6, prefix: "", text: "Years in Operation" },
   ];
 
   return (
