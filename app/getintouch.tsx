@@ -9,7 +9,7 @@ const GetInTouch = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2">
                     <div className="p-4 mr-2  sm:rounded-lg">
                         <h1 className="text-4xl sm:text-5xl text-yellow-500 font-extrabold tracking-tight">
-                            Get in touch
+                        Contact Us  
                         </h1>
                         <p className="text-normal text-lg sm:text-2xl font-medium text-gray-600 dark:text-gray-400 mt-2">
                             Fill in the form to start a conversation
@@ -39,7 +39,7 @@ const GetInTouch = () => {
 
                     <form className="p-4 flex flex-col justify-center">
                     <h1 className="text-4xl sm:text-5xl text-yellow-500 font-extrabold tracking-tight">
-                            Contact Us
+                                Get in touch
                         </h1>
                         <div className="flex flex-col">
                             <label className="hidden">Full Name</label>

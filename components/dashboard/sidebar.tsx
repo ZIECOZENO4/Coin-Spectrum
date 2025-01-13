@@ -2,7 +2,7 @@
 
 "use client";
 import { SearchCheck, User2Icon } from "lucide-react";
-import { useClerk } from "@clerk/nextjs";
+import { SignOutButton, useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import {
@@ -30,8 +30,7 @@ import {
 import useSidebarStore from "@/lib/zuustand-store";
 
 const Sidebar: React.FC = () => {
-  const { signOut } = useClerk();
-  const router = useRouter();
+ 
   const {
     isOpen,
     isDropdownOpen,
@@ -70,11 +69,6 @@ const Sidebar: React.FC = () => {
       return pathname === "/dashboard" ? "bg-orange-500" : "";
     }
     return pathname.includes(path) ? "bg-orange-500" : "";
-  };
-
-  const handleSignOut = async () => {
-    await signOut();
-    router.push("/");
   };
 
   return (
@@ -273,13 +267,12 @@ const Sidebar: React.FC = () => {
                   </span>
                 </Link>
 
-                      <div 
-                    onClick={handleSignOut}
-                    className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500"
-                  >
-                    <FaSignOutAlt />
-                    <span className="text-[15px] ml-4 text-gray-200">Logout</span>
-                  </div>
+                <SignOutButton >
+  <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500">
+    <FaSignOutAlt />
+    <span className="text-[15px] ml-4 text-gray-200">Logout</span>
+  </div>
+</SignOutButton>
               </div>
             </div>
           </SheetContent>
@@ -455,13 +448,12 @@ const Sidebar: React.FC = () => {
                 <span className="text-[15px] ml-4 text-gray-200">Support</span>
               </Link>
 
-                      <div 
-                    onClick={handleSignOut}
-                    className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500"
-                  >
-                    <FaSignOutAlt />
-                    <span className="text-[15px] ml-4 text-gray-200">Logout</span>
-                  </div>
+              <SignOutButton >
+  <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500">
+    <FaSignOutAlt />
+    <span className="text-[15px] ml-4 text-gray-200">Logout</span>
+  </div>
+</SignOutButton>
             </div>
           </div>
         </motion.div>

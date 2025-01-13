@@ -16,7 +16,8 @@ interface ReferralData {
 export default function ReferralCard() {
   const [particles, setParticles] = useState<{ x: number; y: number }[]>([])
   const { data: referralData } = useReferralData<ReferralData>()
-  const [copiedText, copyToClipboard] = useCopyToClipboard()
+  const [copied, setCopied] = useState(false)
+  const [_, copyToClipboard] = useCopyToClipboard()
 
   const createParticles = (x: number, y: number) => {
     const newParticles = Array.from({ length: 20 }, () => ({
@@ -25,6 +26,15 @@ export default function ReferralCard() {
     }))
     setParticles(newParticles)
     setTimeout(() => setParticles([]), 1000)
+  }
+
+  const handleCopy = async () => {
+    if (referralData?.referralLink) {
+      await copyToClipboard(referralData.referralLink)
+      setCopied(true)
+      createParticles(window.innerWidth / 2, window.innerHeight / 2)
+      setTimeout(() => setCopied(false), 2000) // Reset copied state after 2 seconds
+    }
   }
 
   return (
@@ -56,28 +66,23 @@ export default function ReferralCard() {
 
           <AnimatePresence mode="wait">
             <motion.button
-              disabled={!!copiedText}
+              disabled={copied}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.95 }}
               className={`
                 w-full py-4 rounded-lg font-medium 
                 flex items-center justify-center gap-2
                 transition-colors duration-300
-                ${copiedText 
+                ${copied 
                   ? 'bg-green-500 text-white' 
                   : 'bg-yellow-500 hover:bg-yellow-600 text-black'}
                 focus:outline-none focus:ring-2 
                 focus:ring-yellow-500 focus:ring-offset-2
                 disabled:opacity-50 disabled:cursor-not-allowed
               `}
-              onClick={async () => {
-                if (referralData?.referralLink) {
-                  await copyToClipboard(referralData.referralLink)
-                  createParticles(window.innerWidth / 2, window.innerHeight / 2)
-                }
-              }}
+              onClick={handleCopy}
             >
-              {copiedText ? (
+              {copied ? (
                 <>
                   <FaCheck className="text-lg" />
                   <span>Copied!</span>

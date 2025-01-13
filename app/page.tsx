@@ -12,6 +12,7 @@ import Section2 from "@/components/sections-page2";
 import { TimelineDemo } from "@/components/timeline";
 import React from "react";
 import GetInTouch from "./getintouch";
+import ReferralCard from "@/components/dashboard/referral";
 
 const HomePage = () => {
   return (
@@ -38,9 +39,11 @@ const HomePage = () => {
       <div className="div">
         <GetInTouch />
       </div>
+    
       <div className="div">
         <Footer />
       </div>
+
     </main>
   );
 };

@@ -12,25 +12,28 @@ import TradingViewWidget from './TradingViewWidget';
 import TradingViewWidget2 from './TradingViewWidget2';
 import TradingViewWidget3 from './TradingViewWidget3';
 import TradingViewScreener from './TradingViewScreener';
-
+import { ErrorBoundary } from 'react-error-boundary';
+import Loader from "@/components/loader";
+import Loading from "@/app/loading";
+import ReferralCard from "@/components/dashboard/referral";
 
 export default function Home() {
   const userId = getUserId();
   if (!userId) {
     return <NoData shortText="user is not authenticated" />;
   }
+  
   return (
-    <main className="w-full ">
+    <main className="w-full">
       <Suspense fallback={<SkeletonDemo />}>
-        <InvestmentDashboard userId={userId} runUntimed={false} />
-        <StatsDashboard userId={userId} runUntimed={false} />
-        <UserBalances />
-      <TradingViewWidget2 />
-      <TradingViewWidget />
-      <TradingViewWidget3 />
-      <TradingViewScreener />
+          <InvestmentDashboard userId={userId} runUntimed={false} />
+          <StatsDashboard userId={userId} runUntimed={false} />
+            <UserBalances />
+            <TradingViewWidget2 />
+            <TradingViewWidget />
+            <TradingViewWidget3 />
+            <TradingViewScreener />
       </Suspense>
-
     </main>
   );
 }
