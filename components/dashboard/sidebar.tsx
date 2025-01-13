@@ -35,10 +35,13 @@ const Sidebar: React.FC = () => {
     isOpen,
     isDropdownOpen,
     isWithdrawDropdownOpen,
+    isTradeDropdownOpen,
     toggleDropdown,
+    toggleTradeDropdown,
     toggleWithdrawDropdown,
     toggleSidebar,
     setDropdownOpen,
+    setTradeDropdownOpen,
     setWithdrawDropdownOpen,
   } = useSidebarStore();
   const { width } = useWindowSize();
@@ -51,12 +54,19 @@ const Sidebar: React.FC = () => {
       setDropdownOpen(false);
     }
 
+    if (pathname.includes("/trades")) {
+      setTradeDropdownOpen(true);
+    } else {
+      setTradeDropdownOpen(false);
+    }
+
     if (pathname.includes("/withdraw")) {
       setWithdrawDropdownOpen(true);
     } else {
       setWithdrawDropdownOpen(false);
     }
-  }, [pathname, setDropdownOpen, setWithdrawDropdownOpen]);
+  }, [pathname, setDropdownOpen, setTradeDropdownOpen, setWithdrawDropdownOpen]);
+  
   useEffect(() => {
     if (isOpen) {
       toggleSidebar();
@@ -162,7 +172,55 @@ const Sidebar: React.FC = () => {
                     </motion.div>
                   )}
                 </AnimatePresence>
-
+                <div
+                className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                  "/dashboard/trades"
+                )}`}
+                onClick={toggleTradeDropdown}
+              >
+                <FaChartArea />
+                <div className="flex justify-between w-full items-center">
+                  <span className="text-[15px] ml-4 text-gray-200">
+                    Trades (USD)
+                  </span>
+                  <motion.span
+                    initial={{ rotate: isTradeDropdownOpen ? 0 : 180 }}
+                    animate={{ rotate: isTradeDropdownOpen ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-sm"
+                  >
+                    <FaChevronDown />
+                  </motion.span>
+                </div>
+              </div>
+              <AnimatePresence>
+                {isTradeDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="leading-7 text-left text-sm font-thin flex flex-col mt-2 w-4/5 mx-auto"
+                  >
+                    <Link
+                      href={"/dashboard/trades"}
+                      className={`cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1 ${isActive(
+                        "/dashboard/trades"
+                      )}`}
+                    >
+                      All Trades
+                    </Link>
+                    <Link
+                      href={"/dashboard/trades/copy-trades"}
+                      className={`cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1 ${isActive(
+                        "/dashboard/trades/copy-trades"
+                      )}`}
+                    >
+                     Copy Trades
+                    </Link>
+                  </motion.div>
+                )}
+              </AnimatePresence>
                 <div
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
                     "/dashboard/withdraw"
@@ -357,7 +415,55 @@ const Sidebar: React.FC = () => {
                   </motion.div>
                 )}
               </AnimatePresence>
-
+              <div
+                className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                  "/dashboard/trades"
+                )}`}
+                onClick={toggleDropdown}
+              >
+                <FaChartArea />
+                <div className="flex justify-between w-full items-center">
+                  <span className="text-[15px] ml-4 text-gray-200">
+                    Trades (USD)
+                  </span>
+                  <motion.span
+                    initial={{ rotate: isDropdownOpen ? 0 : 180 }}
+                    animate={{ rotate: isDropdownOpen ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-sm"
+                  >
+                    <FaChevronDown />
+                  </motion.span>
+                </div>
+              </div>
+              <AnimatePresence>
+                {isDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="leading-7 text-left text-sm font-thin flex flex-col mt-2 w-4/5 mx-auto"
+                  >
+                    <Link
+                      href={"/dashboard/trades"}
+                      className={`cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1 ${isActive(
+                        "/dashboard/trades"
+                      )}`}
+                    >
+                      All Trades
+                    </Link>
+                    <Link
+                      href={"/dashboard/trades/copy-trades"}
+                      className={`cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1 ${isActive(
+                        "/dashboard/trades/copy-trades"
+                      )}`}
+                    >
+                     Copy Trades
+                    </Link>
+                  </motion.div>
+                )}
+              </AnimatePresence>
               <div
                 className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
                   "/dashboard/withdraw"

@@ -4,17 +4,22 @@ interface SidebarState {
   isOpen: boolean;
   isDropdownOpen: boolean;
   isWithdrawDropdownOpen: boolean;
+  isTradeDropdownOpen: boolean;
   toggleSidebar: () => void;
   toggleDropdown: () => void;
   toggleWithdrawDropdown: () => void;
+  toggleTradeDropdown: () => void;
   setDropdownOpen: (isOpen: boolean) => void; // Added function to set dropdown state
-  setWithdrawDropdownOpen: (isOpen: boolean) => void; // Added function to set withdraw dropdown state
+  setWithdrawDropdownOpen: (isOpen: boolean) => void;
+  setTradeDropdownOpen: (isOpen: boolean) => void;
+  // Added function to set withdraw dropdown state
 }
 
 const useSidebarStore = create<SidebarState>((set) => ({
   isOpen: false,
   isDropdownOpen: false,
   isWithdrawDropdownOpen: false,
+  isTradeDropdownOpen: false,
   toggleSidebar: () => set((state) => ({ isOpen: !state.isOpen })),
   toggleDropdown: () =>
     set((state) => ({ isDropdownOpen: !state.isDropdownOpen })),
@@ -22,10 +27,17 @@ const useSidebarStore = create<SidebarState>((set) => ({
     set((state) => ({
       isWithdrawDropdownOpen: !state.isWithdrawDropdownOpen,
     })),
+    toggleTradeDropdown: () =>
+      set((state) => ({
+        isTradeDropdownOpen: !state.isTradeDropdownOpen,
+      })),
   setDropdownOpen: (isOpen: boolean) => set({ isDropdownOpen: isOpen }),
   setWithdrawDropdownOpen: (isOpen: boolean) =>
     set({ isWithdrawDropdownOpen: isOpen }),
+  setTradeDropdownOpen: (isOpen: boolean) =>
+    set({ isTradeDropdownOpen: isOpen }),
 }));
+
 
 export default useSidebarStore;
 
