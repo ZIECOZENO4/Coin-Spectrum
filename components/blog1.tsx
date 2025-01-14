@@ -96,7 +96,7 @@ const Blog1 = () => {
               <div className="max-w-[370px] mx-auto mb-10">
                 <div className="rounded overflow-hidden mb-8">
                   <img
-                    src="/m2.jpg"
+                    src="/uu.jpg"
                     alt="image"
                     className="w-full"
                   />
