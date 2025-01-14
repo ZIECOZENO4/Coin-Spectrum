@@ -14,6 +14,7 @@ import {
   FaChartArea,
   FaMoneyBillWave,
   FaUserShield,
+  FaIdCard,
 } from "react-icons/fa";
 import { useWindowSize } from "@uidotdev/usehooks";
 import { motion, AnimatePresence } from "framer-motion";
@@ -320,7 +321,17 @@ const Sidebar: React.FC = () => {
                     History
                   </span>
                 </Link>
-
+                <Link
+                  href={"/dashboard/license"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/dashboard/license"
+                  )}`}
+                >
+                   <FaIdCard />
+                  <span className="text-[15px] ml-4 text-gray-200">
+                  Company License
+                  </span>
+                </Link>
                 <Link
                   href={"/dashboard/support"}
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
@@ -558,6 +569,17 @@ const Sidebar: React.FC = () => {
                   <FaUserShield /> 
                   <span className="text-[15px] ml-4 text-gray-200">
                    Start Kyc
+                  </span>
+                </Link>
+                <Link
+                  href={"/dashboard/license"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/dashboard/license"
+                  )}`}
+                >
+                   <FaIdCard />
+                  <span className="text-[15px] ml-4 text-gray-200">
+                  Company License
                   </span>
                 </Link>
               <Link
