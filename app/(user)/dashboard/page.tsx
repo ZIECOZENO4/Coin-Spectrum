@@ -37,9 +37,7 @@ export default function Home() {
  <div>
         <div className="">
         <div className="">
-          <div className="">
-          <TradingViewSymbolInfo />
-          </div>
+      
          <div className=""> 
           <TradingViewFinancials />
           </div>
