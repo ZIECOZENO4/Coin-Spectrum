@@ -343,13 +343,13 @@ const Sidebar: React.FC = () => {
                     Support
                   </span>
                 </Link>
-
-                <SignOutButton redirectUrl="/sign-in">          <div 
-    className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500"
-  >
+                <SignOutButton redirectUrl="/sign-in">
+  <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500">
     <FaSignOutAlt />
     <span className="text-[15px] ml-4 text-gray-200">Logout</span>
-  </div></SignOutButton>
+  </div>
+</SignOutButton>
+
               </div>
             </div>
           </SheetContent>
@@ -591,13 +591,13 @@ const Sidebar: React.FC = () => {
                 <FaEnvelope />
                 <span className="text-[15px] ml-4 text-gray-200">Support</span>
               </Link>
-              <SignOutButton redirectUrl="/sign-in">          <div 
-    
-    className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500"
-  >
+              <SignOutButton redirectUrl="/sign-in">
+  <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500">
     <FaSignOutAlt />
     <span className="text-[15px] ml-4 text-gray-200">Logout</span>
-  </div></SignOutButton>
+  </div>
+</SignOutButton>
+
             </div>
           </div>
         </motion.div>
