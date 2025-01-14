@@ -16,9 +16,6 @@ const TradePage = () => {
           </div>
           <TradingInterface />
           <LatestTrades />
-          <div className=""> 
-          <TradingViewTechnicalAnalysis />
-          </div>
          <div className=""> 
           <TradingViewFinancials />
           </div>
