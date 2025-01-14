@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { Shield, Award, CheckCircle, Building2, Globe2 } from 'lucide-react'
 import { Card, CardContent } from "@/components/ui/card"
+import LicenseCards from "./license-cards"
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -37,8 +38,8 @@ export default function CompanyLicense() {
           <h1 className="text-4xl md:text-5xl font-bold text-white">
             Company License
           </h1>
-          <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
-            Fully Licensed and Regulated Trading Platform
+          <p className="text-xs text-zinc-300  mx-auto">
+          In order to ensure the provision of their portfolio of services in full compliance with all applicable global and local regulations and standards, the INSTANT FX companies hold licenses and registrations in numerous jurisdictions worldwide, and are constantly bringing their operations in line with newly adopted legislative changes.
           </p>
         </motion.div>
       </motion.div>
@@ -51,7 +52,7 @@ export default function CompanyLicense() {
         className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8"
       >
         <motion.div 
-          variants={fadeInUp}
+  
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           <Card className="bg-zinc-900 border-yellow-400/20">
@@ -99,10 +100,10 @@ export default function CompanyLicense() {
             </CardContent>
           </Card>
         </motion.div>
-
+<LicenseCards />
         {/* License Information */}
         <motion.div 
-          variants={fadeInUp}
+  
           className="mt-16 space-y-8"
         >
           <Card className="bg-zinc-900 border-yellow-400/20">
@@ -122,7 +123,7 @@ export default function CompanyLicense() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                   <motion.div 
-                    variants={fadeInUp}
+                   
                     className="space-y-4"
                   >
                     <h4 className="text-lg font-medium text-white">Regulatory Compliance</h4>
@@ -149,7 +150,7 @@ export default function CompanyLicense() {
                   </motion.div>
 
                   <motion.div 
-                    variants={fadeInUp}
+             
                     className="space-y-4"
                   >
                     <h4 className="text-lg font-medium text-white">Trading Security</h4>
@@ -181,7 +182,7 @@ export default function CompanyLicense() {
 
           {/* Certificate Display */}
           <motion.div
-            variants={fadeInUp}
+    
             className="grid grid-cols-1 md:grid-cols-2 gap-8"
           >
             <Card className="bg-zinc-900 border-yellow-400/20">

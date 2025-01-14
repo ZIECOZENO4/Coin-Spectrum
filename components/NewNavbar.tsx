@@ -39,17 +39,17 @@ const AuthButtons = () => {
           >
             Dashboard
           </Link>
-          <SignOutButton redirectUrl="/">LogOut</SignOutButton>
+          <SignOutButton redirectUrl="/sign-in">LogOut</SignOutButton>
           <UserButton />
         </div>
       </SignedIn>
       <SignedOut>
         <SignInButton
           mode="modal"
-          fallbackRedirectUrl={`/sync-user?ref=${ref}`}
-          forceRedirectUrl={`/sync-user?ref=${ref}`}
-          signUpFallbackRedirectUrl={`/sync-user?ref=${ref}`}
-          signUpForceRedirectUrl={`/sync-user?ref=${ref}`}
+          fallbackRedirectUrl={`/dashboard`}
+          forceRedirectUrl={`/dashboard`}
+          signUpFallbackRedirectUrl={`/dashboard`}
+          signUpForceRedirectUrl={`/dashboard`}
         >
           <Button className="px-3 py-2 border rounded-md dark:border-neutral-700">
             Sign In
