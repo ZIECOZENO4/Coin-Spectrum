@@ -106,7 +106,7 @@ export default function LatestTrades() {
                   animate={{ scale: 1 }}
                   transition={{ type: "spring" }}
                 >
-                  Af {trade.amount}
+                  {trade.amount} USD
                 </motion.div>
                 <div className="flex items-center justify-end space-x-2">
                   <motion.span
