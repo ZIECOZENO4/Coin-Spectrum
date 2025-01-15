@@ -208,7 +208,7 @@ export default function LicenseCards() {
   ]
 
   return (
-    <div className="min-h-screen bg-black p-8">
+    <div className="min-h-screen bg-black p-2 py-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
         {licenseDetails.map((license, index) => (
           <motion.div
@@ -225,14 +225,18 @@ export default function LicenseCards() {
                   initial={{ y: 20 }}
                   animate={{ y: 0 }}
                 >
-                  <motion.div
-                    className="w-full h-20 bg-black rounded-md flex items-center justify-center"
-               
-                  >
-                    <div className="w-full p-4 h-16 border-yellow-300 border rounded-md flex items-center justify-center">
-                    <img alt='images' src={license.image} className='object-contain '/>
-                    </div>
-                  </motion.div>
+             <motion.div
+  className="w-full h-20 bg-black rounded-md flex items-center justify-center"
+>
+  <div className="w-full p-4 h-16 border-yellow-300 border rounded-md flex items-center justify-center relative">
+    <img 
+      alt='images' 
+      src={license.image} 
+      className='w-full h-full object-contain absolute inset-0'
+    />
+  </div>
+</motion.div>
+
 
                   <div className="text-center space-y-4">
                     <motion.h1 
