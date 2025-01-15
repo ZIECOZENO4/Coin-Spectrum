@@ -240,7 +240,7 @@ export default function LicenseCards() {
 
                   <div className="text-center space-y-4">
                     <motion.h1 
-                      className="text-xl font-bold text-black"
+                      className="text-xl font-bold text-black uppercase"
                       animate={{
                         scale: [1, 1.02, 1],
                       }}

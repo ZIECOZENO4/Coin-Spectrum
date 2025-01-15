@@ -39,7 +39,7 @@ export default function CompanyLicense() {
             Company License
           </h1>
           <p className="text-xs text-zinc-300  mx-auto">
-          In order to ensure the provision of their portfolio of services in full compliance with all applicable global and local regulations and standards, the INSTANT FX companies hold licenses and registrations in numerous jurisdictions worldwide, and are constantly bringing their operations in line with newly adopted legislative changes.
+          In order to ensure the provision of their portfolio of services in full compliance with all applicable global and local regulations and standards, the COIN SPECTRUM companies hold licenses and registrations in numerous jurisdictions worldwide, and are constantly bringing their operations in line with newly adopted legislative changes.
           </p>
         </motion.div>
       </motion.div>
