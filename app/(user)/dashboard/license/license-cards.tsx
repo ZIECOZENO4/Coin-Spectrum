@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { Card, CardContent } from "@/components/ui/card"
-import { Link } from 'lucide-react'
+import Link from "next/link";
 
 export default function LicenseCards() {
   // License details array that can be easily modified

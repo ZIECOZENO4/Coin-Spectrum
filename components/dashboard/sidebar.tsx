@@ -154,6 +154,14 @@ const Sidebar: React.FC = () => {
                       transition={{ duration: 0.3 }}
                       className="leading-7 text-left text-sm font-thin flex flex-col mt-2 w-4/5 mx-auto"
                     >
+                            <Link
+                      href={"/dashboard/makedeposit"}
+                      className={`cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1 ${isActive(
+                        "/dashboard/makedeposit"
+                      )}`}
+                    >
+                      Quick Deposit
+                    </Link>
                       <Link
                         href={"/dashboard/deposit/plans"}
                         className={`cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1 ${isActive(
@@ -415,6 +423,14 @@ const Sidebar: React.FC = () => {
                     transition={{ duration: 0.3 }}
                     className="leading-7 text-left text-sm font-thin flex flex-col mt-2 w-4/5 mx-auto"
                   >
+                         <Link
+                      href={"/dashboard/makedeposit"}
+                      className={`cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1 ${isActive(
+                        "/dashboard/makedeposit"
+                      )}`}
+                    >
+                      Quick Deposit
+                    </Link>
                     <Link
                       href={"/dashboard/deposit/plans"}
                       className={`cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1 ${isActive(

@@ -106,7 +106,7 @@ export const InvestmentDashboard: React.FC<{
         variants={buttonVariants}
         whileHover="hover"
         whileTap="tap"
-        onClick={() => router.push('/dashboard/deposit/plans')}
+        onClick={() => router.push('/dashboard/makedeposit')}
         className="inline-flex items-center gap-3 px-5 py-3 font-semibold text-black rounded-full whitespace-nowrap overflow-hidden transition-colors duration-300 bg-yellow-400 hover:bg-yellow-500 cursor-pointer shadow-lg"
       >
         <span className="relative flex-shrink-0 w-[25px] h-[25px] bg-white rounded-full grid place-items-center overflow-hidden text-yellow-400 group-hover:text-yellow-500">
