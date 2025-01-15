@@ -7,33 +7,204 @@ export default function LicenseCards() {
   // License details array that can be easily modified
   const licenseDetails = [
     {
-      id: 1,
+   
+      refNo: "31000201469839",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES",
+      department: "U.S. Financial Crimes Enforcement Network",
+      licenseType: "Money Service Business Registration",
+      website: "https://www.fincen.gov"
+    },
+    {
       refNo: "MC 22385",
-      company: "Financial Entity 1 LLC",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, ALABAMA",
       department: "State Banking Department",
       licenseType: "Consumer Credit License",
       website: "https://www.banking.alabama.gov"
     },
-   
     {
-        id: 1,
-        refNo: "MC 22385",
-        company: "Financial Entity 1 LLC",
-        state: "UNITED STATES, ALABAMA",
-        department: "State Banking Department",
-        licenseType: "Consumer Credit License",
-        website: "https://www.banking.alabama.gov"
-      },
-      {
-        id: 1,
-        refNo: "MC 22385",
-        company: "Financial Entity 1 LLC",
-        state: "UNITED STATES, ALABAMA",
-        department: "State Banking Department",
-        licenseType: "Consumer Credit License",
-        website: "https://www.banking.alabama.gov"
-      },
+      refNo: "MC 769",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES, ALABAMA",
+      department: "Alabama Securities Commission",
+      licenseType: "Money Transmitter License",
+      website: "https://www.asc.alabama.gov"
+    },
+    {
+      refNo: "MT-1034818",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES, Arizona",
+      department: "Department of Insurance and Financial Institutions",
+      licenseType: "Money Transmitter License",
+      website: "https://difi.az.gov"
+    },
+    {
+      refNo: "CL-1017838",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES, Arizona",
+      department: "Department of Insurance and Financial Institutions",
+      licenseType: "Consumer Lender License",
+      website: "https://difi.az.gov"
+    },
+    {
+      refNo: "125678",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES, Arkansas",
+      department: "Arkansas Securities Department",
+      licenseType: "Money Transmitter License",
+      website: "http://securities.arkansas.gov"
+    },
+    {
+      refNo: "RRL-11385",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES, Idaho",
+      department: "Department of Finance",
+      licenseType: "Regulated Lender License",
+      website: "https://www.finance.idaho.gov"
+    },
+    {
+      refNo: "CI.0014461-H",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES, Illinois",
+      department: "Department of Financial and Professional Regulation",
+      licenseType: "Consumer Installment Loan License",
+      website: "https://idfpr.com"
+    },
+    {
+      refNo: "2022-0009",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES, Iowa",
+      department: "Iowa Division of Banking",
+      licenseType: "Money Service License",
+      website: "http://www.idob.state.ia.us"
+    },
+    {
+      refNo: "SL.0026405",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES, Kansas",
+      department: "Office of the State Bank Commissioner",
+      licenseType: "Supervised Loan License",
+      website: "https://osbckansas.org"
+    },
+    {
+      refNo: "03-1898745",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES, Maryland",
+      department: "Commissioner of Financial Regulation",
+      licenseType: "Installment Loan License",
+      website: "https://www.maryland.gov/Pages/default.aspx/Pages/default.aspx"
+    },
+    {
+      refNo: "MO-23-8913",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES, Missouri",
+      department: "Division of Finance",
+      licenseType: "Sale of Checks & Money Transmitter License",
+      website: "https://finance.mo.gov"
+    },
+    {
+      refNo: "1877754",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES, Montana",
+      department: "Division of Banking and Financial Institutions",
+      licenseType: "Consumer Loan License",
+      website: "https://banking.mt.gov"
+    },
+    {
+      refNo: "23521-SM",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES, New Hampshire",
+      department: "Banking Department",
+      licenseType: "Small Loan Lender License",
+      website: "https://www.nh.gov/banking"
+    },
+    {
+      refNo: "MB104829",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES, North Dakota",
+      department: "Department of Financial Institutions",
+      licenseType: "Money Broker License",
+      website: "https://www.nh.gov/banking"
+    },
+    {
+      refNo: "1998556",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES, Oregon",
+      department: "Division of Financial Regulation",
+      licenseType: "Consumer Finance License",
+      website: "https://dfr.oregon.gov"
+    },
+    {
+      refNo: "1878745.MT",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES, South Dakota",
+      department: "Division of Banking",
+      licenseType: "Money Transmitter License",
+      website: "https://dlr.sd.gov/banking/"
+    },
+    {
+      refNo: "MC 22385",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES, Utah",
+      department: "Department of Financial Institutions",
+      licenseType: "Consumer Credit Notification",
+      website: "https://dfi.utah.gov"
+    },
+    {
+      refNo: "TC017446",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "Hong Kong",
+      department: "Companies Registry",
+      licenseType: "Trust or Company Service Provider License",
+      website: "https://www.cr.gov.hk"
+    },
+    {
+      refNo: "CL-4229",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "UNITED STATES, Wyoming",
+      department: "Department of Audit",
+      licenseType: "Consumer Lender License",
+      website: "http://audit.wyo.gov"
+    },
+    {
+      refNo: "M20280268",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "Canada",
+      department: "Financial Transactions and Reports Analysis Centre of Canada",
+      licenseType: "Money Service Business Registration",
+      website: "https://www.fintrac-canafe.gc.ca"
+    },
+    {
+      refNo: "647054530",
+      image:'',
+      company: "Coin Spectrum Investments and Trades LLC",
+      state: "Australia",
+      department: "Australian Securities and Investment Commission",
+      licenseType: "Registration as Foreign Company",
+      website: "https://asic.gov.au"
+    },
   ]
 
   return (
@@ -41,7 +212,7 @@ export default function LicenseCards() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
         {licenseDetails.map((license, index) => (
           <motion.div
-            key={license.id}
+            key={license.refNo}
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.2 }}
@@ -65,8 +236,8 @@ export default function LicenseCards() {
                       ease: "linear"
                     }}
                   >
-                    <div className="w-16 h-16 bg-yellow-300 rounded-full flex items-center justify-center">
-                      <div className="text-black text-xl font-bold">{license.id}</div>
+                    <div className="w-full p-4 h-16 bg-yellow-300 rounded-full flex items-center justify-center">
+                    <img alt='images' src={license.image} className='object-contain'/>
                     </div>
                   </motion.div>
 
