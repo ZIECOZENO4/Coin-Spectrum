@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.coinspectrum.net'),
   title: {
     template: '%s | COIN SPECTRUM',
-    default: 'COIN SPECTRUM - Your only trust investment and broker platform.',
+    default: 'COIN SPECTRUM - Your only trusted investment and broker platform.',
   },
   description: 'COIN SPECTRUM is an investment and trading platform for all users all over the world',
   keywords: ['Investment', 'Trading', 'Referral'],
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://www.coinspectrum.net',
     siteName: 'COIN SPECTRUM',
-    title:  'COIN SPECTRUM - Your only trust investment and broker platform.',
+    title:  'COIN SPECTRUM - Your only trusted investment and broker platform.',
     description:  'COIN SPECTRUM is an investment and trading platform for all users all over the world',
     images: [
       {

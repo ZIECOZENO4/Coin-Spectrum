@@ -9,7 +9,7 @@ export default function LicenseCards() {
     {
    
       refNo: "31000201469839",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0009.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES",
       department: "U.S. Financial Crimes Enforcement Network",
@@ -18,7 +18,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "MC 22385",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0010.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, ALABAMA",
       department: "State Banking Department",
@@ -27,7 +27,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "MC 769",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0011.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, ALABAMA",
       department: "Alabama Securities Commission",
@@ -36,7 +36,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "MT-1034818",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0013.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, Arizona",
       department: "Department of Insurance and Financial Institutions",
@@ -45,7 +45,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "CL-1017838",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0014.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, Arizona",
       department: "Department of Insurance and Financial Institutions",
@@ -54,7 +54,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "125678",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0015.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, Arkansas",
       department: "Arkansas Securities Department",
@@ -63,7 +63,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "RRL-11385",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0016.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, Idaho",
       department: "Department of Finance",
@@ -72,7 +72,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "CI.0014461-H",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0017.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, Illinois",
       department: "Department of Financial and Professional Regulation",
@@ -81,7 +81,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "2022-0009",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0018.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, Iowa",
       department: "Iowa Division of Banking",
@@ -90,7 +90,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "SL.0026405",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0019.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, Kansas",
       department: "Office of the State Bank Commissioner",
@@ -99,7 +99,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "03-1898745",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0021.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, Maryland",
       department: "Commissioner of Financial Regulation",
@@ -108,7 +108,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "MO-23-8913",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0022.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, Missouri",
       department: "Division of Finance",
@@ -117,7 +117,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "1877754",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0023.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, Montana",
       department: "Division of Banking and Financial Institutions",
@@ -126,7 +126,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "23521-SM",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0024.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, New Hampshire",
       department: "Banking Department",
@@ -135,7 +135,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "MB104829",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0025.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, North Dakota",
       department: "Department of Financial Institutions",
@@ -144,7 +144,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "1998556",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0032.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, Oregon",
       department: "Division of Financial Regulation",
@@ -189,7 +189,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "M20280268",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0031.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "Canada",
       department: "Financial Transactions and Reports Analysis Centre of Canada",
@@ -198,7 +198,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "647054530",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0027.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "Australia",
       department: "Australian Securities and Investment Commission",
@@ -226,18 +226,11 @@ export default function LicenseCards() {
                   animate={{ y: 0 }}
                 >
                   <motion.div
-                    className="w-20 h-20 bg-black rounded-full flex items-center justify-center"
-                    animate={{ 
-                      rotate: [0, 360],
-                    }}
-                    transition={{
-                      duration: 20,
-                      repeat: Infinity,
-                      ease: "linear"
-                    }}
+                    className="w-full h-20 bg-black rounded-md flex items-center justify-center"
+               
                   >
-                    <div className="w-full p-4 h-16 bg-yellow-300 rounded-full flex items-center justify-center">
-                    <img alt='images' src={license.image} className='object-contain'/>
+                    <div className="w-full p-4 h-16 border-yellow-300 border rounded-md flex items-center justify-center">
+                    <img alt='images' src={license.image} className='object-contain '/>
                     </div>
                   </motion.div>
 
@@ -256,7 +249,7 @@ export default function LicenseCards() {
                     </motion.h1>
                     
                     <motion.h2 
-                      className="text-2xl font-bold text-black"
+                      className="text-xl font-bold text-black"
                       animate={{ 
                         y: [0, -2, 2, 0],
                       }}
@@ -302,7 +295,7 @@ export default function LicenseCards() {
                   </div>
 
                   <motion.div
-                    className="text-black text-sm mt-2"
+                    className="text-black text-sm mt-2 underline"
                     animate={{
                       opacity: [0.5, 1, 0.5],
                     }}
