@@ -15,7 +15,7 @@ import NotificationComponent from "./notifications";
 import Loading from "./loading";
 import Rate3 from "@/components/rate3";
 import GoogleTranslate from "@/components/GoogleTranslate";
-import Script from 'next/script';
+import SmartSuppScript from './smartsupp'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -90,18 +90,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <Script id="smartsupp" strategy="afterInteractive">
-        {`
-          var _smartsupp = _smartsupp || {};
-          _smartsupp.key = '4ce7b1c0e9bc883413ea12ae3434c19a83a3751e';
-          window.smartsupp||(function(d) {
-            var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
-            s=d.getElementsByTagName('script')[0];c=d.createElement('script');
-            c.type='text/javascript';c.charset='utf-8';c.async=true;
-            c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
-          })(document);
-        `}
-      </Script>
+<SmartSuppScript />
       <ClerkProvider
         appearance={{
           elements: {
