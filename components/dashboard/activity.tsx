@@ -4,6 +4,7 @@ import { useUser, useSession, useSessionList } from "@clerk/nextjs"
 import { motion, AnimatePresence } from "framer-motion"
 import { Card } from "@/components/ui/card"
 import { Clock, Monitor } from 'lucide-react'
+import { useEffect, useState } from "react"
 
 interface LoginActivity {
   id: string
@@ -14,23 +15,73 @@ interface LoginActivity {
   lastActiveAt: Date
 }
 
+interface BrowserInfo {
+  browser: string
+  os: string
+  deviceType: string
+}
+
+const getBrowserInfo = (): BrowserInfo => {
+  if (typeof window === 'undefined') {
+    return { browser: 'Unknown', os: 'Unknown', deviceType: 'Unknown' }
+  }
+
+  const userAgent = window.navigator.userAgent
+  let browser = 'Unknown'
+  let os = 'Unknown'
+  let deviceType = 'Desktop'
+
+  // Detect browser
+  if (userAgent.indexOf('Chrome') > -1) browser = 'Chrome'
+  else if (userAgent.indexOf('Safari') > -1) browser = 'Safari'
+  else if (userAgent.indexOf('Firefox') > -1) browser = 'Firefox'
+  else if (userAgent.indexOf('Edge') > -1) browser = 'Edge'
+  else if (userAgent.indexOf('MSIE') > -1 || userAgent.indexOf('Trident/') > -1) browser = 'IE'
+
+  // Detect OS
+  if (userAgent.indexOf('Windows') > -1) os = 'Windows'
+  else if (userAgent.indexOf('Mac') > -1) os = 'MacOS'
+  else if (userAgent.indexOf('Linux') > -1) os = 'Linux'
+  else if (userAgent.indexOf('Android') > -1) os = 'Android'
+  else if (userAgent.indexOf('iOS') > -1) os = 'iOS'
+
+  // Detect device type
+  if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(userAgent)) {
+    deviceType = 'Mobile'
+  } else if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(userAgent)) {
+    deviceType = 'Tablet'
+  }
+
+  return { browser, os, deviceType }
+}
+
 export default function LoginActivities() {
   const { user } = useUser()
   const { session } = useSession()
   const { sessions } = useSessionList()
+  const [browserInfo, setBrowserInfo] = useState<BrowserInfo>({ 
+    browser: 'Unknown', 
+    os: 'Unknown', 
+    deviceType: 'Unknown' 
+  })
 
-  // Transform Clerk sessions into LoginActivity format
-  const activities: LoginActivity[] = sessions?.map(session => ({
-    id: session.id,
-    browserName: `${session.browser} ${session.os}`,
-    deviceType: session.deviceType,
-    ipAddress: session.lastActiveIpAddress || "Unknown",
-    timestamp: new Date(session.createdAt),
-    lastActiveAt: new Date(session.lastActiveAt)
-  })) || []
+  useEffect(() => {
+    setBrowserInfo(getBrowserInfo())
+  }, [])
 
-  // Rest of your component code remains the same...
-
+  const activities: LoginActivity[] = sessions?.map(session => {
+    const isCurrentSession = session.id === session?.id
+    return {
+      id: session.id,
+      browserName: isCurrentSession 
+        ? `${browserInfo.browser} on ${browserInfo.os}`
+        : 'Other Browser',
+      deviceType: isCurrentSession ? browserInfo.deviceType : 'Unknown Device',
+      ipAddress: isCurrentSession ? 'Current Session' : 'Previous Session',
+      timestamp: new Date(session.createdAt),
+      lastActiveAt: new Date(session.lastActiveAt)
+    }
+  }) || []
 
   return (
     <div className="rounded-lg bg-gray-950 flex items-center justify-center p-4">
@@ -40,7 +91,7 @@ export default function LoginActivities() {
         transition={{ type: "spring", duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <Card className="bg-gray-900 border-gray-800 overflow-hidden">
+        <Card className="bg-gray-900 border-gray-800 overflow-hidden relative">
           <motion.div
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -96,7 +147,7 @@ export default function LoginActivities() {
                     >
                       <Clock className="w-4 h-4" />
                       <span className="text-sm">
-                        Last active: {new Date(activity.lastActiveAt).toLocaleTimeString()}
+                        Last active: {activity.lastActiveAt.toLocaleTimeString()}
                       </span>
                     </motion.div>
                   </div>
@@ -124,7 +175,7 @@ export default function LoginActivities() {
                       whileHover={{ x: 10 }}
                       className="text-gray-500 text-sm ml-7"
                     >
-                      {activity.ipAddress}
+                      {activity.deviceType} • {activity.ipAddress}
                     </motion.p>
                   </motion.div>
 

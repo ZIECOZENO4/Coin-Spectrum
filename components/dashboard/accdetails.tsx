@@ -145,7 +145,6 @@ const StatsDashboard: React.FC<StatsDashboardProps> = ({ userId }) => {
             </Card>
           </motion.div>
         ))}
-        <ReferralCard />
         <LoginActivities />
       </motion.div>
     </div>
