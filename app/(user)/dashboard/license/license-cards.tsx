@@ -153,7 +153,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "1878745.MT",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0030.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, South Dakota",
       department: "Division of Banking",
@@ -162,7 +162,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "MC 22385",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0029.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, Utah",
       department: "Department of Financial Institutions",
@@ -171,7 +171,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "TC017446",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0025.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "Hong Kong",
       department: "Companies Registry",
@@ -180,7 +180,7 @@ export default function LicenseCards() {
     },
     {
       refNo: "CL-4229",
-      image:'',
+      image:'https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0026.jpg',
       company: "Coin Spectrum Investments and Trades LLC",
       state: "UNITED STATES, Wyoming",
       department: "Department of Audit",

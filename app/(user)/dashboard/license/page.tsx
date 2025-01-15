@@ -192,7 +192,7 @@ export default function CompanyLicense() {
                   className="aspect-[4/3] relative overflow-hidden rounded-lg"
                 >
                   <img
-                    src="/placeholder.svg?height=400&width=600"
+                    src="https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0016.jpg"
                     alt="Trading License Certificate"
                     className="object-cover w-full h-full"
                   />
@@ -212,7 +212,7 @@ export default function CompanyLicense() {
                   className="aspect-[4/3] relative overflow-hidden rounded-lg"
                 >
                   <img
-                    src="/placeholder.svg?height=400&width=600"
+                    src="https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/IMG-20250115-WA0018.jpg"
                     alt="Regulatory Compliance Certificate"
                     className="object-cover w-full h-full"
                   />
