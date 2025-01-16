@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
         userId: session.user.id,
         name: userName,
         email: userEmail,
-        walletPaidInto: crypto,
+        walletPaidInto: 'USDT', // Default to USDT
         planId: id,
         amount: amount,
         createdAt: new Date(),
