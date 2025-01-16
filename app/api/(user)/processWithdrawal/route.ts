@@ -1,175 +1,174 @@
-// import { getUserAuth } from "@/lib/auth/utils";
-// import { Wallets, WithdrawalStatus } from "@prisma/client";
-// import { NextRequest, NextResponse } from "next/server";
-// import { prisma } from "@/lib/db/prisma";
-// import { processWithdrawal } from "@/app/_action/prisma-core-functionns";
-// import { formSchema } from "@/app/(user)/dashboard/withdraw/aside";
-// import { z } from "zod";
-// // import { processWithdrawal } from "@/app/_action/prisma-core-.test";
-// export async function POST(request: NextRequest) {
-//   try {
-//     const {
-//       withdrawalAmount,
-//       cryptoType,
-//       walletAddress,
-//     }: z.infer<typeof formSchema> = await request.json();
-//     if (
-//       !cryptoType ||
-//       !Object.values(Wallets).includes(cryptoType as Wallets)
-//     ) {
-//       console.error("Invalid or no name provided in query params");
-//       return NextResponse.json(
-//         { error: "Invalid or no name provided" },
-//         { status: 400 }
-//       );
-//     }
-//     const { session } = await getUserAuth();
-//     const userId = session?.user.id;
-//     if (!userId) {
-//       return NextResponse.json(
-//         { error: "User not authenticated" },
-//         { status: 401 }
-//       );
-//     }
-//     if (!withdrawalAmount || !cryptoType || !walletAddress) {
-//       return NextResponse.json(
-//         { error: "Missing required fields" },
-//         { status: 400 }
-//       );
-//     }
-
-//     await processWithdrawal(
-//       userId,
-//       withdrawalAmount,
-//       walletAddress,
-//       cryptoType as Wallets
-//     );
-
-//     return NextResponse.json({ success: true });
-//   } catch (error) {
-//     console.error(`Error processing withdrawal: ${error}`);
-//     return NextResponse.json(
-//       { error: `${error || "An unexpected error occurred"}` },
-//       { status: 500 }
-//     );
-//   }
-// }
-
-// // pages/api/withdrawals.ts
-
-// export async function GET(req: NextRequest) {
-//   try {
-//     const { searchParams } = req.nextUrl;
-//     const withdrawalStatusFilter = searchParams.get(
-//       "withdrawalStatusFilter"
-//     ) as WithdrawalStatus | undefined;
-//     console.log("Withdrawal status filter:", withdrawalStatusFilter);
-
-//     if (!withdrawalStatusFilter) {
-//       return NextResponse.json(
-//         { error: "Missing withdrawalStatusFilter" },
-//         { status: 400 }
-//       );
-//     }
-
-//     if (!WithdrawalStatus[withdrawalStatusFilter]) {
-//       return NextResponse.json(
-//         { error: "Invalid withdrawalStatusFilter" },
-//         { status: 400 }
-//       );
-//     }
-
-//     const { session } = await getUserAuth();
-//     const userId = session?.user.id;
-
-//     if (!userId) {
-//       return NextResponse.json(
-//         { error: "User not logged in" },
-//         { status: 401 }
-//       );
-//     }
-
-//     const withdrawals = await prisma.withdrawal.findMany({
-//       where: {
-//         userId: userId,
-//         status: withdrawalStatusFilter,
-//       },
-//       orderBy: {
-//         createdAt: "desc",
-//       },
-//     });
-
-//     return NextResponse.json({ withdrawals }, { status: 200 });
-//   } catch (error) {
-//     console.error("Error occurred while fetching user withdrawals:", error);
-
-//     if (error instanceof Error) {
-//       return NextResponse.json({ error: error.message }, { status: 500 });
-//     } else {
-//       return NextResponse.json(
-//         { error: "An unexpected error occurred" },
-//         { status: 500 }
-//       );
-//     }
-//   }
-// }
-// export const revalidate = 0;
-
-
-import { getUserAuth } from "@/lib/auth/utils";
-import { Wallets, WithdrawalStatus } from "@/lib/db/schema"; // Adjust import path as needed
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { withdrawals } from "@/lib/db/schema";
-import { processWithdrawal } from "../../../_action/prisma-core-functionns"; // Assume this is updated for Drizzle
-import { formSchema } from "@/app/(user)/dashboard/withdraw/aside";
-import { z } from "zod";
+import { Resend } from "resend";
+import { WithdrawalEmail } from "@/emails/withdrawal-email";
+import { getUserAuth } from "@/lib/auth/utils";
 import { eq, and, desc } from "drizzle-orm";
+import { z } from "zod";
+import { 
+  users, 
+  pendingWithdrawals,
+  transactionHistory,
+  TransactionTypeEnum
+} from "@/lib/db/schema";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Validation schema
+const withdrawalSchema = z.object({
+  withdrawalAmount: z.number().positive(),
+  cryptoType: z.string(),
+  walletAddress: z.string()
+});
 
 export async function POST(request: NextRequest) {
   try {
-    const {
-      withdrawalAmount,
-      cryptoType,
-      walletAddress,
-    }: z.infer<typeof formSchema> = await request.json();
-    if (
-      !cryptoType ||
-      !Object.values(Wallets).includes(cryptoType as Wallets)
-    ) {
-      console.error("Invalid or no name provided in query params");
-      return NextResponse.json(
-        { error: "Invalid or no name provided" },
-        { status: 400 }
-      );
-    }
+    console.log("Starting withdrawal process...");
+    
+    const body = await request.json();
+    console.log("Request body:", body);
+    
+    // Validate request body
+    const { withdrawalAmount, cryptoType, walletAddress } = withdrawalSchema.parse(body);
+
     const { session } = await getUserAuth();
-    const userId = session?.user.id;
-    if (!userId) {
+    if (!session?.user?.id) {
+      console.error("User not authenticated");
       return NextResponse.json(
         { error: "User not authenticated" },
         { status: 401 }
       );
     }
-    if (!withdrawalAmount || !cryptoType || !walletAddress) {
+
+    // Get user details
+    const user = await db.query.users.findFirst({
+      where: (users, { eq }) => eq(users.id, session.user.id)
+    });
+
+    if (!user) {
+      console.error("User not found:", session.user.id);
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "User not found" },
+        { status: 404 }
+      );
+    }
+
+    // Check user balance
+    if (user.balance < withdrawalAmount) {
+      return NextResponse.json(
+        { error: "Insufficient balance" },
         { status: 400 }
       );
     }
 
-    await processWithdrawal(
-      userId,
-      withdrawalAmount,
-      walletAddress,
-      cryptoType as Wallets
-    );
+    // Create withdrawal request
+    console.log("Creating pending withdrawal record...");
+    const pendingWithdrawal = await db.transaction(async (tx) => {
+      // Create pending withdrawal
+      const [withdrawal] = await tx.insert(pendingWithdrawals).values({
+        id: `pw_${Date.now()}`,
+        userId: session.user.id,
+        amount: withdrawalAmount,
+        cryptoType,
+        walletAddress,
+        status: "pending",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }).returning();
 
-    return NextResponse.json({ success: true });
+      // Create transaction history record
+      await tx.insert(transactionHistory).values({
+        id: `th_${Date.now()}`,
+        userId: session.user.id,
+        type: TransactionTypeEnum.Withdrawal,
+        amount: withdrawalAmount,
+        description: `Pending withdrawal via ${cryptoType}`,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
+
+      // Update user balance
+      await tx.update(users)
+        .set({ 
+          balance: user.balance - withdrawalAmount,
+          updatedAt: new Date()
+        })
+        .where(eq(users.id, session.user.id));
+
+      return withdrawal;
+    });
+
+    console.log("Pending withdrawal created:", pendingWithdrawal);
+
+    // Send email notifications
+    if (process.env.RESEND_API_KEY) {
+      try {
+        await Promise.all([
+          resend.emails.send({
+            from: process.env.RESEND_FROM_EMAIL!,
+            to: user.email,
+            subject: "Withdrawal Request Received",
+            react: WithdrawalEmail({
+              userFirstName: user.firstName || user.email,
+              amount: withdrawalAmount.toString(),
+              type: cryptoType,
+              status: "pending",
+              transactionDate: new Date().toISOString(),
+              withdrawalId: pendingWithdrawal.id,
+              walletAddress,
+              cryptoType,
+              isAdminCopy: false
+            })
+          }),
+          resend.emails.send({
+            from: process.env.RESEND_FROM_EMAIL!,
+            to: process.env.ADMIN_EMAIL!,
+            subject: "New Withdrawal Request",
+            react: WithdrawalEmail({
+              userFirstName: user.firstName || user.email,
+              amount: withdrawalAmount.toString(),
+              type: cryptoType,
+              status: "pending",
+              transactionDate: new Date().toISOString(),
+              withdrawalId: pendingWithdrawal.id,
+              walletAddress,
+              cryptoType,
+              isAdminCopy: true
+            })
+          })
+        ]);
+
+        console.log("Email notifications sent successfully");
+      } catch (emailError) {
+        console.error("Failed to send email notifications:", emailError);
+      }
+    }
+
+    return NextResponse.json({ 
+      success: true,
+      message: "Withdrawal request submitted successfully",
+      pendingWithdrawal
+    });
+
   } catch (error) {
-    console.error(`Error processing withdrawal: ${error}`);
+    console.error("Withdrawal error:", error);
+    
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: "Invalid request data", details: error.errors },
+        { status: 400 }
+      );
+    }
+    
+    if (error instanceof Error) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
+    }
+    
     return NextResponse.json(
-      { error: `${error || "An unexpected error occurred"}` },
+      { error: "An unexpected error occurred" },
       { status: 500 }
     );
   }
@@ -178,59 +177,34 @@ export async function POST(request: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = req.nextUrl;
-    const withdrawalStatusFilter = searchParams.get(
-      "withdrawalStatusFilter"
-    ) as WithdrawalStatus | undefined;
-    console.log("Withdrawal status filter:", withdrawalStatusFilter);
-
-    if (!withdrawalStatusFilter) {
-      return NextResponse.json(
-        { error: "Missing withdrawalStatusFilter" },
-        { status: 400 }
-      );
-    }
-
-    if (!WithdrawalStatus[withdrawalStatusFilter]) {
-      return NextResponse.json(
-        { error: "Invalid withdrawalStatusFilter" },
-        { status: 400 }
-      );
-    }
-
+    const status = searchParams.get("status");
+    
     const { session } = await getUserAuth();
-    const userId = session?.user.id;
-
-    if (!userId) {
+    if (!session?.user?.id) {
       return NextResponse.json(
-        { error: "User not logged in" },
+        { error: "User not authenticated" },
         { status: 401 }
       );
     }
 
-    const fetchedWithdrawals = await db
+    const withdrawals = await db
       .select()
-      .from(withdrawals)
+      .from(pendingWithdrawals)
       .where(
         and(
-          eq(withdrawals.userId, userId),
-          eq(withdrawals.status, withdrawalStatusFilter)
+          eq(pendingWithdrawals.userId, session.user.id),
+          status ? eq(pendingWithdrawals.status, status) : undefined
         )
       )
-      .orderBy(desc(withdrawals.createdAt));
+      .orderBy(desc(pendingWithdrawals.createdAt));
 
-    return NextResponse.json({ withdrawals: fetchedWithdrawals }, { status: 200 });
+    return NextResponse.json({ withdrawals });
+    
   } catch (error) {
-    console.error("Error occurred while fetching user withdrawals:", error);
-
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    } else {
-      return NextResponse.json(
-        { error: "An unexpected error occurred" },
-        { status: 500 }
-      );
-    }
+    console.error("Error fetching withdrawals:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch withdrawals" },
+      { status: 500 }
+    );
   }
 }
-
-export const revalidate = 0;

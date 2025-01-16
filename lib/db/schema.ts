@@ -154,6 +154,19 @@ export const pendingDeposits = pgTable("pending_deposits", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const pendingWithdrawals = pgTable("pending_withdrawals", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  amount: doublePrecision("amount").notNull(),
+  cryptoType: text("crypto_type").notNull(),
+  walletAddress: text("wallet_address").notNull(),
+  status: text("status").notNull().default("pending"),
+  processedAt: timestamp("processed_at"),
+  rejectionReason: text("rejection_reason"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 export const kyc = pgTable("kyc", {
   id: text("id").primaryKey(),
   userId: text("user_id")
