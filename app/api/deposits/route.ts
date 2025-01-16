@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { Resend } from "resend";
 import { DepositEmail } from "@/emails/DepositEmail";
-import { transactionHistory, userTrackers, TransactionTypeEnum } from "@/lib/db/schema";
+import { transactionHistory, userTrackers, users, TransactionTypeEnum } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -11,13 +11,11 @@ export async function POST(req: Request) {
   try {
     console.log("Starting deposit process...");
     
-    // Log request body
     const body = await req.json();
     console.log("Request body:", body);
     
     const { userName, userEmail, amount, transactionId, imageData, selectedCrypto } = body;
 
-    // Validate required fields
     if (!userName || !userEmail || !amount || !transactionId || !selectedCrypto) {
       console.error("Missing required fields:", { userName, userEmail, amount, transactionId, selectedCrypto });
       return NextResponse.json(
@@ -26,12 +24,23 @@ export async function POST(req: Request) {
       );
     }
 
+    // Verify user exists first
+    const existingUser = await db.query.users.findFirst({
+      where: (users, { eq }) => eq(users.email, userEmail)
+    });
+
+    if (!existingUser) {
+      return NextResponse.json(
+        { error: "User not found. Please register first." },
+        { status: 404 }
+      );
+    }
+
     console.log("Creating transaction record...");
-    // Create transaction with proper enum type
     const transaction = await db.insert(transactionHistory).values({
       id: transactionId,
-      userId: userEmail,
-      type: TransactionTypeEnum.Deposit, // Using the enum value
+      userId: existingUser.id,
+      type: TransactionTypeEnum.Deposit,
       amount: parseFloat(amount),
       description: `Deposit via ${selectedCrypto}`,
       createdAt: new Date(),
@@ -41,11 +50,9 @@ export async function POST(req: Request) {
     console.log("Transaction created:", transaction);
 
     console.log("Checking for existing user tracker...");
-    // Check existing tracker
     const existingTracker = await db.query.userTrackers.findFirst({
-      where: (userTrackers, { eq }) => eq(userTrackers.userId, userEmail)
+      where: (userTrackers, { eq }) => eq(userTrackers.userId, existingUser.id)
     });
-    console.log("Existing tracker:", existingTracker);
 
     if (existingTracker) {
       console.log("Updating existing tracker...");
@@ -54,19 +61,18 @@ export async function POST(req: Request) {
           balance: existingTracker.balance + parseFloat(amount),
           updatedAt: new Date()
         })
-        .where(eq(userTrackers.userId, userEmail));
+        .where(eq(userTrackers.userId, existingUser.id));
     } else {
       console.log("Creating new tracker...");
       await db.insert(userTrackers).values({
         id: `ut_${transactionId}`,
-        userId: userEmail,
+        userId: existingUser.id,
         balance: parseFloat(amount),
         createdAt: new Date(),
         updatedAt: new Date(),
       });
     }
 
-    console.log("Sending email notification...");
     if (process.env.RESEND_API_KEY) {
       try {
         await resend.emails.send({
@@ -74,7 +80,7 @@ export async function POST(req: Request) {
           to: process.env.ADMIN_EMAIL || "admin@coinspectrum.net",
           subject: "New Deposit Pending Confirmation",
           react: DepositEmail({
-            userFirstName: userName,
+            userFirstName: existingUser.firstName || userName,
             amount: amount,
             type: selectedCrypto,
             status: "pending",
@@ -86,26 +92,21 @@ export async function POST(req: Request) {
         console.log("Email sent successfully");
       } catch (emailError) {
         console.error("Email sending failed:", emailError);
-        // Continue execution even if email fails
       }
-    } else {
-      console.warn("RESEND_API_KEY not configured");
     }
 
-    console.log("Deposit process completed successfully");
     return NextResponse.json({ 
       success: true, 
       message: "Deposit submitted successfully",
-      transaction 
+      transaction: transaction[0]
     });
 
-} catch (err: unknown) {
-    // Type guard for database-specific errors
+  } catch (err: unknown) {
     interface DbError {
       code: string;
       message: string;
     }
-  
+
     const isDbError = (error: unknown): error is DbError => {
       return (
         typeof error === 'object' &&
@@ -114,7 +115,7 @@ export async function POST(req: Request) {
         typeof (error as DbError).code === 'string'
       );
     };
-  
+
     if (isDbError(err)) {
       switch (err.code) {
         case '23505':
@@ -135,8 +136,7 @@ export async function POST(req: Request) {
           );
       }
     }
-  
-    // Handle standard Error objects
+
     if (err instanceof Error) {
       return NextResponse.json(
         { 
@@ -146,8 +146,7 @@ export async function POST(req: Request) {
         { status: 500 }
       );
     }
-  
-    // Handle unknown error types
+
     console.error("Unknown error:", err);
     return NextResponse.json(
       { error: "An unexpected error occurred" },
