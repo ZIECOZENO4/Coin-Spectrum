@@ -1,4 +1,3 @@
-import { CreateInvestmentData } from "@/app/api/(user)/addAnInvestment/route";
 import { Investment } from "@prisma/client";
 import {
   useMutation,
@@ -7,46 +6,66 @@ import {
 } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+// Define the interface based on the API requirements
+interface CreateInvestmentData {
+  userName: string;
+  userEmail: string;
+  transactionId: string;
+  id: string;
+  amount: number;
+  imageUrl: string;
+  imageId: string;
+}
 
-const createInvestment: MutationFunction<
-  Investment,
-  CreateInvestmentData
-> = async (data) => {
+const createInvestment: MutationFunction<Investment, CreateInvestmentData> = async (data) => {
+  console.log("Starting investment creation...");
   console.log("Sending data to API:", data);
 
-  const response = await fetch("/api/addAnInvestment", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
+  try {
+    const response = await fetch("/api/addAnInvestment", {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        userName: data.userName,
+        userEmail: data.userEmail,
+        transactionId: data.transactionId,
+        id: data.id,
+        amount: data.amount,
+        imageUrl: data.imageUrl,
+        imageId: data.imageId
+      }),
+    });
 
-  if (!response.ok) {
-    const errorResponse = await response.json();
-    throw new Error(errorResponse.error || "Error creating investment");
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to create investment");
+    }
+
+    const responseData = await response.json();
+    console.log("Investment created successfully:", responseData);
+    return responseData;
+  } catch (error) {
+    console.error("Investment creation failed:", error);
+    throw error;
   }
-
-  const responseData = await response.json();
-  console.log("Response from API:", responseData);
-
-  return responseData;
 };
 
 export const useCreateInvestment = () => {
-  const mutationKey: MutationKey = ["createInvestment"];
-
   return useMutation({
     mutationFn: createInvestment,
-    mutationKey,
-    onMutate: () => {
-      console.log("Mutation started");
+    mutationKey: ["createInvestment"],
+    onMutate: (variables) => {
+      console.log("Starting investment creation with:", variables);
     },
     onSuccess: (data) => {
-      console.log("Mutation succeeded:", data);
+      console.log("Investment created successfully:", data);
       toast.success("Investment created successfully!");
     },
-    onError: (error: any) => {
-      console.error("Mutation failed:", error);
-      toast.error(`Error: ${error.message}`);
-    },
+    onError: (error: Error) => {
+      console.error("Investment creation failed:", error);
+      toast.error(error.message || "Failed to create investment");
+    }
   });
 };
