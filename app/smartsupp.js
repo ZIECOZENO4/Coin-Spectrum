@@ -7,7 +7,7 @@ export default function SmartSuppScript() {
         __html: `
           var _smartsupp = _smartsupp || {};
           _smartsupp.key =  '4ce7b1c0e9bc883413ea12ae3434c19a83a3751e';
-          _smartsupp.offsetY = 100;
+          _smartsupp.offsetY = 20;
           _smartsupp.privacyNoticeEnabled = true; 
           _smartsupp.ratingEnabled = true;
 _smartsupp.privacyNoticeUrl = "https://www.coinspectrum.net"; 

@@ -31,15 +31,14 @@ export async function POST(req: NextRequest) {
       id,
       amount,
       imageUrl,
-      imageId,
-      crypto,
+      imageId
     } = body;
 
-    // Validate inputs
-    if (!crypto || !Object.values(Wallets.enumValues).includes(crypto)) {
-      console.error("Invalid crypto type:", crypto);
+    // Validate required fields
+    if (!userName || !userEmail || !transactionId || !id || !amount || !imageUrl || !imageId) {
+      console.error("Missing required fields");
       return NextResponse.json(
-        { error: "Invalid cryptocurrency type" },
+        { error: "All fields are required" },
         { status: 400 }
       );
     }
@@ -53,35 +52,52 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Get user and check balance
-    const user = await db.query.users.findFirst({
-      where: eq(users.id, session.user.id)
-    });
+    // Get user and investment plan
+    const [user, investmentPlan] = await Promise.all([
+      db.query.users.findFirst({
+        where: eq(users.id, session.user.id)
+      }),
+      db.query.investmentPlans.findFirst({
+        where: eq(investmentPlans.id, id)
+      })
+    ]);
 
     if (!user) {
       console.error("User not found:", session.user.id);
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    if (!investmentPlan) {
+      console.error("Investment plan not found:", id);
+      return NextResponse.json({ error: "Investment plan not found" }, { status: 404 });
+    }
+
+    // Validate investment amount
+    if (amount < investmentPlan.minAmount || (investmentPlan.maxAmount && amount > investmentPlan.maxAmount)) {
       return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
+        { error: `Amount must be between ${investmentPlan.minAmount} and ${investmentPlan.maxAmount || 'unlimited'}` },
+        { status: 400 }
       );
     }
 
     // Create investment with transaction
     const investment = await db.transaction(async (tx) => {
-      // Create investment
       const [newInvestment] = await tx.insert(investments).values({
         id: `inv_${transactionId}`,
-        userId: session.user.id,
-        name: userName,
-        email: userEmail,
-        walletPaidInto: 'USDT', // Default to USDT
-        planId: id,
-        amount: amount,
+        name: investmentPlan.name,
+        price: amount,
+        profitPercent: investmentPlan.roi,
+        rating: 5,
+        principalReturn: true,
+        principalWithdraw: true,
+        creditAmount: amount,
+        depositFee: "0",
+        debitAmount: 0,
+        durationDays: Math.floor(investmentPlan.durationHours / 24),
         createdAt: new Date(),
         updatedAt: new Date()
       }).returning();
 
-      // Create investment status
       await tx.insert(investmentStatuses).values({
         id: `is_${transactionId}`,
         status: "ACTIVE",
@@ -89,18 +105,17 @@ export async function POST(req: NextRequest) {
         updatedAt: new Date()
       });
 
-      // Create transaction record
       await tx.insert(transactionHistory).values({
         id: `th_${transactionId}`,
         userId: session.user.id,
         type: TransactionTypeEnum.Investment,
         amount: amount,
-        description: `Investment created`,
+        description: `Investment in ${investmentPlan.name}`,
+        investmentId: newInvestment.id,
         createdAt: new Date(),
         updatedAt: new Date()
       });
 
-      // Store proof image
       await tx.insert(imageProofs).values({
         id: imageId,
         url: imageUrl,
@@ -111,8 +126,6 @@ export async function POST(req: NextRequest) {
 
       return newInvestment;
     });
-
-    console.log("Investment created successfully:", investment);
 
     // Send email notifications
     if (process.env.RESEND_API_KEY) {
@@ -125,7 +138,7 @@ export async function POST(req: NextRequest) {
             react: InvestmentEmail({
               userName,
               amount: amount.toString(),
-              planName: id,
+              planName: investmentPlan.name,
               transactionId: investment.id,
               isAdminCopy: false
             })
@@ -137,7 +150,7 @@ export async function POST(req: NextRequest) {
             react: InvestmentEmail({
               userName,
               amount: amount.toString(),
-              planName: id,
+              planName: investmentPlan.name,
               transactionId: investment.id,
               isAdminCopy: true
             })
