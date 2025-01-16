@@ -10,5 +10,5 @@ export const cryptocurrencies = [
     address: "qztuw2qex6jhxuxswly80jpdqsugw3hlnvl6gjunn4",
   },
   { name: "DOGE", fullname: "Dogecoin", address: "DMvvUMMwpuUEQi5XbxZqTHZNmziHokRRjz" },
-  { name: "USD", fullname: "US Dollar", address: "DMvvUMMwpuUEQi5XbxZqTHZNmziHokRRjz" },
+  { name: "USD", fullname: "US Dollar", address: "Not Available" },
 ];

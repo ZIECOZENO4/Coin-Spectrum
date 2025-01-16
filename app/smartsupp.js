@@ -21,7 +21,7 @@ _smartsupp.backgroundColor = 'transparent';
           })(document);
           
           smartsupp('chat:widget', {
-            buttonStyle: 'background: none; border: none; width: 60px; height: 60px; margin-bottom: 2rem;',
+            buttonStyle: 'background: none; border: none; width: 60px; height: 60px;',
           });
         `,
       }}

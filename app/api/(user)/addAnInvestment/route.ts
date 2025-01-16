@@ -1,33 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { Resend } from "resend";
 import { 
   investments, 
   investmentPlans, 
   investmentStatuses, 
   imageProofs, 
-  users 
+  users,
+  transactionHistory,
+  TransactionTypeEnum,
+  Wallets
 } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { getUserAuth } from "@/lib/auth/utils";
+import { InvestmentEmail } from "@/emails/InvestmentEmail";
 
-// Assuming you've defined these in your schema
-import { InvestmentStatusEnum, Wallets } from "@/lib/db/schema";
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-export interface CreateInvestmentData {
-  userName: string;
-  userEmail: string;
-  transactionId: string;
-  id: string;
-  amount: number;
-  imageUrl: string;
-  imageId: string;
-  crypto: Wallets;
-}
-
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   try {
-    console.log("Received request body:", req.body);
-
+    console.log("Starting investment creation process...");
+    
+    const body = await req.json();
+    console.log("Request body:", body);
+    
     const {
       userName,
       userEmail,
@@ -37,91 +33,132 @@ export async function POST(req: NextRequest, res: NextResponse) {
       imageUrl,
       imageId,
       crypto,
-    }: CreateInvestmentData = await req.json();
+    } = body;
 
-    if (!crypto || !Object.values(Wallets).includes(crypto)) {
-      console.error("Invalid or no crypto provided by you");
+    // Validate inputs
+    if (!crypto || !Object.values(Wallets.enumValues).includes(crypto)) {
+      console.error("Invalid crypto type:", crypto);
       return NextResponse.json(
-        { error: "Invalid or no crypto provided" },
-        { status: 400 }
-      );
-    }
-
-    if (!id || !Object.values(id).includes(id)) {
-      console.error("Invalid or no investment plan name provided");
-      return NextResponse.json(
-        { error: "Invalid or no investment plan name provided" },
-        { status: 400 }
-      );
-    }
-
-    // Validate required fields
-    if (
-      !userName ||
-      !userEmail ||
-      !transactionId ||
-      !id ||
-      !amount ||
-      !imageUrl ||
-      !imageId ||
-      !crypto
-    ) {
-      return NextResponse.json(
-        { error: "All fields are required" },
+        { error: "Invalid cryptocurrency type" },
         { status: 400 }
       );
     }
 
     const { session } = await getUserAuth();
-    const userId = session?.user.id;
-    if (!userId) {
+    if (!session?.user?.id) {
+      console.error("User not authenticated");
       return NextResponse.json(
-        { error: "User ID is required" },
-        { status: 400 }
+        { error: "User not authenticated" },
+        { status: 401 }
       );
     }
 
-    const investmentPlan = await db.query.investmentPlans.findFirst({
-      where: eq(investmentPlans.id, id),
+    // Get user and check balance
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, session.user.id)
     });
 
-    if (!investmentPlan) {
-      throw new Error(`Investment plan ${id} not found`);
+    if (!user) {
+      console.error("User not found:", session.user.id);
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
     }
 
+    // Create investment with transaction
     const investment = await db.transaction(async (tx) => {
-      const [createdInvestment] = await tx
-        .insert(investments)
-        .values({
-          userId,
-          transactionId,
-          name: userName,
-          email: userEmail,
-          walletPaidInto: crypto,
-          planId: investmentPlan.id,
-        })
-        .returning();
+      // Create investment
+      const [newInvestment] = await tx.insert(investments).values({
+        id: `inv_${transactionId}`,
+        userId: session.user.id,
+        name: userName,
+        email: userEmail,
+        walletPaidInto: crypto,
+        planId: id,
+        amount: amount,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }).returning();
 
+      // Create investment status
       await tx.insert(investmentStatuses).values({
-        investmentId: createdInvestment.id,
-        status: InvestmentStatusEnum.NOT_CONFIRMED,
+        id: `is_${transactionId}`,
+        status: "ACTIVE",
+        createdAt: new Date(),
+        updatedAt: new Date()
       });
 
+      // Create transaction record
+      await tx.insert(transactionHistory).values({
+        id: `th_${transactionId}`,
+        userId: session.user.id,
+        type: TransactionTypeEnum.Investment,
+        amount: amount,
+        description: `Investment created`,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
+
+      // Store proof image
       await tx.insert(imageProofs).values({
         id: imageId,
         url: imageUrl,
-        investmentId: createdInvestment.id,
+        investmentId: newInvestment.id,
+        createdAt: new Date(),
+        updatedAt: new Date()
       });
 
-      return createdInvestment;
+      return newInvestment;
     });
 
-    console.log("Investment created:", investment);
-    return NextResponse.json(investment, { status: 201 });
-  } catch (error: any) {
-    console.error("Error creating investment:", error);
+    console.log("Investment created successfully:", investment);
+
+    // Send email notifications
+    if (process.env.RESEND_API_KEY) {
+      try {
+        await Promise.all([
+          resend.emails.send({
+            from: process.env.RESEND_FROM_EMAIL!,
+            to: userEmail,
+            subject: "Investment Created Successfully",
+            react: InvestmentEmail({
+              userName,
+              amount: amount.toString(),
+              planName: id,
+              transactionId: investment.id,
+              isAdminCopy: false
+            })
+          }),
+          resend.emails.send({
+            from: process.env.RESEND_FROM_EMAIL!,
+            to: process.env.ADMIN_EMAIL!,
+            subject: "New Investment Created",
+            react: InvestmentEmail({
+              userName,
+              amount: amount.toString(),
+              planName: id,
+              transactionId: investment.id,
+              isAdminCopy: true
+            })
+          })
+        ]);
+        console.log("Email notifications sent successfully");
+      } catch (emailError) {
+        console.error("Failed to send email notifications:", emailError);
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Investment created successfully",
+      investment
+    });
+
+  } catch (error) {
+    console.error("Investment creation failed:", error);
     return NextResponse.json(
-      { error: error.message || "Internal Server Error" },
+      { error: "Failed to create investment" },
       { status: 500 }
     );
   }
