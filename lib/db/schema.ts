@@ -67,6 +67,7 @@ export const users = pgTable("user", {
   fullName: text("full_name"),
   imageUrl: text("image_url"),
   email: text("email").notNull(),
+  balance: doublePrecision("balance").notNull().default(0),
   phoneNumber: text("phone_number"),
   bitcoinAccountId: text("bitcoin_account_id"),
   usdtTrc20AccountId: text("usdt_trc20_account_id"),
@@ -141,6 +142,17 @@ export const transactionHistory = pgTable("transaction_history", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const pendingDeposits = pgTable("pending_deposits", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  amount: doublePrecision("amount").notNull(),
+  cryptoType: text("crypto_type").notNull(),
+  proofImageUrl: text("proof_image_url").notNull(),
+  status: text("status").notNull().default("pending"),
+  transactionId: text("transaction_id").unique().notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
 
 export const kyc = pgTable("kyc", {
   id: text("id").primaryKey(),
