@@ -8,8 +8,7 @@ import {
   imageProofs, 
   users,
   transactionHistory,
-  TransactionTypeEnum,
-  Wallets
+  TransactionTypeEnum
 } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { getUserAuth } from "@/lib/auth/utils";
@@ -24,21 +23,12 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     console.log("Request body:", body);
     
-    const {
-      userName,
-      userEmail,
-      transactionId,
-      id,
-      amount,
-      imageUrl,
-      imageId
-    } = body;
+    const { id, amount } = body;
 
-    // Validate required fields
-    if (!userName || !userEmail || !transactionId || !id || !amount || !imageUrl || !imageId) {
-      console.error("Missing required fields");
+    if (!id || !amount) {
+      console.error("Missing required fields:", { id, amount });
       return NextResponse.json(
-        { error: "All fields are required" },
+        { error: "Investment ID and amount are required" },
         { status: 400 }
       );
     }
@@ -52,7 +42,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Get user and investment plan
+    // Get user and investment plan details
     const [user, investmentPlan] = await Promise.all([
       db.query.users.findFirst({
         where: eq(users.id, session.user.id)
@@ -72,41 +62,31 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Investment plan not found" }, { status: 404 });
     }
 
-    // Validate investment amount
-    if (amount < investmentPlan.minAmount || (investmentPlan.maxAmount && amount > investmentPlan.maxAmount)) {
-      return NextResponse.json(
-        { error: `Amount must be between ${investmentPlan.minAmount} and ${investmentPlan.maxAmount || 'unlimited'}` },
-        { status: 400 }
-      );
+    if (user.balance < amount) {
+      console.error("Insufficient balance:", { required: amount, available: user.balance });
+      return NextResponse.json({ error: "Insufficient balance" }, { status: 400 });
     }
 
-    // Create investment with transaction
+    console.log("Creating investment with transaction...");
     const investment = await db.transaction(async (tx) => {
       const [newInvestment] = await tx.insert(investments).values({
-        id: `inv_${transactionId}`,
-        name: investmentPlan.name,
-        price: amount,
-        profitPercent: investmentPlan.roi,
-        rating: 5,
-        principalReturn: true,
-        principalWithdraw: true,
-        creditAmount: amount,
-        depositFee: "0",
-        debitAmount: 0,
-        durationDays: Math.floor(investmentPlan.durationHours / 24),
+        id: `inv_${Date.now()}`,
+        userId: session.user.id,
+        amount: amount,
+        planId: id,
         createdAt: new Date(),
         updatedAt: new Date()
       }).returning();
 
-      await tx.insert(investmentStatuses).values({
-        id: `is_${transactionId}`,
-        status: "ACTIVE",
-        createdAt: new Date(),
-        updatedAt: new Date()
-      });
+      await tx.update(users)
+        .set({
+          balance: user.balance - amount,
+          updatedAt: new Date()
+        })
+        .where(eq(users.id, session.user.id));
 
       await tx.insert(transactionHistory).values({
-        id: `th_${transactionId}`,
+        id: `th_${Date.now()}`,
         userId: session.user.id,
         type: TransactionTypeEnum.Investment,
         amount: amount,
@@ -116,27 +96,20 @@ export async function POST(req: NextRequest) {
         updatedAt: new Date()
       });
 
-      await tx.insert(imageProofs).values({
-        id: imageId,
-        url: imageUrl,
-        investmentId: newInvestment.id,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      });
-
       return newInvestment;
     });
 
-    // Send email notifications
+    console.log("Investment created successfully:", investment);
+
     if (process.env.RESEND_API_KEY) {
       try {
         await Promise.all([
           resend.emails.send({
             from: process.env.RESEND_FROM_EMAIL!,
-            to: userEmail,
+            to: user.email,
             subject: "Investment Created Successfully",
             react: InvestmentEmail({
-              userName,
+              userFirstName: user.firstName || user.email,
               amount: amount.toString(),
               planName: investmentPlan.name,
               transactionId: investment.id,
@@ -148,7 +121,7 @@ export async function POST(req: NextRequest) {
             to: process.env.ADMIN_EMAIL!,
             subject: "New Investment Created",
             react: InvestmentEmail({
-              userName,
+              userFirstName: user.firstName || user.email,
               amount: amount.toString(),
               planName: investmentPlan.name,
               transactionId: investment.id,

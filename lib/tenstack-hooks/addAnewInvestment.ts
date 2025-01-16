@@ -6,15 +6,15 @@ import {
 } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-// Define the interface based on the API requirements
+// Hook (addAnewInvestment.ts)
 interface CreateInvestmentData {
-  userName: string;
-  userEmail: string;
-  transactionId: string;
-  id: string;
+  id: string; // Investment plan ID
   amount: number;
-  imageUrl: string;
-  imageId: string;
+  // Optional fields
+  userName?: string;
+  userEmail?: string;
+  imageUrl?: string;
+  imageId?: string;
 }
 
 const createInvestment: MutationFunction<Investment, CreateInvestmentData> = async (data) => {
@@ -24,18 +24,18 @@ const createInvestment: MutationFunction<Investment, CreateInvestmentData> = asy
   try {
     const response = await fetch("/api/addAnInvestment", {
       method: "POST",
-      headers: { 
+      headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        userName: data.userName,
-        userEmail: data.userEmail,
-        transactionId: data.transactionId,
         id: data.id,
         amount: data.amount,
-        imageUrl: data.imageUrl,
-        imageId: data.imageId
-      }),
+        // Include optional fields only if they exist
+        ...(data.userName && { userName: data.userName }),
+        ...(data.userEmail && { userEmail: data.userEmail }),
+        ...(data.imageUrl && { imageUrl: data.imageUrl }),
+        ...(data.imageId && { imageId: data.imageId })
+      })
     });
 
     if (!response.ok) {
@@ -44,7 +44,6 @@ const createInvestment: MutationFunction<Investment, CreateInvestmentData> = asy
     }
 
     const responseData = await response.json();
-    console.log("Investment created successfully:", responseData);
     return responseData;
   } catch (error) {
     console.error("Investment creation failed:", error);
@@ -56,16 +55,13 @@ export const useCreateInvestment = () => {
   return useMutation({
     mutationFn: createInvestment,
     mutationKey: ["createInvestment"],
-    onMutate: (variables) => {
-      console.log("Starting investment creation with:", variables);
-    },
     onSuccess: (data) => {
-      console.log("Investment created successfully:", data);
       toast.success("Investment created successfully!");
     },
     onError: (error: Error) => {
-      console.error("Investment creation failed:", error);
       toast.error(error.message || "Failed to create investment");
     }
   });
 };
+
+// API Route (api/addAnInvestment/route.ts)

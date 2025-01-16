@@ -13,7 +13,7 @@ import {
 import * as React from "react";
 
 interface InvestmentEmailProps {
-  userName: string;
+  userFirstName: string;
   amount: string;
   planName: string;
   transactionId: string;
@@ -21,7 +21,7 @@ interface InvestmentEmailProps {
 }
 
 export const InvestmentEmail = ({
-  userName,
+  userFirstName,
   amount,
   planName,
   transactionId,
@@ -39,8 +39,8 @@ export const InvestmentEmail = ({
           <Section className="mb-6">
             <Text>
               {isAdminCopy 
-                ? `New investment created by ${userName}`
-                : `Dear ${userName}, your investment has been created successfully.`
+                ? `New investment created by ${userFirstName}`
+                : `Dear ${userFirstName}, your investment has been created successfully.`
               }
             </Text>
             <div className="bg-gray-100 p-4 rounded-lg">
