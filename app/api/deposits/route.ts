@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { Resend } from "resend";
 import { DepositEmail } from "@/emails/DepositEmail";
-import { eq } from "drizzle-orm";
 import { transactionHistory, userTrackers } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -12,21 +12,25 @@ export async function POST(req: Request) {
     const { userName, userEmail, amount, transactionId, imageData, selectedCrypto } = await req.json();
 
     const transaction = await db.insert(transactionHistory).values({
-      id: transactionId,
-      userId: userEmail,
-      type: "deposit",
-      amount: parseFloat(amount),
-      description: `Deposit via ${selectedCrypto}`,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }).returning();
+        id: transactionId,
+        userId: userEmail,
+        type: "deposit", // Using the TransactionType enum
+        amount: parseFloat(amount),
+        description: `Deposit via ${selectedCrypto}`,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }).returning();
+      
 
-    const existingTracker = await db.select().from(userTrackers).where(eq(userTrackers.userId, userEmail));
+    // Update or create user tracker
+    const existingTracker = await db.query.userTrackers.findFirst({
+      where: (userTrackers, { eq }) => eq(userTrackers.userId, userEmail)
+    });
 
-    if (existingTracker.length > 0) {
+    if (existingTracker) {
       await db.update(userTrackers)
-        .set({ 
-          balance: existingTracker[0].balance + parseFloat(amount),
+        .set({
+          balance: existingTracker.balance + parseFloat(amount),
           updatedAt: new Date()
         })
         .where(eq(userTrackers.userId, userEmail));
@@ -40,10 +44,10 @@ export async function POST(req: Request) {
       });
     }
 
-    // Email sending logic remains the same
+    // Send email notification
     await resend.emails.send({
-      from: "deposits@yourdomain.com",
-      to: "admin@yourdomain.com",
+      from: process.env.RESEND_FROM_EMAIL || "deposits@coinspectrum.net",
+      to: process.env.ADMIN_EMAIL || "admin@coinspectrum.net",
       subject: "New Deposit Pending Confirmation",
       react: DepositEmail({
         userFirstName: userName,
@@ -56,11 +60,16 @@ export async function POST(req: Request) {
       }),
     });
 
-    return NextResponse.json({ success: true, transaction: transaction[0] });
+    return NextResponse.json({ 
+      success: true, 
+      message: "Deposit submitted successfully",
+      transaction 
+    });
+
   } catch (error) {
-    console.error(error);
+    console.error("Deposit error:", error);
     return NextResponse.json(
-      { error: "Failed to process deposit" },
+      { error: "Failed to process deposit. Please try again." },
       { status: 500 }
     );
   }

@@ -107,15 +107,17 @@ const DepositCard = () => {
         }),
       });
   
+      const data = await response.json();
+  
       if (!response.ok) {
-        throw new Error("Failed to submit deposit");
+        throw new Error(data.error || "Failed to submit deposit");
       }
   
       toast.success("Deposit submitted successfully");
       router.push("/dashboard");
     } catch (error) {
-      toast.error("Failed to submit deposit");
       console.error(error);
+      toast.error("Failed to submit deposit. Please try again.");
     }
   };
   
