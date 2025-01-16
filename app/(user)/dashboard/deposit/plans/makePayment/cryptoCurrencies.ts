@@ -1,14 +1,13 @@
 export const cryptocurrencies = [
-  { name: "BTC", fullname: "Bitcoin", address: "bc1q6wxg9ud7nq2qpepkv2j0sa5znfqjcsyyngjj2r" },
-  { name: "USDT", fullname: "Tether", address: "Not Available" },
-  { name: "ETH", fullname: "Ethereum", address: "Not Available" },
-  { name: "TRX", fullname: "Tron", address: "TNbNZ6fr6q1THkjdYAMZqb1FNgpxUPG8QU" },
-  { name: "LTC", fullname: "Litecoin", address: "Not Available" },
+  { name: "BTC", fullname: "Bitcoin", address: "1LE3uTbMFBhggNbtxhvBxB6aCKpJTHT4cg" },
+  { name: "USDT", fullname: "Tether", address: "0x481A2AD25c61765e26B0A87C69E765261B5BaEF3" },
+  { name: "ETH", fullname: "Ethereum", address: "0x481A2AD25c61765e26B0A87C69E765261B5BaEF3" },
+  { name: "TRX", fullname: "Tron", address: "TE4hcP3oPzD8wbcGJbiUHTqFDFM3MgsvBY" },
+  { name: "LTC", fullname: "Litecoin", address: "ltc1qy5q0ukrkjndk5fcajv7qdhf9crv6jdfgx4k7qc" },
   {
     name: "BCH",
     fullname: "Bitcoin Cash",
-    address: "Not Available",
+    address: "qztuw2qex6jhxuxswly80jpdqsugw3hlnvl6gjunn4",
   },
-  { name: "DOGE", fullname: "Dogecoin", address: "Not Available" },
-
+  { name: "DOGE", fullname: "Dogecoin", address: "DMvvUMMwpuUEQi5XbxZqTHZNmziHokRRjz" },
 ];

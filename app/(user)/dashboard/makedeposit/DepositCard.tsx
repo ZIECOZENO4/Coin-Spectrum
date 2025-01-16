@@ -86,45 +86,39 @@ const DepositCard = () => {
   });
 
   const handlePaidClick = async () => {
-    if (!userEmail || !userName || !transactionId || !imageData?.url) {
+    if (!userEmail || !userName || !amount || !transactionId || !imageData?.url) {
       toast.error("Make sure that all of the fields are filled");
       return;
     }
-
-    // try {
-    //   toast.promise(
-    //     createInvestmentMutation.mutateAsync(
-    //       {
-    //         id: investmentPlan.id,
-    //         amount: amount,
-    //         imageUrl: imageData.url,
-    //         imageId: imageData.id,
-    //         transactionId,
-    //         userName,
-    //         userEmail,
-    //         crypto: selectedCrypto as Wallets,
-    //       },
-    //       {
-    //         onSuccess: (data) => {
-    //           console.log("Investment created successfully:", data);
-    //           router.push("/await-confirmation");
-    //         },
-    //         onError: (error) => {
-    //           console.error("Error creating investment:", error);
-    //           // Perform any additional actions on error
-    //         },
-    //       }
-    //     ),
-    //     {
-    //       loading: "Creating investment...",
-    //       success: "Investment created successfully!",
-    //       error: "Failed to create investment.",
-    //     }
-    //   );
-    // } catch (error) {
-    //   console.error("Error creating investment:", error);
-    // }
+  
+    try {
+      const response = await fetch("/api/deposits", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userName,
+          userEmail,
+          amount,
+          transactionId,
+          imageData,
+          selectedCrypto,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to submit deposit");
+      }
+  
+      toast.success("Deposit submitted successfully");
+      router.push("/dashboard");
+    } catch (error) {
+      toast.error("Failed to submit deposit");
+      console.error(error);
+    }
   };
+  
   const [value, copy] = useCopyToClipboard();
 
   useEffect(() => {
