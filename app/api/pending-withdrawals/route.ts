@@ -17,7 +17,6 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Get pending withdrawals
     const pendingWithdrawals = await db
       .select()
       .from(withdrawals)
