@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Key, TrendingUp, Percent, Clock, AlertTriangle } from 'lucide-react'
+import { usePurchaseSignal } from "@/hook/usePurchaseSignals"
 
 interface SignalProps {
   id: string
@@ -17,7 +18,17 @@ interface SignalProps {
 }
 
 export default function SignalCard({ id, name, price, percentage, expiry, risk, description }: SignalProps) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
+  const purchaseSignal = usePurchaseSignal();
+
+  const handlePurchase = async () => {
+    try {
+      await purchaseSignal.mutateAsync({ signalId: id });
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Purchase failed:", error);
+    }
+  };
 
   return (
     <>
@@ -61,7 +72,7 @@ export default function SignalCard({ id, name, price, percentage, expiry, risk, 
                 animate={{ opacity: 1, x: 0 }}
                 className="text-xl font-bold text-white"
               >
-                ƒ {price}
+                 {price} USD
               </motion.span>
             </div>
 
@@ -141,11 +152,12 @@ export default function SignalCard({ id, name, price, percentage, expiry, risk, 
                 Cancel
               </Button>
               <Button
-                onClick={() => setIsOpen(false)}
-                className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black font-bold"
-              >
-                Confirm Purchase
-              </Button>
+    onClick={handlePurchase}
+    disabled={purchaseSignal.isPending}
+    className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black font-bold"
+  >
+    {purchaseSignal.isPending ? "Processing..." : "Confirm Purchase"}
+  </Button>
             </div>
           </div>
         </DialogContent>

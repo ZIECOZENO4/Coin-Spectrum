@@ -1,57 +1,68 @@
-"use client"
+"use client";
+import { motion } from "framer-motion";
+import SignalCard from "./signal-card";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 
-import { motion } from "framer-motion"
-import SignalCard from "./signal-card"
+// Define the Signal type
+interface Signal {
+  id: string;
+  name: string;
+  price: number;
+  percentage: number;
+  expiry: string;
+  risk: "Low" | "Medium" | "High";
+  description: string;
+}
 
-const signals = [
-  {
-    id: "SIG-001",
-    name: "EURUSD Long",
-    price: 150,
-    percentage: 5,
-    expiry: "24h",
-    risk: "Low",
-    description: "Strong bullish momentum detected on EURUSD with multiple technical indicators confirming upward trend."
-  },
-  {
-    id: "SIG-002",
-    name: "GBPJPY Short",
-    price: 180,
-    percentage: 7,
-    expiry: "12h",
-    risk: "Medium",
-    description: "Technical breakdown expected with resistance level breach imminent."
-  },
-  {
-    id: "SIG-003",
-    name: "BTCUSD Long",
-    price: 250,
-    percentage: 12,
-    expiry: "48h",
-    risk: "High",
-    description: "Major support level holding with increasing volume indicating potential breakout."
-  },
-  {
-    id: "SIG-004",
-    name: "XAUUSD Short",
-    price: 200,
-    percentage: 6,
-    expiry: "36h",
-    risk: "Medium",
-    description: "Gold showing weakness at key resistance with bearish divergence on RSI."
-  },
-  {
-    id: "SIG-005",
-    name: "USDJPY Long",
-    price: 160,
-    percentage: 4,
-    expiry: "24h",
-    risk: "Low",
-    description: "Clear uptrend continuation pattern forming with strong fundamental backing."
+// Custom hook to fetch signals with proper typing
+const useSignals = () => {
+  return useQuery<Signal[], Error>({
+    queryKey: ['signals'],
+    queryFn: async () => {
+      console.log("Fetching trading signals...");
+      const response = await fetch('/api/signals');
+      if (!response.ok) {
+        throw new Error('Failed to fetch signals');
+      }
+      const data = await response.json();
+      console.log("Signals fetched successfully:", data);
+      return data.signals;
+    }
+  });
+};
+
+export default function TradingSignals(): JSX.Element {
+  const { data: signals, isLoading, isError } = useSignals();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-black p-8 flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-white"
+        >
+          Loading signals...
+        </motion.div>
+      </div>
+    );
   }
-] as const
 
-export default function TradingSignals() {
+  if (isError) {
+    return (
+      <div className="min-h-screen bg-black p-8 flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-red-500"
+        >
+          Failed to load signals
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black p-8">
       <motion.div
@@ -78,7 +89,7 @@ export default function TradingSignals() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {signals.map((signal, index) => (
+          {signals?.map((signal, index) => (
             <motion.div
               key={signal.id}
               initial={{ opacity: 0, y: 20 }}
@@ -91,6 +102,5 @@ export default function TradingSignals() {
         </div>
       </motion.div>
     </div>
-  )
+  );
 }
-
