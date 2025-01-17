@@ -65,6 +65,7 @@ export default function AdminTradersPage() {
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
+                <label>Trader Name</label>
               <Input
                 placeholder="Trader Name"
                 value={formData.name}
@@ -73,7 +74,7 @@ export default function AdminTradersPage() {
                   name: e.target.value
                 }))}
               />
-              
+                <label>Image URL</label>
               <Input
                 placeholder="Image URL"
                 value={formData.imageUrl}
@@ -82,7 +83,7 @@ export default function AdminTradersPage() {
                   imageUrl: e.target.value
                 }))}
               />
-              
+                <label>Followers</label>
               <Input
                 type="number"
                 placeholder="Followers"
@@ -92,7 +93,7 @@ export default function AdminTradersPage() {
                   followers: parseInt(e.target.value)
                 }))}
               />
-              
+                 <label>Minimum Capital</label>
               <Input
                 type="number"
                 placeholder="Minimum Capital"
@@ -102,7 +103,7 @@ export default function AdminTradersPage() {
                   minCapital: parseFloat(e.target.value)
                 }))}
               />
-              
+               <label>Percentage Profit</label>
               <Input
                 type="number"
                 placeholder="Percentage Profit"
@@ -112,7 +113,7 @@ export default function AdminTradersPage() {
                   percentageProfit: parseFloat(e.target.value)
                 }))}
               />
-              
+               <label>Total Profit</label>
               <Input
                 type="number"
                 placeholder="Total Profit"
@@ -122,7 +123,7 @@ export default function AdminTradersPage() {
                   totalProfit: parseFloat(e.target.value)
                 }))}
               />
-              
+                <label>Rating (1-5)</label>
               <Input
                 type="number"
                 min="1"
