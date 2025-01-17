@@ -1,7 +1,7 @@
 // app/api/signals/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { signals, users } from "@/lib/db/schema";
+import { tradingSignals, users } from "@/lib/db/schema";
 import { getUserAuth } from "@/lib/auth/utils";
 import { eq } from "drizzle-orm";
 import { Resend } from "resend";
@@ -9,16 +9,15 @@ import { SignalEmail } from "@/emails/PurchaseSignal";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// GET all signals
 export async function GET() {
   try {
     console.log("Fetching trading signals...");
     
     const allSignals = await db
       .select()
-      .from(signals)
-      .where(eq(signals.isActive, true))
-      .orderBy(signals.createdAt);
+      .from(tradingSignals)
+      .where(eq(tradingSignals.isActive, true))
+      .orderBy(tradingSignals.createdAt);
 
     return NextResponse.json({ signals: allSignals });
   } catch (error) {
@@ -30,7 +29,6 @@ export async function GET() {
   }
 }
 
-// POST to purchase signal
 export async function POST(req: NextRequest) {
   try {
     console.log("Processing signal purchase...");
@@ -49,8 +47,8 @@ export async function POST(req: NextRequest) {
       db.query.users.findFirst({
         where: eq(users.id, session.user.id)
       }),
-      db.query.signals.findFirst({
-        where: eq(signals.id, signalId)
+      db.query.tradingSignals.findFirst({
+        where: eq(tradingSignals.id, signalId)
       })
     ]);
 
