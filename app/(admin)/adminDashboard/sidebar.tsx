@@ -246,7 +246,15 @@ const Sidebar: React.FC = () => {
                 All Withdrawals
               </span>
             </Link>
-
+            <Link
+              href={"/adminDashboard/create-copy-trades"}
+              className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                "/adminDashboard/create-copy-trades"
+              )}`}
+            >
+              <FaBookmark />
+              <span className="text-[15px] ml-4 text-gray-200">Copy Trades</span>
+            </Link>
             <Link
               href={"/adminDashboard/allUsers"}
               className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(

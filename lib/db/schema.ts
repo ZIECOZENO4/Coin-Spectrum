@@ -260,6 +260,23 @@ export const Wallets = pgEnum('wallets', [
   // Add other wallet types as needed
 ]);
 
+export const traders = pgTable("traders", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  imageUrl: text("image_url").notNull(),
+  followers: integer("followers").notNull().default(0),
+  minCapital: doublePrecision("min_capital").notNull(),
+  percentageProfit: doublePrecision("percentage_profit").notNull(),
+  totalProfit: doublePrecision("total_profit").notNull(),
+  rating: integer("rating").notNull(),
+  isPro: boolean("is_pro").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+
+export type Trader = typeof traders.$inferSelect;
+
 export const WithdrawalStatus = pgEnum('withdrawal_status', ['PENDING', 'COMPLETED', 'FAILED']); // Add all your status values
 // You can add these lines to your existing types
 export type InvestmentPlan = typeof investmentPlans.$inferSelect;
