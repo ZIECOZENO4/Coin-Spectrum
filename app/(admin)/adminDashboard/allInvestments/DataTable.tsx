@@ -24,21 +24,30 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { useDataTableStore } from "@/lib/zuustand-store";
-import { useInvestments } from "@/lib/tenstack-hooks/useInvestments";
 import NoData from "../../../../components/noData";
+import { useDeleteUserInvestment } from "@/lib/tenstack-hooks/useAdminInvestments";
+import { useInvestments } from "@/lib/tenstack-hooks/useAdminFetchInvestments";
+import { Header, HeaderGroup, Row, Cell } from '@tanstack/react-table';
+import { Investment } from '@/lib/db/schema';
+import { 
+  Table as TableInstance
+} from '@tanstack/react-table';
 
-type Investment = {
+type UserInvestmentData = {
   id: string;
-  name: string;
-  price: number;
-  profitPercent: number;
-  rating: number;
-  principalReturn: boolean;
-  principalWithdraw: boolean;
-  creditAmount: number;
-  depositFee: string;
-  debitAmount: number;
-  durationDays: number;
+  userId: string;
+  user: {
+    fullName: string;
+    email: string;
+  };
+  investment: {
+    id: string;
+    name: string;
+    price: number;
+    profitPercent: number;
+    durationDays: number;
+  };
+  amount: number;
   createdAt: string;
   updatedAt: string;
 };
@@ -50,110 +59,95 @@ export function DataTable() {
   
   const {
     search,
-    setSearch,
     page,
     setPage,
     sort,
-    setSort,
     order,
-    setOrder,
-    statusFilter,
-    setStatusFilter,
-    planFilter,
-    setPlanFilter,
   } = useDataTableStore();
 
   const { data, isLoading, isError, error } = useInvestments(
     page,
     sort,
     order,
-    search,
-    statusFilter,
-    planFilter
+    search
   );
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const deleteInvestmentMutation = useDeleteUserInvestment();
 
-  if (isError) {
-    return <div>Error: {error?.message}</div>;
-  }
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteInvestmentMutation.mutateAsync(id);
+    } catch (error) {
+      console.error("Error deleting investment:", error);
+    }
+  };
 
-  const investments = data?.investments || [];
-
-  const columns: ColumnDef<InvestmentData>[] = [
+  const columns: ColumnDef<UserInvestmentData>[] = [
     {
       id: "serialNumber",
       header: () => <span className="md:text-md text-xs font-semibold">S/N</span>,
       cell: ({ row }) => <span className="md:text-md text-xs">{row.index + 1}</span>,
     },
     {
-      accessorKey: "name",
-      header: () => <span className="md:text-md text-xs font-semibold">Name</span>,
+      accessorKey: "user.fullName",
+      header: () => <span className="md:text-md text-xs font-semibold">User</span>,
       cell: ({ row }) => (
-        <Link
-          href={`/adminDashboard/oneInvestment?id=${row.original.id}`}
-          className="md:text-md text-xs"
-        >
-          {row.original.name}
-        </Link>
+        <div className="flex flex-col">
+          <span className="md:text-md text-xs font-medium">{row.original.user.fullName}</span>
+          <span className="text-xs text-gray-500">{row.original.user.email}</span>
+        </div>
       ),
     },
     {
-      accessorKey: "price",
-      header: () => <span className="md:text-md text-xs font-semibold">Price</span>,
+      accessorKey: "investment.name",
+      header: () => <span className="md:text-md text-xs font-semibold">Investment Plan</span>,
       cell: ({ row }) => (
-        <span className="md:text-md text-xs">
-          ${row.original.price.toLocaleString()}
-        </span>
+        <span className="md:text-md text-xs">{row.original.investment.name}</span>
       ),
     },
     {
-      accessorKey: "profitPercent",
+      accessorKey: "amount",
+      header: () => <span className="md:text-md text-xs font-semibold">Amount</span>,
+      cell: ({ row }) => (
+        <span className="md:text-md text-xs">${row.original.amount.toLocaleString()}</span>
+      ),
+    },
+    {
+      accessorKey: "investment.profitPercent",
       header: () => <span className="md:text-md text-xs font-semibold">Profit %</span>,
       cell: ({ row }) => (
-        <span className="md:text-md text-xs">
-          {row.original.profitPercent}%
-        </span>
-      ),
-    },
-    {
-      accessorKey: "durationDays",
-      header: () => <span className="md:text-md text-xs font-semibold">Duration</span>,
-      cell: ({ row }) => (
-        <span className="md:text-md text-xs">
-          {row.original.durationDays} days
-        </span>
+        <span className="md:text-md text-xs">{row.original.investment.profitPercent}%</span>
       ),
     },
     {
       accessorKey: "createdAt",
-      header: () => <span className="md:text-md text-xs font-semibold">Created</span>,
+      header: () => <span className="md:text-md text-xs font-semibold">Invested On</span>,
       cell: ({ row }) => (
         <span className="md:text-md text-xs">
           {formatDistanceToNow(new Date(row.original.createdAt))} ago
         </span>
       ),
     },
+    {
+      id: "actions",
+      header: () => <span className="md:text-md text-xs font-semibold">Actions</span>,
+      cell: ({ row }) => (
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={() => handleDelete(row.original.id)}
+          disabled={deleteInvestmentMutation.isPending}
+        >
+          Delete
+        </Button>
+      ),
+    },
   ];
 
-  const table = useReactTable({
-    data: investments,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getPaginationRowModel: getPaginationRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    state: {
-      columnFilters,
-    },
-  });
-
-  if (investments.length === 0) {
-    return <NoData />;
-  }
-
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error?.message}</div>;
+  if (!data?.investments.length) return <NoData />;
+  
   return (
     <div>
       <div className="flex flex-col items-center justify-between">
@@ -161,9 +155,9 @@ export function DataTable() {
           <div className="rounded-md">
             <Table>
               <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
+                {table.getHeaderGroups().map((headerGroup: HeaderGroup<Investment>) => (
                   <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
+                    {headerGroup.headers.map((header: Header<Investment, unknown>) => (
                       <TableHead key={header.id}>
                         {header.isPlaceholder
                           ? null
@@ -177,9 +171,9 @@ export function DataTable() {
                 ))}
               </TableHeader>
               <TableBody>
-                {table.getRowModel().rows.map((row) => (
+                {table.getRowModel().rows.map((row: Row<Investment>) => (
                   <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
+                    {row.getVisibleCells().map((cell: Cell<Investment, unknown>) => (
                       <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
@@ -219,4 +213,5 @@ export function DataTable() {
       </div>
     </div>
   );
+  
 }
