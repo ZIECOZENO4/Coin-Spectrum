@@ -90,8 +90,8 @@ export default function TradingInterface({ selectedPair, onSymbolChange }: Tradi
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 className="flex-1 bg-transparent px-4 py-3 text-white focus:outline-none"
-                placeholder="Invest Amount"
-                min="0"
+                placeholder="Trade Amount"
+                min="50"
               />
             </motion.div>
           </div>
