@@ -1,78 +1,149 @@
-// Investments.tsx
+// app/admin/users/UsersTable.tsx
 "use client";
-
-import { Suspense, useState } from "react";
-import { Filter, Plus } from "lucide-react";
-import { FaSearch } from "react-icons/fa";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { formatDistanceToNow } from "date-fns";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
-import { DrawerDialogDemo } from "@/components/custom-component/drawer-or-dialogue";
-import { useUserDataTableStore } from "@/lib/zuustand-store";
-import { DataTable } from "./table";
-import { FilterForm } from "./filter";
-import Loader from "@/components/loader";
 
-const Investments = () => {
-  const { setSearch, search } = useUserDataTableStore();
-  const [searchValue, setSearchValue] = useState("");
+interface UsersTableProps {
+  search: string;
+}
 
-  const handleSearchClick = () => {
-    setSearch(searchValue);
-  };
+export function UsersTable({ search }: UsersTableProps) {
+  const [page, setPage] = useState(1);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [newBalance, setNewBalance] = useState("");
+  const queryClient = useQueryClient();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["users", page, search],
+    queryFn: async () => {
+      const params = new URLSearchParams({ page: page.toString(), search });
+      const res = await fetch(`/api/users?${params}`);
+      if (!res.ok) throw new Error("Failed to fetch");
+      return res.json();
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, balance }: { id: string; balance: number }) => {
+      const res = await fetch("/api/users", {
+        method: "PUT",
+        body: JSON.stringify({ id, balance }),
+      });
+      if (!res.ok) throw new Error("Failed to update");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      setSelectedUser(null);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/api/users?id=${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
+
+  if (isLoading) return <div className="text-white">Loading...</div>;
 
   return (
-    <div className="bg-black px-1 py-5 md:px-10">
-      <div className="flex items-center justify-between">
-        <p className="text-xl font-extrabold text-white">All users</p>
-        {/* <Link
-          className={`bg-blue-1 bg-orange-500 font-medium ${buttonVariants()} text-white`}
-          href={"/adminDashboards/newProduct"}
-        >
-          <Plus className="mr-2 h-4 w-4 text-white" />
-          Create Product
-        </Link> */}
-        <div></div>
+    <>
+      <div className="bg-yellow-50 rounded-lg overflow-hidden">
+        <Table>
+          <TableHeader className="bg-yellow-100">
+            <TableRow>
+              <TableHead className="text-black font-bold">User</TableHead>
+              <TableHead className="text-black font-bold">Balance</TableHead>
+              <TableHead className="text-black font-bold">Role</TableHead>
+              <TableHead className="text-black font-bold">Country</TableHead>
+              <TableHead className="text-black font-bold">Joined</TableHead>
+              <TableHead className="text-black font-bold">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data?.users.map((user: any) => (
+              <TableRow key={user.id} className="hover:bg-yellow-100">
+                <TableCell className="text-black">
+                  <div className="flex flex-col">
+                    <span className="font-medium">{user.fullName}</span>
+                    <span className="text-sm text-gray-600">{user.email}</span>
+                  </div>
+                </TableCell>
+                <TableCell className="text-black">
+                  ${user.balance.toLocaleString()}
+                </TableCell>
+                <TableCell className="text-black">{user.role}</TableCell>
+                <TableCell className="text-black">{user.country || "N/A"}</TableCell>
+                <TableCell className="text-black">
+                  {formatDistanceToNow(new Date(user.createdAt))} ago
+                </TableCell>
+                <TableCell>
+                  <div className="space-x-2">
+                    <Button
+                      onClick={() => setSelectedUser(user)}
+                      className="bg-black text-yellow-50 hover:bg-gray-800"
+                    >
+                      Update
+                    </Button>
+                    <Button
+                      onClick={() => deleteMutation.mutate(user.id)}
+                      variant="destructive"
+                      className="bg-red-600 hover:bg-red-700"
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
-      <Separator className="my-4 bg-neutral-900" />
 
-      <div className="py-5">
-        <div className="flex items-center py-4">
-          <Input
-            placeholder="Search..."
-            value={searchValue}
-            onChange={(event) => setSearchValue(event.target.value)}
-            className="max-w-sm"
-          />
-          <Button
-            // variant="secondary"
-            variant={"ghost"}
-            size={"sm"}
-            spellCheck
-            className="ml-2"
-            onClick={handleSearchClick}
-          >
-            <FaSearch className="h-4 w-4" />
-          </Button>
-          {/* <DrawerDialogDemo component={FilterForm}>
-            <Button variant="outline" className="ml-4 bg-rose-400">
-              <Filter className="mr-2 h-4 w-4" />
-              Filter
+      <Dialog open={!!selectedUser} onOpenChange={() => setSelectedUser(null)}>
+        <DialogContent className="bg-black text-white">
+          <DialogHeader>
+            <DialogTitle>Update User Balance</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Input
+              type="number"
+              value={newBalance}
+              onChange={(e) => setNewBalance(e.target.value)}
+              placeholder="New Balance"
+              className="bg-yellow-50 text-black"
+            />
+            <Button
+              onClick={() => {
+                updateMutation.mutate({
+                  id: selectedUser.id,
+                  balance: parseFloat(newBalance),
+                });
+              }}
+              className="bg-yellow-400 text-black hover:bg-yellow-500"
+            >
+              Update Balance
             </Button>
-          </DrawerDialogDemo> */}
-          <div></div>
-        </div>
-      </div>
-      <Suspense
-        fallback={
-          <Loader className="flex justify-center items-center min-h-[60dvh]" />
-        }
-      >
-        <DataTable />
-      </Suspense>
-    </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
-};
-
-export default Investments;
+}
