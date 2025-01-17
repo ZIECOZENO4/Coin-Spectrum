@@ -25,7 +25,7 @@ export default function AdminTradersPage() {
     e.preventDefault();
     
     try {
-      const response = await fetch("/api/(admin)/traders", {
+      const response = await fetch("/api/traders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
