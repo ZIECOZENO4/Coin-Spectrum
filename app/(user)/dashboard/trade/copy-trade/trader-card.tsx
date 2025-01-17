@@ -1,9 +1,14 @@
-"use client"
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Star, X } from 'lucide-react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+
+"use client";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Star } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+
 
 interface TraderProps {
   name: string
@@ -15,22 +20,80 @@ interface TraderProps {
   rating: number
   isPro?: boolean
 }
+// Hook to fetch traders
+const useTraders = () => {
+  return useQuery({
+    queryKey: ["traders"],
+    queryFn: async () => {
+      const response = await fetch("/api/traders");
+      if (!response.ok) {
+        throw new Error("Failed to fetch traders");
+      }
+      return response.json();
+    }
+  });
+};
 
-export default function TraderCard({
-  name,
-  image,
-  followers,
-  minCapital,
-  percentageProfit,
-  totalProfit,
-  rating,
-  isPro = false
-}: TraderProps) {
-  const [isOpen, setIsOpen] = useState(false)
+// Hook for copy trading
+const useCopyTrade = () => {
+  return useMutation({
+    mutationFn: async ({ traderId, amount }: { traderId: string; amount: number }) => {
+      const response = await fetch("/api/copy-trades", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ traderId, amount })
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to copy trade");
+      }
+      
+      return response.json();
+    }
+  });
+};
 
+export default function TraderCard({ id, ...props }: TraderProps & { id: string }) {
+  const { 
+    name,
+    image,
+    followers,
+    minCapital,
+    percentageProfit,
+    totalProfit,
+    rating,
+    isPro = false 
+  } = props;
+  const [isOpen, setIsOpen] = useState(false);
+  const [amount, setAmount] = useState(props.minCapital);
+  const copyTradeMutation = useCopyTrade();
+
+  const handleCopyTrade = async () => {
+    if (amount < props.minCapital) {
+      toast.error(`Minimum capital required is $${props.minCapital.toLocaleString()}`);
+      return;
+    }
+
+    try {
+      await copyTradeMutation.mutateAsync({
+        traderId: id,
+        amount
+      });
+      
+      toast.success("Successfully copied trader");
+      setIsOpen(false);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    }
+  };
+
+  // Original JSX remains the same until the Dialog content
   return (
     <>
-      <motion.div
+          <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         whileHover={{ y: -5 }}
@@ -157,38 +220,45 @@ export default function TraderCard({
           </motion.button>
         </div>
       </motion.div>
-
+      
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="bg-zinc-900 border border-yellow-400/20">
           <DialogHeader>
             <DialogTitle className="text-white">Copy Trading Confirmation</DialogTitle>
           </DialogHeader>
           <div className="p-6 space-y-4">
-            <p className="text-zinc-400">
-              You are about to copy trade with {name}. This means your account will automatically mirror their trading activities.
-            </p>
+            <Input
+              type="number"
+              min={props.minCapital}
+              value={amount}
+              onChange={(e) => setAmount(parseFloat(e.target.value))}
+              placeholder="Enter investment amount"
+              className="bg-zinc-800 border-yellow-400/20 text-white"
+            />
             <div className="bg-zinc-800 p-4 rounded-lg">
               <div className="flex justify-between mb-2">
                 <span className="text-zinc-400">Minimum Capital Required</span>
-                <span className="text-yellow-400 font-bold">${minCapital.toLocaleString()}</span>
+                <span className="text-yellow-400 font-bold">
+                  ${props.minCapital.toLocaleString()}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-zinc-400">Success Rate</span>
-                <span className="text-yellow-400 font-bold">{percentageProfit}%</span>
+                <span className="text-yellow-400 font-bold">{props.percentageProfit}%</span>
               </div>
             </div>
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="w-full bg-yellow-400 text-black font-bold py-3 rounded-lg"
-              onClick={() => setIsOpen(false)}
+              onClick={handleCopyTrade}
+              disabled={copyTradeMutation.isPending}
             >
-              Confirm Copy Trading
+              {copyTradeMutation.isPending ? "Processing..." : "Confirm Copy Trading"}
             </motion.button>
           </div>
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }
-

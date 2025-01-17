@@ -1,41 +1,59 @@
-"use client"
+"use client";
+import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import TraderCard from "./trader-card";
 
-import { motion } from "framer-motion"
-import TraderCard from "./trader-card"
+// Define proper interface for trader data
+interface Trader {
+  id: string;
+  name: string;
+  image: string;
+  followers: number;
+  minCapital: number;
+  percentageProfit: number;
+  totalProfit: number;
+  rating: number;
+  isPro?: boolean;
+}
 
-const traders = [
-  {
-    name: "Jarvis B. Buckley",
-    image: "/placeholder.svg?height=200&width=200",
-    followers: 450000,
-    minCapital: 20000,
-    percentageProfit: 96,
-    totalProfit: 1280000,
-    rating: 5,
-    isPro: true
-  },
-  {
-    name: "Sarah Anderson",
-    image: "/placeholder.svg?height=200&width=200",
-    followers: 320000,
-    minCapital: 15000,
-    percentageProfit: 88,
-    totalProfit: 950000,
-    rating: 4,
-    isPro: true
-  },
-  {
-    name: "Michael Chen",
-    image: "/placeholder.svg?height=200&width=200",
-    followers: 280000,
-    minCapital: 10000,
-    percentageProfit: 82,
-    totalProfit: 720000,
-    rating: 4
-  }
-]
+// Hook to fetch traders
+const useTraders = () => {
+  return useQuery<Trader[]>({
+    queryKey: ['traders'],
+    queryFn: async () => {
+      console.log("Fetching traders...");
+      const response = await fetch('/api/traders');
+      if (!response.ok) {
+        throw new Error('Failed to fetch traders');
+      }
+      const data = await response.json();
+      console.log("Traders fetched successfully:", data);
+      return data.traders;
+    }
+  });
+};
 
 export default function TradingExperts() {
+  const { data: traders, isLoading, isError, error } = useTraders();
+
+  if (isLoading) {
+    return (
+      <div className="h-auto bg-black p-8">
+        <div className="text-white text-center">Loading traders...</div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="h-auto bg-black p-8">
+        <div className="text-red-500 text-center">
+          Error loading traders: {error instanceof Error ? error.message : 'Unknown error'}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-auto bg-black p-8">
       <motion.h1
@@ -47,18 +65,17 @@ export default function TradingExperts() {
       </motion.h1>
       
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {traders.map((trader, index) => (
+        {traders?.map((trader) => (
           <motion.div
-            key={trader.name}
+            key={trader.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.2 }}
+            transition={{ delay: 0.2 }}
           >
-            <TraderCard {...trader} />
+            <TraderCard {...trader} id={trader.id} />
           </motion.div>
         ))}
       </div>
     </div>
-  )
+  );
 }
-

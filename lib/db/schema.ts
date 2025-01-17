@@ -274,6 +274,16 @@ export const traders = pgTable("traders", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const userCopyTrades = pgTable("user_copy_trades", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  traderId: text("trader_id").notNull().references(() => traders.id),
+  amount: doublePrecision("amount").notNull(),
+  status: text("status").notNull().default("active"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 
 export type Trader = typeof traders.$inferSelect;
 
