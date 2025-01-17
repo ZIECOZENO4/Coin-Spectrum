@@ -256,6 +256,15 @@ const Sidebar: React.FC = () => {
               <span className="text-[15px] ml-4 text-gray-200">Copy Trades</span>
             </Link>
             <Link
+              href={"/adminDashboard/purchase-signal"}
+              className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                "/adminDashboard/purchase-signal"
+              )}`}
+            >
+              <FaBookmark />
+              <span className="text-[15px] ml-4 text-gray-200">Purchase Signal</span>
+            </Link>
+            <Link
               href={"/adminDashboard/allUsers"}
               className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
                 "/adminDashboard/allUsers"

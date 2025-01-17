@@ -284,6 +284,28 @@ export const userCopyTrades = pgTable("user_copy_trades", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const tradingSignals = pgTable("trading_signals", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  price: doublePrecision("price").notNull(),
+  percentage: doublePrecision("percentage").notNull(),
+  expiry: text("expiry").notNull(),
+  risk: text("risk").notNull(), // "Low" | "Medium" | "High"
+  description: text("description").notNull(),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const signalPurchases = pgTable("signal_purchases", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  signalId: text("signal_id").notNull().references(() => tradingSignals.id),
+  amount: doublePrecision("amount").notNull(),
+  status: text("status").notNull().default("active"),
+  purchasedAt: timestamp("purchased_at").defaultNow(),
+  expiresAt: timestamp("expires_at").notNull(),
+});
 
 export type Trader = typeof traders.$inferSelect;
 

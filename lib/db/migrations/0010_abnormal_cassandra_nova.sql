@@ -1,0 +1,1 @@
+ALTER TABLE "trading_signals" DROP COLUMN IF EXISTS "signal_details";

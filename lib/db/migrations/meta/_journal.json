@@ -64,6 +64,20 @@
       "when": 1737104537354,
       "tag": "0008_loud_spectrum",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1737119704082,
+      "tag": "0009_sparkling_zarda",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1737119928795,
+      "tag": "0010_abnormal_cassandra_nova",
+      "breakpoints": true
     }
   ]
 }
