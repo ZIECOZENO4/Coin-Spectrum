@@ -27,11 +27,7 @@ import { useDataTableStore } from "@/lib/zuustand-store";
 import NoData from "../../../../components/noData";
 import { useDeleteUserInvestment } from "@/lib/tenstack-hooks/useAdminInvestments";
 import { useInvestments } from "@/lib/tenstack-hooks/useAdminFetchInvestments";
-import { Header, HeaderGroup, Row, Cell } from '@tanstack/react-table';
-import { Investment } from '@/lib/db/schema';
-import { 
-  Table as TableInstance
-} from '@tanstack/react-table';
+import { InvestmentNameEnum } from "@/lib/db/schema";
 
 type UserInvestmentData = {
   id: string;
@@ -42,7 +38,7 @@ type UserInvestmentData = {
   };
   investment: {
     id: string;
-    name: string;
+    name: InvestmentNameEnum;
     price: number;
     profitPercent: number;
     durationDays: number;
@@ -144,6 +140,18 @@ export function DataTable() {
     },
   ];
 
+  const tableInstance = useReactTable({
+    data: data?.investments ?? [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      columnFilters,
+    },
+  });
+
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error: {error?.message}</div>;
   if (!data?.investments.length) return <NoData />;
@@ -155,9 +163,9 @@ export function DataTable() {
           <div className="rounded-md">
             <Table>
               <TableHeader>
-                {table.getHeaderGroups().map((headerGroup: HeaderGroup<Investment>) => (
+                {tableInstance.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header: Header<Investment, unknown>) => (
+                    {headerGroup.headers.map((header) => (
                       <TableHead key={header.id}>
                         {header.isPlaceholder
                           ? null
@@ -171,9 +179,9 @@ export function DataTable() {
                 ))}
               </TableHeader>
               <TableBody>
-                {table.getRowModel().rows.map((row: Row<Investment>) => (
+                {tableInstance.getRowModel().rows.map((row) => (
                   <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell: Cell<Investment, unknown>) => (
+                    {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
@@ -213,5 +221,4 @@ export function DataTable() {
       </div>
     </div>
   );
-  
 }
