@@ -17,6 +17,16 @@ interface Trade {
   expiresAt?: string
 }
 
+interface TradingHistoryResponse {
+  trades: Trade[]
+  pagination: {
+    total: number
+    page: number
+    limit: number
+    totalPages: number
+  }
+}
+
 const container = {
   hidden: { opacity: 0 },
   show: {
@@ -33,24 +43,56 @@ const item = {
 }
 
 export default function LatestTrades() {
-  const { data: trades, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<TradingHistoryResponse>({
     queryKey: ['trading-history'],
     queryFn: async () => {
-      const response = await fetch('/api/trading-history')
-      if (!response.ok) throw new Error('Failed to fetch trading history')
-      return response.json() as Promise<Trade[]>
-    }
+      try {
+        const response = await fetch('/api/trading-history')
+        if (!response.ok) {
+          const errorData = await response.json()
+          console.error('API Error:', errorData)
+          throw new Error(errorData.error || 'Failed to fetch trading history')
+        }
+        return response.json()
+      } catch (error) {
+        console.error('Fetch Error:', error)
+        throw error
+      }
+    },
+    retry: 3,
+    retryDelay: 1000,
+    staleTime: 30000, // Cache for 30 seconds
   })
 
   if (isLoading) {
-    return <div className="h-auto bg-black p-8">Loading...</div>
+    return (
+      <div className="h-auto bg-black p-8">
+        <div className="flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400"></div>
+        </div>
+      </div>
+    )
   }
 
   if (error) {
-    return <div className="h-auto bg-black p-8">Error loading trades</div>
+    return (
+      <div className="h-auto bg-black p-8">
+        <p className="text-red-400 text-center">
+          {error instanceof Error ? error.message : 'Failed to load trades'}
+        </p>
+      </div>
+    )
   }
 
-  const getTradeIcon = (type: string) => {
+  if (!data?.trades || data.trades.length === 0) {
+    return (
+      <div className="h-auto bg-black p-8">
+        <p className="text-zinc-400 text-center">No trades found</p>
+      </div>
+    )
+  }
+
+  const getTradeIcon = (type: Trade['type']) => {
     switch (type) {
       case 'SIGNAL':
         return <Signal className="h-5 w-5 text-yellow-400" />
@@ -58,6 +100,15 @@ export default function LatestTrades() {
         return <Copy className="h-5 w-5 text-yellow-400" />
       default:
         return <TrendingUp className="h-5 w-5 text-yellow-400" />
+    }
+  }
+
+  const formatTimestamp = (timestamp: string) => {
+    try {
+      return format(new Date(timestamp), 'PPp')
+    } catch (error) {
+      console.error('Date formatting error:', error)
+      return 'Invalid date'
     }
   }
 
@@ -79,7 +130,7 @@ export default function LatestTrades() {
         animate="show"
         className="space-y-2"
       >
-        {trades?.map((trade) => (
+        {data.trades.map((trade) => (
           <motion.div
             key={trade.id}
             variants={item}
@@ -103,7 +154,7 @@ export default function LatestTrades() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
                 >
-                  {format(new Date(trade.timestamp), 'PPp')}
+                  {formatTimestamp(trade.timestamp)}
                 </motion.p>
               </div>
 
@@ -114,12 +165,12 @@ export default function LatestTrades() {
                   animate={{ scale: 1 }}
                   transition={{ type: "spring" }}
                 >
-                  {trade.amount} USD
+                  ${trade.amount.toLocaleString()} USD
                 </motion.div>
                 <div className="flex items-center justify-end space-x-2">
                   <motion.span
                     className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      trade.status === "active"
+                      trade.status.toLowerCase() === "active"
                         ? "bg-yellow-400/10 text-yellow-400"
                         : "bg-zinc-700/50 text-zinc-300"
                     }`}
@@ -129,16 +180,16 @@ export default function LatestTrades() {
                   </motion.span>
                   {trade.leverage && (
                     <span className="text-zinc-500 text-sm">
-                      Leverage: {trade.leverage}
+                      {trade.leverage}x
                     </span>
                   )}
-                  {trade.profit && (
+                  {trade.profit !== undefined && (
                     <motion.span
                       className={`font-semibold ${
                         trade.profit > 0 ? 'text-green-400' : 'text-red-400'
                       }`}
                     >
-                      {trade.profit > 0 ? '+' : ''}{trade.profit}%
+                      {trade.profit > 0 ? '+' : ''}{trade.profit.toFixed(2)}%
                     </motion.span>
                   )}
                 </div>
@@ -147,6 +198,12 @@ export default function LatestTrades() {
           </motion.div>
         ))}
       </motion.div>
+      
+      {data.pagination && (
+        <div className="mt-4 text-center text-sm text-zinc-500">
+          Showing {data.trades.length} of {data.pagination.total} trades
+        </div>
+      )}
     </div>
   )
 }

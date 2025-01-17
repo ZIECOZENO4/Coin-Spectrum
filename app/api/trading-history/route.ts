@@ -174,7 +174,7 @@ export async function POST(req: NextRequest) {
           amount,
           status: 'ACTIVE',
           purchasedAt: new Date(),
-          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 
         }).returning();
         break;
 
