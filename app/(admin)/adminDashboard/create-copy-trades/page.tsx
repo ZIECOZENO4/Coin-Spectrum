@@ -25,7 +25,7 @@ export default function AdminTradersPage() {
     e.preventDefault();
     
     try {
-      const response = await fetch("/api/admin/traders", {
+      const response = await fetch("/api/(admin)/traders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -65,6 +65,7 @@ export default function AdminTradersPage() {
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
+                <div className="div">
                 <label>Trader Name</label>
               <Input
                 placeholder="Trader Name"
@@ -73,8 +74,11 @@ export default function AdminTradersPage() {
                   ...prev,
                   name: e.target.value
                 }))}
-              />
-                <label>Image URL</label>
+              /> 
+                </div>
+            
+                 <div className="div">
+                 <label>Image URL</label>
               <Input
                 placeholder="Image URL"
                 value={formData.imageUrl}
@@ -83,7 +87,10 @@ export default function AdminTradersPage() {
                   imageUrl: e.target.value
                 }))}
               />
-                <label>Followers</label>
+                    </div>
+             
+                 <div className="div">
+                 <label>Followers</label>
               <Input
                 type="number"
                 placeholder="Followers"
@@ -93,6 +100,9 @@ export default function AdminTradersPage() {
                   followers: parseInt(e.target.value)
                 }))}
               />
+                    </div>
+           
+                 <div className="div">
                  <label>Minimum Capital</label>
               <Input
                 type="number"
@@ -103,7 +113,10 @@ export default function AdminTradersPage() {
                   minCapital: parseFloat(e.target.value)
                 }))}
               />
-               <label>Percentage Profit</label>
+                    </div>
+           
+                 <div className="div">
+                 <label>Percentage Profit</label>
               <Input
                 type="number"
                 placeholder="Percentage Profit"
@@ -113,7 +126,10 @@ export default function AdminTradersPage() {
                   percentageProfit: parseFloat(e.target.value)
                 }))}
               />
-               <label>Total Profit</label>
+                    </div>
+            
+                 <div className="div">
+                 <label>Total Profit</label>
               <Input
                 type="number"
                 placeholder="Total Profit"
@@ -123,7 +139,10 @@ export default function AdminTradersPage() {
                   totalProfit: parseFloat(e.target.value)
                 }))}
               />
-                <label>Rating (1-5)</label>
+                    </div>
+           
+                 <div className="div">
+                 <label>Rating (1-5)</label>
               <Input
                 type="number"
                 min="1"
@@ -135,6 +154,8 @@ export default function AdminTradersPage() {
                   rating: parseInt(e.target.value)
                 }))}
               />
+                    </div>
+         
               
               <div className="flex items-center space-x-2">
                 <Switch
