@@ -1,14 +1,15 @@
 "use client"
 import React, { useEffect, useRef, memo } from 'react';
 
-function TradingViewTechnicalAnalysis() {
+function TradingViewTechnicalAnalysis({ symbol }) {
   const container = useRef();
+  const formattedSymbol = symbol.includes('/') 
+  ? `FX:${symbol.replace('/', '')}` 
+  : `BINANCE:${symbol}USDT`;
 
   useEffect(() => {
     if (!container.current) return;
 
-    // const formattedSymbol = `${symbol}`;
-    const formattedSymbol = `BITSTAMP:BTCUSD`;
     const script = document.createElement("script");
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js";
     script.type = "text/javascript";
@@ -19,7 +20,7 @@ function TradingViewTechnicalAnalysis() {
         "width": "100%",
         "isTransparent": false,
         "height": "600",
-        "symbol": "${formattedSymbol}",
+            "symbol": "${formattedSymbol}",
         "showIntervalTabs": true,
         "displayMode": "single",
         "locale": "en",
@@ -40,7 +41,7 @@ function TradingViewTechnicalAnalysis() {
           "autosize": true,
           "isTransparent": false,
           "height": "600",
-          "symbol": "${fallbackSymbol}",
+             "symbol": "${formattedSymbol}",
           "showIntervalTabs": true,
           "displayMode": "single",
           "locale": "en",

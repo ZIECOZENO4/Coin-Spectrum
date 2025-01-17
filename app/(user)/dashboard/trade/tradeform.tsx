@@ -1,22 +1,46 @@
 "use client"
 
 import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { ChevronDown, TrendingUp, DollarSign, Clock, Gauge } from 'lucide-react'
-import { Line, LineChart, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts"
-import { Card, CardContent } from "@/components/ui/card"
+import { motion } from "framer-motion"
+import { Clock, Gauge } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { toast } from "sonner"
+import { useCreateTrade } from "@/lib/tenstack-hooks/useTradeMutation"
 
-// Sample chart data
-const chartData = Array.from({ length: 20 }, (_, i) => ({
-  time: i,
-  value: Math.sin(i * 0.5) * 10 + 150
-}))
+interface TradingInterfaceProps {
+  selectedPair: string;
+  onSymbolChange: (symbol: string) => void;
+}
+export default function TradingInterface({ selectedPair, onSymbolChange }: TradingInterfaceProps) {
+  const [amount, setAmount] = useState("0.00");
+  const [leverage, setLeverage] = useState("1:20");
+  const [expiry, setExpiry] = useState("5m");
+  
+  const createTrade = useCreateTrade();
 
-export default function TradingInterface() {
-  const [amount, setAmount] = useState("0.00")
-  const [selectedPair, setSelectedPair] = useState("EURJPY")
+
+  const handleTrade = async (type: 'BUY' | 'SELL') => {
+    if (!amount || parseFloat(amount) <= 0) {
+      toast.error('Please enter a valid amount')
+      return
+    }
+
+    try {
+      await createTrade.mutateAsync({
+        symbol: selectedPair,
+        type,
+        amount: parseFloat(amount),
+        leverage,
+        expiry
+      })
+      
+      toast.success('Trade placed successfully')
+      setAmount("0.00")
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to place trade')
+    }
+  }
 
   return (
     <div className="h-auto bg-black p-6">
@@ -25,8 +49,6 @@ export default function TradingInterface() {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-4xl mx-auto space-y-6"
       >
-    
-        {/* Trading Controls */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -35,19 +57,26 @@ export default function TradingInterface() {
         >
           <h2 className="text-2xl font-bold text-yellow-400">Trading Assets</h2>
           
-          {/* Asset Selector */}
-          <Select defaultValue={selectedPair} onValueChange={setSelectedPair}>
+          <Select value={selectedPair} onValueChange={onSymbolChange} >
             <SelectTrigger className="w-full bg-zinc-900 border-yellow-400/20 text-white">
               <SelectValue placeholder="Select asset" />
             </SelectTrigger>
             <SelectContent className="bg-zinc-900 border-yellow-400/20">
-              <SelectItem value="EURJPY">EURJPY</SelectItem>
-              <SelectItem value="EURUSD">EURUSD</SelectItem>
-              <SelectItem value="GBPUSD">GBPUSD</SelectItem>
+              <SelectItem value="EUR/USD">EUR/USD</SelectItem>
+              <SelectItem value="GBP/USD">GBP/USD</SelectItem>
+              <SelectItem value="USD/JPY">USD/JPY</SelectItem>
+              <SelectItem value="USD/CHF">USD/CHF</SelectItem>
+              <SelectItem value="AUD/USD">AUD/USD</SelectItem>
+              <SelectItem value="USD/CAD">USD/CAD</SelectItem>
+              <SelectItem value="BTC">BTC</SelectItem>
+              <SelectItem value="USDT">USDT</SelectItem>
+              <SelectItem value="ETH">ETH</SelectItem>
+              <SelectItem value="SOL">SOL</SelectItem>
+              <SelectItem value="NOT">NOT</SelectItem>
+              <SelectItem value="USDC">USDC</SelectItem>
             </SelectContent>
           </Select>
 
-          {/* Investment Amount */}
           <div className="relative">
             <motion.div
               whileHover={{ scale: 1.01 }}
@@ -62,12 +91,12 @@ export default function TradingInterface() {
                 onChange={(e) => setAmount(e.target.value)}
                 className="flex-1 bg-transparent px-4 py-3 text-white focus:outline-none"
                 placeholder="Invest Amount"
+                min="0"
               />
             </motion.div>
           </div>
 
-          {/* Leverage Selector */}
-          <Select defaultValue="1:20">
+          <Select value={leverage} onValueChange={setLeverage}>
             <SelectTrigger className="w-full bg-zinc-900 border-yellow-400/20 text-white">
               <div className="flex items-center gap-2">
                 <Gauge className="w-4 h-4 text-yellow-400" />
@@ -78,11 +107,13 @@ export default function TradingInterface() {
               <SelectItem value="1:10">1:10</SelectItem>
               <SelectItem value="1:20">1:20</SelectItem>
               <SelectItem value="1:50">1:50</SelectItem>
+              <SelectItem value="1:100">1:100</SelectItem>
+              <SelectItem value="1:500">1:500</SelectItem>
+              <SelectItem value="1:1000">1:1000</SelectItem>
             </SelectContent>
           </Select>
 
-          {/* Expiration Selector */}
-          <Select defaultValue="5m">
+          <Select value={expiry} onValueChange={setExpiry}>
             <SelectTrigger className="w-full bg-zinc-900 border-yellow-400/20 text-white">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-yellow-400" />
@@ -93,26 +124,29 @@ export default function TradingInterface() {
               <SelectItem value="1m">1 Minute</SelectItem>
               <SelectItem value="5m">5 Minutes</SelectItem>
               <SelectItem value="15m">15 Minutes</SelectItem>
+              <SelectItem value="30m">30 Minutes</SelectItem>
               <SelectItem value="1h">1 Hour</SelectItem>
+              <SelectItem value="24h">24 Hour</SelectItem>
             </SelectContent>
           </Select>
 
-          {/* Action Buttons */}
           <div className="grid grid-cols-2 gap-4 pt-4">
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Button
                 className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-6 text-lg"
-                onClick={() => console.log("BUY")}
+                onClick={() => handleTrade('BUY')}
+                disabled={createTrade.isPending}
               >
-                BUY
+                {createTrade.isPending ? 'Processing...' : 'BUY'}
               </Button>
             </motion.div>
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Button
                 className="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-6 text-lg"
-                onClick={() => console.log("SELL")}
+                onClick={() => handleTrade('SELL')}
+                disabled={createTrade.isPending}
               >
-                SELL
+                {createTrade.isPending ? 'Processing...' : 'SELL'}
               </Button>
             </motion.div>
           </div>
@@ -121,4 +155,3 @@ export default function TradingInterface() {
     </div>
   )
 }
-

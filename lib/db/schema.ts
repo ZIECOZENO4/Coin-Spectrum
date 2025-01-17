@@ -307,6 +307,27 @@ export const signalPurchases = pgTable("signal_purchases", {
   expiresAt: timestamp("expires_at").notNull(),
 });
 
+// Add to schema.ts
+export const trades = pgTable("trades", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  symbol: text("symbol").notNull(), // Trading pair e.g. EUR/USD
+  type: text("type").notNull(), // "BUY" or "SELL"
+  amount: doublePrecision("amount").notNull(),
+  leverage: integer("leverage").notNull(),
+  expiry: text("expiry").notNull(),
+  status: text("status").notNull().default("active"),
+  openPrice: doublePrecision("open_price").notNull(),
+  closePrice: doublePrecision("close_price"),
+  profit: doublePrecision("profit"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+
+
+export type Trade = typeof trades.$inferSelect;
+
 export type Trader = typeof traders.$inferSelect;
 
 export const WithdrawalStatus = pgEnum('withdrawal_status', ['PENDING', 'COMPLETED', 'FAILED']); // Add all your status values

@@ -1,13 +1,15 @@
 "use client"
 import React, { useEffect, useRef, memo } from 'react';
 
-function TradingViewFinancials() {
+function TradingViewFinancials({ symbol }) {
   const container = useRef();
 
   useEffect(() => {
     if (!container.current) return;
-    
-    const formattedSymbol = `BITSTAMP:BTCUSD`;
+    const formattedSymbol = symbol.includes('/') 
+    ? `FX:${symbol.replace('/', '')}` 
+    : `BINANCE:${symbol}USDT`;
+
     const script = document.createElement("script");
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-financials.js";
     script.type = "text/javascript";
@@ -20,7 +22,7 @@ function TradingViewFinancials() {
         "autosize": true,
         "height": 1000,
         "colorTheme": "dark",
-        "symbol": "${formattedSymbol}",
+           "symbol": "${formattedSymbol}",
         "locale": "en",
         "onSymbolNotFound": "onSymbolNotFound"
       }`;
