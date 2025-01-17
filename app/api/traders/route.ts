@@ -7,8 +7,11 @@ import { eq } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
   try {
+    console.log("Starting trader creation process...");
+    
     const { session } = await getUserAuth();
     if (!session?.user?.id) {
+      console.error("User not authenticated");
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
@@ -21,12 +24,17 @@ export async function POST(req: NextRequest) {
     });
 
     if (user?.role !== "admin") {
+      console.error("Non-admin user attempted to create trader:", session.user.id);
       return NextResponse.json(
         { error: "Admin access required" },
         { status: 403 }
       );
     }
 
+    const body = await req.json();
+    console.log("Request body:", body);
+
+    // Validate required fields
     const {
       name,
       imageUrl,
@@ -35,26 +43,42 @@ export async function POST(req: NextRequest) {
       percentageProfit,
       totalProfit,
       rating,
-      isPro
-    } = await req.json();
+      isPro = false
+    } = body;
 
-    const trader = await db.insert(traders).values({
-      id: `trader_${Date.now()}`,
-      name,
-      imageUrl,
-      followers,
-      minCapital,
-      percentageProfit,
-      totalProfit,
-      rating,
-      isPro,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }).returning();
+    if (!name || !imageUrl || !minCapital || !percentageProfit) {
+      console.error("Missing required fields");
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    console.log("Creating trader record...");
+    const trader = await db.transaction(async (tx) => {
+      const [newTrader] = await tx.insert(traders).values({
+        id: `trader_${Date.now()}`,
+        name,
+        imageUrl,
+        followers: followers || 0,
+        minCapital,
+        percentageProfit,
+        totalProfit: totalProfit || 0,
+        rating: rating || 5,
+        isPro,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }).returning();
+
+      return newTrader;
+    });
+
+    console.log("Trader created successfully:", trader);
 
     return NextResponse.json({
       success: true,
-      trader: trader[0]
+      message: "Trader created successfully",
+      trader
     });
 
   } catch (error) {
@@ -68,6 +92,8 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
+    console.log("Fetching traders...");
+    
     const { session } = await getUserAuth();
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -80,6 +106,8 @@ export async function GET(req: NextRequest) {
       .select()
       .from(traders)
       .orderBy(traders.createdAt);
+
+    console.log("Traders fetched successfully");
 
     return NextResponse.json({
       success: true,
