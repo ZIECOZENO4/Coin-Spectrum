@@ -89,7 +89,7 @@ export default function SignalCard({ id, name, price, percentage, expiry, risk, 
             </div>
 
             <div className="flex justify-between items-center">
-              <span className="text-zinc-400">Expiry</span>
+              <span className="text-zinc-400">Expiry (hrs)</span>
               <span className="text-white">{expiry}</span>
             </div>
           </div>
@@ -132,7 +132,7 @@ export default function SignalCard({ id, name, price, percentage, expiry, risk, 
 
             <div className="bg-zinc-800 p-4 rounded-lg">
               <h4 className="text-white font-semibold mb-2">Signal Description</h4>
-              <p className="text-zinc-400 text-sm">{description}</p>
+              <p className="text-zinc-400 text-sm">****************************</p>
             </div>
 
             <div className="bg-yellow-400/10 p-4 rounded-lg">
