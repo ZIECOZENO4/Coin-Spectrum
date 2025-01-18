@@ -31,7 +31,7 @@ export default function KycPage() {
           page: page.toString(),
           search: debouncedSearch,
         });
-        const res = await fetch(`/api/admin/kyc?${params}`);
+        const res = await fetch(`/api/Adminkyc?${params}`);
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json();
       },
@@ -39,7 +39,7 @@ export default function KycPage() {
   
     const kycMutation = useMutation({
       mutationFn: async ({ kycId, action, rejectionReason }: any) => {
-        const res = await fetch("/api/admin/kyc", {
+        const res = await fetch("/api/Adminkyc", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -61,7 +61,7 @@ export default function KycPage() {
   return (
     <div className="min-h-screen bg-black p-6">
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex flex-row items-center justify-between">
+        <div className="flex flex-col items-center justify-between">
           <h1 className="text-2xl font-bold text-white">KYC Verifications</h1>
           <Input
             placeholder="Search by name or email..."
@@ -120,7 +120,7 @@ export default function KycPage() {
                     {formatDistanceToNow(new Date(item.kyc.createdAt))} ago
                   </TableCell>
                   <TableCell>
-                    <div className="space-x-2">
+                    <div className="space-x-2 flex gap-4">
                       <Button
                         onClick={() => kycMutation.mutate({ 
                           kycId: item.kyc.id, 
