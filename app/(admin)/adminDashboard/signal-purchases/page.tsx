@@ -29,7 +29,7 @@ export default function SignalPurchasesPage() {
         page: page.toString(),
         search: debouncedSearch,
       });
-      const res = await fetch(`/api/admin/signal-purchases?${params}`);
+      const res = await fetch(`/api/signal-purchases?${params}`);
       if (!res.ok) throw new Error("Failed to fetch");
       return res.json();
     },
@@ -37,7 +37,7 @@ export default function SignalPurchasesPage() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const res = await fetch(`/api/admin/signal-purchases?id=${id}`, {
+      const res = await fetch(`/api/signal-purchases?id=${id}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Failed to delete");
