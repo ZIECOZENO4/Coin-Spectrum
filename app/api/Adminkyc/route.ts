@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { Resend } from "resend";
 import { KycEmail } from "@/emails/KycEmail";
 import { kyc, users } from "@/lib/db/schema";
-import { eq, sql } from "drizzle-orm";
+import { eq, ilike, or, sql } from "drizzle-orm";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -16,7 +16,7 @@ export async function GET(req: Request) {
     const limit = 10;
     const offset = (page - 1) * limit;
 
-    const kycList = await db
+    const baseQuery = db
       .select({
         kyc,
         user: {
@@ -26,18 +26,33 @@ export async function GET(req: Request) {
         },
       })
       .from(kyc)
-      .leftJoin(users, eq(kyc.userId, users.id))
-      .where(
-        search ? 
-          sql`kyc.email ILIKE ${`%${search}%`} OR users.full_name ILIKE ${`%${search}%`}` 
-          : undefined
-      )
-      .limit(limit)
-      .offset(offset);
+      .leftJoin(users, eq(kyc.userId, users.id));
 
-    const totalCount = await db
+    const kycList = await (search
+      ? baseQuery.where(
+          or(
+            ilike(kyc.email, `%${search}%`),
+            ilike(users.fullName, `%${search}%`)
+          )
+        )
+      : baseQuery)
+      .limit(limit)
+      .offset(offset)
+      .orderBy(kyc.createdAt);
+
+    const countQuery = db
       .select({ count: sql<number>`count(*)` })
-      .from(kyc);
+      .from(kyc)
+      .leftJoin(users, eq(kyc.userId, users.id));
+
+    const totalCount = await (search
+      ? countQuery.where(
+          or(
+            ilike(kyc.email, `%${search}%`),
+            ilike(users.fullName, `%${search}%`)
+          )
+        )
+      : countQuery);
 
     return NextResponse.json({
       kycList,
@@ -45,6 +60,7 @@ export async function GET(req: Request) {
       currentPage: page,
     });
   } catch (error) {
+    console.error("KYC fetch error:", error);
     return NextResponse.json({ error: "Failed to fetch KYC list" }, { status: 500 });
   }
 }
@@ -83,7 +99,6 @@ export async function POST(req: Request) {
       })
       .where(eq(kyc.id, kycId));
 
-    // Send email notifications
     await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL!,
       to: user.email,
@@ -95,21 +110,9 @@ export async function POST(req: Request) {
       }),
     });
 
-    // Send admin copy
-    await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL!,
-      to: process.env.ADMIN_EMAIL!,
-      subject: `KYC ${action === "approve" ? "Approved" : "Rejected"} - ${user.email}`,
-      react: KycEmail({
-        userFirstName: user.fullName || "User",
-        status: action === "approve" ? "approved" : "rejected",
-        rejectionReason,
-        isAdminCopy: true,
-      }),
-    });
-
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error("KYC process error:", error);
     return NextResponse.json({ error: "Failed to process KYC" }, { status: 500 });
   }
 }
