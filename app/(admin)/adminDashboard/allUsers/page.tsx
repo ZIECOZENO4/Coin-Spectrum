@@ -12,7 +12,7 @@ export default function UsersPage() {
   return (
     <div className="min-h-screen bg-black p-6">
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex  flex-col gap-4 items-center justify-between">
           <h1 className="text-2xl font-bold text-white">Users Management</h1>
           <Input
             placeholder="Search users..."

@@ -95,7 +95,7 @@ export function UsersTable({ search }: UsersTableProps) {
                   {formatDistanceToNow(new Date(user.createdAt))} ago
                 </TableCell>
                 <TableCell>
-                  <div className="space-x-2">
+                  <div className="space-x-2 flex gap-8">
                     <Button
                       onClick={() => setSelectedUser(user)}
                       className="bg-black text-yellow-50 hover:bg-gray-800"
