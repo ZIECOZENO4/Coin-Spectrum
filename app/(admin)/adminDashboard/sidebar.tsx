@@ -181,14 +181,14 @@ const Sidebar: React.FC = () => {
                   </span>
                 </Link>
                 <Link
-                  href={"/adminDashboard/history"}
+                  href={"/adminDashboard/kyc"}
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
-                    "/adminDashboard/history"
+                    "/adminDashboard/kyc"
                   )}`}
                 >
                   <FaEnvelope />
                   <span className="text-[15px] ml-4 text-gray-200">
-                    History
+                    Users Kyc
                   </span>
                 </Link>
 
@@ -310,15 +310,17 @@ const Sidebar: React.FC = () => {
                     All Deposits
                   </span>
                 </Link>
-            <Link
-              href={"/adminDashboard/history"}
-              className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
-                "/adminDashboard/history"
-              )}`}
-            >
-              <FaEnvelope />
-              <span className="text-[15px] ml-4 text-gray-200">History</span>
-            </Link>
+                <Link
+                  href={"/adminDashboard/kyc"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/adminDashboard/kyc"
+                  )}`}
+                >
+                  <FaEnvelope />
+                  <span className="text-[15px] ml-4 text-gray-200">
+                    Users Kyc
+                  </span>
+                </Link>
             <Link
                   href={"/dashboard/Kyc"}
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
