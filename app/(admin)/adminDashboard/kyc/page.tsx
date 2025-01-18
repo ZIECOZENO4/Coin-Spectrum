@@ -17,43 +17,46 @@ import { formatDistanceToNow } from "date-fns";
 import { useDebounce } from "@/hook/useDebounce";
 
 export default function KycPage() {
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const [selectedKyc, setSelectedKyc] = useState<any>(null);
-  const [rejectionReason, setRejectionReason] = useState("");
-  const debouncedSearch = useDebounce(search, 500);
-  const queryClient = useQueryClient();
-
-  const { data, isLoading } = useQuery({
-    queryKey: ["kyc", page, debouncedSearch],
-    queryFn: async () => {
-      const params = new URLSearchParams({
-        page: page.toString(),
-        search: debouncedSearch,
-      });
-      const res = await fetch(`/api/kyc?${params}`);
-      if (!res.ok) throw new Error("Failed to fetch");
-      return res.json();
-    },
-  });
-
-  const kycMutation = useMutation({
-    mutationFn: async ({ kycId, action, rejectionReason }: any) => {
-      const res = await fetch("/api/kyc", {
-        method: "POST",
-        body: JSON.stringify({ kycId, action, rejectionReason }),
-      });
-      if (!res.ok) throw new Error("Failed to process KYC");
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["kyc"] });
-      setSelectedKyc(null);
-      setRejectionReason("");
-    },
-  });
-
-  if (isLoading) return <div>Loading...</div>;
+    const [page, setPage] = useState(1);
+    const [search, setSearch] = useState("");
+    const [selectedKyc, setSelectedKyc] = useState<any>(null);
+    const [rejectionReason, setRejectionReason] = useState("");
+    const debouncedSearch = useDebounce(search, 500);
+    const queryClient = useQueryClient();
+  
+    const { data, isLoading } = useQuery({
+      queryKey: ["kyc", page, debouncedSearch],
+      queryFn: async () => {
+        const params = new URLSearchParams({
+          page: page.toString(),
+          search: debouncedSearch,
+        });
+        const res = await fetch(`/api/admin/kyc?${params}`);
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      },
+    });
+  
+    const kycMutation = useMutation({
+      mutationFn: async ({ kycId, action, rejectionReason }: any) => {
+        const res = await fetch("/api/admin/kyc", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ kycId, action, rejectionReason }),
+        });
+        if (!res.ok) throw new Error("Failed to process KYC");
+        return res.json();
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["kyc"] });
+        setSelectedKyc(null);
+        setRejectionReason("");
+      },
+    });
+  
+    if (isLoading) return <div className="text-white">Loading...</div>;
 
   return (
     <div className="min-h-screen bg-black p-6">
