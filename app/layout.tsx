@@ -64,11 +64,6 @@ export const metadata: Metadata = {
     images: ['https://www.coinspectrum.net/seo.png'],
     creator: '@yourtwitter',
   },
-  verification: {
-    google: 'your-google-verification-code',
-    yandex: 'your-yandex-verification-code',
-    yahoo: 'your-yahoo-verification-code',
-  },
   alternates: {
     canonical: 'https://www.coinspectrum.net',
     languages: {
