@@ -4,7 +4,9 @@ import TradingExperts from './trader-content'
 
 const CopyTrade = () => {
   return (
-    <div><TradingExperts /><LatestTrades /></div>
+    <div><TradingExperts />
+    {/* <LatestTrades /> */}
+    </div>
   )
 }
 

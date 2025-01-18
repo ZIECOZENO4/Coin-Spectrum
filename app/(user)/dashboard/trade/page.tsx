@@ -21,7 +21,7 @@ const TradePage = () => {
             selectedPair={selectedSymbol} 
             onSymbolChange={setSelectedSymbol} 
           />
-          <LatestTrades />
+          {/* <LatestTrades /> */}
           <div className="">
             <TradingViewTechnicalAnalysis symbol={selectedSymbol} />
           </div>

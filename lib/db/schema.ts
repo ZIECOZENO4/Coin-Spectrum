@@ -92,7 +92,6 @@ export const userTrackers = pgTable("user_trackers", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-
 export const userReferrals = pgTable("user_referral", {
   id: text("id").primaryKey(),
   referrerId: text("referrer_id").notNull().references(() => users.id),
@@ -236,7 +235,6 @@ export const withdrawals = pgTable("withdrawals", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-
 export const investmentStatuses = pgTable("investment_statuses", {
   id: text("id").primaryKey(),
   status: text("status").notNull(),
@@ -324,14 +322,11 @@ export const trades = pgTable("trades", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-
-
 export type Trade = typeof trades.$inferSelect;
 
 export type Trader = typeof traders.$inferSelect;
 
-export const WithdrawalStatus = pgEnum('withdrawal_status', ['PENDING', 'COMPLETED', 'FAILED']); // Add all your status values
-// You can add these lines to your existing types
+export const WithdrawalStatus = pgEnum('withdrawal_status', ['PENDING', 'COMPLETED', 'FAILED']);
 export type InvestmentPlan = typeof investmentPlans.$inferSelect;
 export type InvestmentTracker = typeof investmentTrackers.$inferSelect;
 export type Withdrawal = typeof withdrawals.$inferSelect;
