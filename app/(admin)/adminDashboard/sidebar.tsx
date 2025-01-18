@@ -158,7 +158,17 @@ const Sidebar: React.FC = () => {
                     All Users
                   </span>
                 </Link>
-
+                <Link
+                  href={"/adminDashboard/signal-purchases"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/adminDashboard/signal-purchases"
+                  )}`}
+                >
+                  <FaBookmark />
+                  <span className="text-[15px] ml-4 text-gray-200">
+                    Purchase Signals
+                  </span>
+                </Link>
                 <Link
                   href={"/adminDashboard/history"}
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
@@ -267,7 +277,17 @@ const Sidebar: React.FC = () => {
               <FaBookmark />
               <span className="text-[15px] ml-4 text-gray-200">All Users</span>
             </Link>
-
+            <Link
+                  href={"/adminDashboard/signal-purchases"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/adminDashboard/signal-purchases"
+                  )}`}
+                >
+                  <FaBookmark />
+                  <span className="text-[15px] ml-4 text-gray-200">
+                    Purchase Signals
+                  </span>
+                </Link>
             <Link
               href={"/adminDashboard/history"}
               className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
