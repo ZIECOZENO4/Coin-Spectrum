@@ -7,6 +7,7 @@ import { formatCurrencyNaira } from "@/lib/formatCurrency";
 import Image from "next/image";
 import NoInvestmentPlanCard from "./noinvestment";
 import { useGetAllInvestmentPlans } from "@/lib/tenstack-hooks/usefetchallinvestmentplan";
+import Loading from "@/app/loading";
 
 interface InvestmentPlanResponse {
   id: string;
@@ -127,7 +128,7 @@ const InvestmentPlanCard: React.FC<InvestmentPlanCardProps> = ({
 const InvestmentPlans: React.FC = () => {
   const { data: plans, isLoading, error } = useGetAllInvestmentPlans();
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div><Loading /></div>;
   if (error) return <div>Error loading investment plans</div>;
   if (!plans || plans.length === 0) return <NoInvestmentPlanCard />;
 

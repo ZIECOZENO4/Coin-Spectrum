@@ -5,6 +5,7 @@ import { DrawerDialogDemo } from "@/components/custom-component/drawer-or-dialog
 import { Button } from "@/components/ui/button";
 import { WithdrawalStatusForm } from "./withdrawalStatusForm";
 import { useGetAUserWithdrawal } from "@/lib/tenstack-hooks/useGetAuserWithdrawal";
+import Loading from "@/app/loading";
 
 interface WithdrawalDetailsProps {
   id: string;
@@ -21,7 +22,7 @@ export const WithdrawalDetails: React.FC<WithdrawalDetailsProps> = ({ id }) => {
     return formatDistanceToNow(date, { addSuffix: true });
   };
 
-  if (!data) return <div>Loading...</div>;
+  if (!data) return <div><Loading /></div>;
 
   const {
     createdAt,

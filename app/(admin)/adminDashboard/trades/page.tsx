@@ -42,7 +42,7 @@ export default function TradesPage() {
     },
   });
 
-  if (isLoading) return <div className="text-white">Loading...</div>;
+  if (isLoading) return <div className="text-white"><Loading`` /></div>;
 
   return (
     <div className="min-h-screen bg-black p-6">

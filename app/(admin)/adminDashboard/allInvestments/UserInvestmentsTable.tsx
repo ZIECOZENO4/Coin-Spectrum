@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
+import Loading from "@/app/loading";
 
 interface UserInvestmentsTableProps {
   search: string;
@@ -32,7 +33,7 @@ export function UserInvestmentsTable({ search }: UserInvestmentsTableProps) {
     },
   });
 
-  if (isLoading) return <div className="text-white">Loading...</div>;
+  if (isLoading) return <div className="text-white"><Loading /></div>;
 
   return (
     <div className="bg-yellow-50 rounded-lg overflow-hidden">

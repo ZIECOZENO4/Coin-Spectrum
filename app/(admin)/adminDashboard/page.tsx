@@ -6,6 +6,7 @@ import { CircleDollarSign, Users, TrendingUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { formatCurrencyNaira } from "@/lib/formatCurrency";
 import SalesChart from "./chart";
+import Loading from "@/app/loading";
 
 export default function Dashboard() {
   const { data, isLoading } = useQuery({
@@ -17,7 +18,7 @@ export default function Dashboard() {
     },
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div><Loading /></div>;
 
   const { statistics, chartData } = data || {
     statistics: {

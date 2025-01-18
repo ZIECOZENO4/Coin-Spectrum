@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
+import Loading from "@/app/loading";
 
 export default function CopyTradesPage() {
   const [page, setPage] = useState(1);
@@ -42,7 +43,7 @@ export default function CopyTradesPage() {
     },
   });
 
-  if (isLoading) return <div className="text-white">Loading...</div>;
+  if (isLoading) return <div className="text-white"><Loading/></div>;
 
   return (
     <div className="min-h-screen bg-black p-6">

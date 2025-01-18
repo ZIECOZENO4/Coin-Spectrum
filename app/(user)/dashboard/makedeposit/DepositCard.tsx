@@ -213,7 +213,7 @@ const DepositCard = () => {
             disabled={isButtonDisabled}
           >
             {isUploading ? (
-              "Uploading..."
+              "Uploa"
             ) : (
               <>
                 <Plus className="mr-2 h-4 w-4" /> Upload Image

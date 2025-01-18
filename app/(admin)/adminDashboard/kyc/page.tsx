@@ -56,7 +56,7 @@ export default function KycPage() {
       },
     });
   
-    if (isLoading) return <div className="text-white">Loading...</div>;
+    if (isLoading) return <div className="text-white"><Loading /></div>;
 
   return (
     <div className="min-h-screen bg-black p-6">

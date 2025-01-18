@@ -28,6 +28,7 @@ import NoData from "../../../../components/noData";
 import { useDeleteUserInvestment } from "@/lib/tenstack-hooks/useAdminInvestments";
 import { useInvestments } from "@/lib/tenstack-hooks/useAdminFetchInvestments";
 import { InvestmentNameEnum } from "@/lib/db/schema";
+import Loading from "@/app/loading";
 
 type UserInvestmentData = {
   id: string;
@@ -152,7 +153,7 @@ export function DataTable() {
     },
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div><Loading /></div>;
   if (isError) return <div>Error: {error?.message}</div>;
   if (!data?.investments.length) return <NoData />;
   

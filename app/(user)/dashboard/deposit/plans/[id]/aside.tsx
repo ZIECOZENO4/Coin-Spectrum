@@ -10,6 +10,7 @@ import { useFetchOneInvestmentPlan } from "@/lib/tenstack-hooks/usefetchAnInvest
 import { useCreateInvestment } from "@/lib/tenstack-hooks/addAnewInvestment";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Loading from "@/app/loading";
 
 // Define investment plan interface based on schema
 interface InvestmentPlan {
@@ -44,7 +45,7 @@ const InvestmentPlanCard: React.FC<InvestmentPlanCardProps> = ({ id }) => {
   const { data: investmentPlan, isLoading, isError } = useFetchOneInvestmentPlan(id);
   const createInvestmentMutation = useCreateInvestment();
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div><Loading /></div>;
   if (isError) return <div>Error loading investment plan</div>;
   if (!investmentPlan) return <NoInvestmentPlanCard />;
 

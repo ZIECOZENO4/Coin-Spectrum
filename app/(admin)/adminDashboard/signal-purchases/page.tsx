@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatDistanceToNow } from "date-fns";
 import { useDebounce } from "@/hook/useDebounce";
+import Loading from "@/app/loading";
 
 
 export default function SignalPurchasesPage() {
@@ -48,7 +49,7 @@ export default function SignalPurchasesPage() {
     },
   });
 
-  if (isLoading) return <div className="text-white">Loading...</div>;
+  if (isLoading) return <div className="text-white"><Loading /></div>;
 
   return (
     <div className="min-h-screen bg-black p-6">

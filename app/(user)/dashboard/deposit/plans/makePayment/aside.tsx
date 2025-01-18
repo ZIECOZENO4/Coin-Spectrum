@@ -293,7 +293,7 @@ const InvestmentPlanCard: React.FC<InvestmentPlanCardProps> = ({ id }) => {
             disabled={isButtonDisabled}
           >
             {isUploading ? (
-              "Uploading..."
+              "Up"
             ) : (
               <>
                 <Plus className="mr-2 h-4 w-4" /> Upload Image

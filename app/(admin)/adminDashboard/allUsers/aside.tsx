@@ -14,6 +14,7 @@ import { formatDistanceToNow } from "date-fns";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import Loading from "@/app/loading";
 
 interface UsersTableProps {
   search: string;
@@ -61,7 +62,7 @@ export function UsersTable({ search }: UsersTableProps) {
     },
   });
 
-  if (isLoading) return <div className="text-white">Loading...</div>;
+  if (isLoading) return <div className="text-white"><Loading /></div>;
 
   return (
     <>
