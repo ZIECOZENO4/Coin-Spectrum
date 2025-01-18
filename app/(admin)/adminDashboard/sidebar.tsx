@@ -170,6 +170,17 @@ const Sidebar: React.FC = () => {
                   </span>
                 </Link>
                 <Link
+                  href={"/adminDashboard/copy-trades"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/adminDashboard/copy-trades"
+                  )}`}
+                >
+                  <FaBookmark />
+                  <span className="text-[15px] ml-4 text-gray-200">
+                    Copy Trades
+                  </span>
+                </Link>
+                <Link
                   href={"/adminDashboard/deposits"}
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
                     "/adminDashboard/deposits"
@@ -178,6 +189,17 @@ const Sidebar: React.FC = () => {
                   <FaBookmark />
                   <span className="text-[15px] ml-4 text-gray-200">
                     All Deposits
+                  </span>
+                </Link>
+                <Link
+                  href={"/adminDashboard/trades"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/adminDashboard/trades"
+                  )}`}
+                >
+                  <FaBookmark />
+                  <span className="text-[15px] ml-4 text-gray-200">
+                    Quick Trades
                   </span>
                 </Link>
                 <Link
@@ -191,19 +213,6 @@ const Sidebar: React.FC = () => {
                     Users Kyc
                   </span>
                 </Link>
-
-                <Link
-                  href={"/dashboard/support"}
-                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
-                    "/dashboard/support"
-                  )}`}
-                >
-                  <FaEnvelope />
-                  <span className="text-[15px] ml-4 text-gray-200">
-                    Support
-                  </span>
-                </Link>
-  
       
               </div>
             </div>
@@ -321,6 +330,28 @@ const Sidebar: React.FC = () => {
                     Users Kyc
                   </span>
                 </Link>
+                <Link
+                  href={"/adminDashboard/copy-trades"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/adminDashboard/copy-trades"
+                  )}`}
+                >
+                  <FaBookmark />
+                  <span className="text-[15px] ml-4 text-gray-200">
+                    Copy Trades
+                  </span>
+                </Link>
+                <Link
+                  href={"/adminDashboard/trades"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/adminDashboard/trades"
+                  )}`}
+                >
+                  <FaBookmark />
+                  <span className="text-[15px] ml-4 text-gray-200">
+                    Quick Trades
+                  </span>
+                </Link>
             <Link
                   href={"/dashboard/Kyc"}
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
@@ -332,15 +363,7 @@ const Sidebar: React.FC = () => {
                    Start Kyc
                   </span>
                 </Link>
-            <Link
-              href={"/dashboard/support"}
-              className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
-                "/dashboard/support"
-              )}`}
-            >
-              <FaEnvelope />
-              <span className="text-[15px] ml-4 text-gray-200">Support</span>
-            </Link>
+     
           </div>
         </motion.div>
       )}
