@@ -2,7 +2,7 @@
 
 "use client";
 import { SearchCheck, User2Icon } from "lucide-react";
-import { SignOutButton, useClerk } from "@clerk/nextjs";
+import { SignOutButton, useClerk, UserButton, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import {
@@ -47,7 +47,7 @@ const Sidebar: React.FC = () => {
   } = useSidebarStore();
   const { width } = useWindowSize();
   const pathname = usePathname();
-
+  const { isLoaded, isSignedIn, user } = useUser();
   useEffect(() => {
     if (pathname.includes("/deposit")) {
       setDropdownOpen(true);
@@ -100,14 +100,17 @@ const Sidebar: React.FC = () => {
         <Sheet open={isOpen} onOpenChange={toggleSidebar}>
           <SheetContent side="left" className="w-72 bg-neutral-950 p-4">
             <SheetHeader>
-              <SheetTitle>Menu</SheetTitle>
+              <SheetTitle>Coin Spectrum</SheetTitle>
             </SheetHeader>
             <div className="text-gray-100 text-xl">
               <div className="p-2.5 mt-1 flex items-center rounded-md">
-                <User2Icon className="px-2 py-1 bg-blue-600 rounded-md" />
+                <UserButton  />
+                <Link href='/dashboard/profile'>
                 <h1 className="text-[15px] ml-3 text-xl text-gray-200 font-bold">
-                  Coin Spectrum
+              {user && user.firstName ? user.firstName : user ? user.username : "Coin Spectrum "}
                 </h1>
+                </Link>
+             
               </div>
               <hr className="my-2 text-gray-600" />
 
