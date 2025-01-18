@@ -5,27 +5,24 @@ import { MailOpenIcon } from '@/components/icons/Icons';
 const dummyAgents = [
   {
     _id: "1",
-    name: "John Doe",
+    name: "STEVEN HATZAKIS",
     image: '/ab1.jpg',
     role: "CEO",
-    linkedin: "https://linkedin.com/in/johndoe",
-    twitter: "https://twitter.com/johndoe"
+    mail:"Stevenhatzakistrading@gmail.com",
   },
   {
     _id: "2",
-    name: "Jane Smith",
+    name: "JOEY SHADECK",
     image: '/ab2.jpg',
-    role: "CTO",
-    linkedin: "https://linkedin.com/in/janesmith",
-    twitter: "https://twitter.com/janesmith"
+    role: "Senior Investor",
+    mail:"Stevenhatzakistrading@gmail.com",
   },
   {
     _id: "3",
-    name: "Mike Johnson",
+    name: "JEFF ANBERG",
     image: '/ab3.jpg',
-    role: "Lead Developer",
-    linkedin: "https://linkedin.com/in/mikejohnson",
-    twitter: "https://twitter.com/mikejohnson"
+    role: "Senior Trader",
+    mail:"Stevenhatzakistrading@gmail.com",
   }
 ];
 
@@ -47,50 +44,20 @@ const TeamCard = () => {
               <p className="text-gray-400 md:text-xl">{agent.role}</p> 
               <div className="mt-4 flex items-center justify-between">
                 <button className="btn btn-sm btn-ghost text-blue-600">Contact</button>
-                <div className="flex items-center gap-2">
-                  <a className="text-gray-400 hover:text-gray-50" href={agent.linkedin} target="_blank" rel="noopener noreferrer">
-                    <svg
-                      className="h-6 w-6"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                      <rect width="4" height="12" x="2" y="9" />
-                      <circle cx="4" cy="4" r="2" />
-                    </svg>
-                  </a>
-                  <a className="text-gray-400 hover:text-gray-50" href={agent.twitter} target="_blank" rel="noopener noreferrer">
-                    <svg
-                      className="h-6 w-6"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
-                    </svg>
-                  </a>
-                </div>
+      
               </div>
             </div>
             <div className="px-6 pt-4 pb-2">
-              <button className="w-full justify-center border border-gray-300 rounded-md py-2 md:text-2xl text-white flex flex-row items-center align-middle" aria-label="Email">
-                <MailOpenIcon className="mr-2 text-white" />
-                Email Me
-              </button>
-            </div>
+            <a href={`mailto:${agent.mail}?subject=Inquiry&body=Hello, am an investor on Coin Spectrum`}>
+    <button 
+      className="w-full justify-center border border-gray-300 rounded-md py-2 md:text-2xl text-white flex flex-row items-center align-middle" 
+      aria-label="Email"
+    >
+      <MailOpenIcon className="mr-2 text-white" />
+      Email Me
+    </button>
+  </a>
+</div>
           </div>
         ))}
       </div>
