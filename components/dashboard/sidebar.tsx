@@ -107,7 +107,7 @@ const Sidebar: React.FC = () => {
                 <UserButton  />
                 <Link href='/dashboard/user-profile'>
                 <h1 className="text-[15px] ml-3 text-xl flex gap-2 text-gray-200 font-bold">
-              {user && user.firstName ? user.firstName : user ? user.username : "Coin  "}
+              {user && user.firstName ? user.firstName : user ? user.username : "Coin  "}  {" "}
               {user && user.lastName ? user.lastName : user ? user.username : "Spectrum "}
                 </h1>
                 </Link>
@@ -380,7 +380,7 @@ const Sidebar: React.FC = () => {
             <UserButton  />
                 <Link href='/dashboard/user-profile'>
                 <h1 className="text-[15px] ml-3 text-xl flex gap-2 text-gray-200 font-bold">
-              {user && user.firstName ? user.firstName : user ? user.username : "Coin  "}
+              {user && user.firstName ? user.firstName : user ? user.username : "Coin  "} {" "}
               {user && user.lastName ? user.lastName : user ? user.username : "Spectrum "}
                 </h1>
                 </Link>
