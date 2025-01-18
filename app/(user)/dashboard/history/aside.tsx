@@ -1,58 +1,89 @@
+// components/TransactionCard.tsx
 "use client";
-import React from "react";
-import { useInView } from "react-intersection-observer";
-import NoData from "@/components/noData";
-import { useUserAllTransactions } from "@/lib/tenstack-hooks/useUserAllTransactions";
-import TransactionCard from "./historycard";
+import { Card, CardContent } from "@/components/ui/card";
+import { formatCurrency } from "@/lib/formatCurrency";
+import { format, formatDistanceToNow } from "date-fns";
+import { FaArrowDown, FaArrowUp, FaMoneyBillWave } from "react-icons/fa";
 
-const InfiniteScrollComponent = () => {
-  const { ref, inView } = useInView();
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    status,
-    error,
-  } = useUserAllTransactions();
+interface TransactionCardProps {
+  type: "deposit" | "withdrawal" | "investment";
+  amount: number;
+  date: Date;
+  description: string;
+}
 
-  React.useEffect(() => {
-    if (inView && hasNextPage) {
-      fetchNextPage();
+const TransactionCard: React.FC<TransactionCardProps> = ({
+  type,
+  amount,
+  date,
+  description,
+}) => {
+  const getTransactionDetails = () => {
+    switch (type) {
+      case "deposit":
+        return {
+          icon: FaArrowDown,
+          iconColor: "text-yellow-400",
+          bgColor: "bg-yellow-400/10",
+          borderColor: "border-yellow-400",
+          label: "Deposit"
+        };
+      case "withdrawal":
+        return {
+          icon: FaArrowUp,
+          iconColor: "text-red-500",
+          bgColor: "bg-red-500/10",
+          borderColor: "border-red-500",
+          label: "Withdrawal"
+        };
+      case "investment":
+        return {
+          icon: FaMoneyBillWave,
+          iconColor: "text-green-400",
+          bgColor: "bg-green-400/10",
+          borderColor: "border-green-400",
+          label: "Investment"
+        };
     }
-  }, [inView, fetchNextPage, hasNextPage]);
+  };
 
-  if (data?.pages.length === 0) {
-    return <NoData shortText="There is no transaction history found" />;
-  }
+  const details = getTransactionDetails();
+  const Icon = details.icon;
+  const timeAgo = formatDistanceToNow(date, { addSuffix: true });
+  const formattedDate = format(date, "MMMM d, yyyy h:mm a");
 
   return (
-    <div className="flex flex-col justify-center gap-4">
-      <h1 className="text-2xl font-extrabold text-center">YOUR TRANSACTIONS</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
-        {data?.pages.map((page, pageIndex) => (
-          <React.Fragment key={pageIndex}>
-            {page.transactions.map((transaction) => (
-              <TransactionCard
-                key={transaction.id}
-                type={transaction.type}
-                amount={transaction.amount}
-                date={new Date(transaction.createdAt)}
-                description={transaction.description}
-              />
-            ))}
-          </React.Fragment>
-        ))}
-        <div ref={ref}>
-          {isFetchingNextPage
-            ? "Loading more..."
-            : hasNextPage
-            ? "Load more"
-            : "No more data"}
+    <Card className="bg-black border-[1px] border-yellow-400/20 hover:border-yellow-400/40 transition-all duration-300">
+      <CardContent className="p-4">
+        <div className="flex items-center gap-4">
+          <div className={`p-3 rounded-full ${details.bgColor}`}>
+            <Icon className={`w-5 h-5 ${details.iconColor}`} />
+          </div>
+          
+          <div className="flex-1">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-white font-medium">{description}</p>
+                <span className={`text-xs ${details.iconColor}`}>
+                  {details.label}
+                </span>
+              </div>
+              <div className="text-right">
+                <p className={`font-semibold ${details.iconColor}`}>
+                  {type === "withdrawal" ? "-" : "+"}
+                  {formatCurrency(amount)}
+                </p>
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400">{timeAgo}</span>
+                  <span className="text-xs text-gray-500">{formattedDate}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
-export default InfiniteScrollComponent;
+export default TransactionCard;
