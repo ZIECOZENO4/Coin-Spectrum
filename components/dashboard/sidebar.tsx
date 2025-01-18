@@ -100,14 +100,15 @@ const Sidebar: React.FC = () => {
         <Sheet open={isOpen} onOpenChange={toggleSidebar}>
           <SheetContent side="left" className="w-72 bg-neutral-950 p-4">
             <SheetHeader>
-              <SheetTitle>Coin Spectrum</SheetTitle>
+              <SheetTitle>Coin Spectrum.net</SheetTitle>
             </SheetHeader>
             <div className="text-gray-100 text-xl">
               <div className="p-2.5 mt-1 flex items-center rounded-md">
                 <UserButton  />
-                <Link href='/dashboard/profile'>
-                <h1 className="text-[15px] ml-3 text-xl text-gray-200 font-bold">
-              {user && user.firstName ? user.firstName : user ? user.username : "Coin Spectrum "}
+                <Link href='/dashboard/user-profile'>
+                <h1 className="text-[15px] ml-3 text-xl flex gap-2 text-gray-200 font-bold">
+              {user && user.firstName ? user.firstName : user ? user.username : "Coin  "}
+              {user && user.lastName ? user.lastName : user ? user.username : "Spectrum "}
                 </h1>
                 </Link>
              
@@ -376,10 +377,13 @@ const Sidebar: React.FC = () => {
         >
           <div className="text-gray-100 text-xl">
             <div className="p-2.5 mt-1 flex items-center rounded-md">
-              <User2Icon className="px-2 py-1 bg-blue-600 rounded-md" />
-              <h1 className="text-[15px] ml-3 text-xl text-gray-200 font-bold">
-                Coin Spectrum
-              </h1>
+            <UserButton  />
+                <Link href='/dashboard/user-profile'>
+                <h1 className="text-[15px] ml-3 text-xl flex gap-2 text-gray-200 font-bold">
+              {user && user.firstName ? user.firstName : user ? user.username : "Coin  "}
+              {user && user.lastName ? user.lastName : user ? user.username : "Spectrum "}
+                </h1>
+                </Link>
             </div>
             <hr className="my-2 text-gray-600" />
 
