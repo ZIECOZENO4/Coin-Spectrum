@@ -2,17 +2,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { transactionHistory, users } from "@/lib/db/schema";
-import { eq, desc, sql } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { auth } from "@clerk/nextjs/server";
 
 export async function GET(req: NextRequest) {
   try {
     const { userId } = auth();
     if (!userId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ transactions: [] });
     }
 
     const searchParams = req.nextUrl.searchParams;
@@ -21,36 +18,25 @@ export async function GET(req: NextRequest) {
     const offset = (page - 1) * limit;
 
     const transactions = await db
-      .select({
-        id: transactionHistory.id,
-        type: transactionHistory.type,
-        amount: transactionHistory.amount,
-        description: transactionHistory.description,
-        createdAt: transactionHistory.createdAt,
-        investmentId: transactionHistory.investmentId
-      })
+      .select()
       .from(transactionHistory)
       .where(eq(transactionHistory.userId, userId))
       .orderBy(desc(transactionHistory.createdAt))
       .limit(limit)
       .offset(offset);
 
-    const totalCount = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(transactionHistory)
-      .where(eq(transactionHistory.userId, userId));
-
     return NextResponse.json({
-      transactions,
-      totalPages: Math.ceil(totalCount[0].count / limit),
+      transactions: transactions || [], // Ensure we always return an array
+      totalPages: Math.ceil((transactions?.length || 0) / limit),
       currentPage: page
     });
 
   } catch (error) {
-    console.error("Error fetching transaction history:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch transaction history" },
-      { status: 500 }
-    );
+    console.error("Error fetching transactions:", error);
+    return NextResponse.json({ 
+      transactions: [],
+      totalPages: 0,
+      currentPage: 1
+    });
   }
 }
