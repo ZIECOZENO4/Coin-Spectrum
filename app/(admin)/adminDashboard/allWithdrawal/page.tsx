@@ -1,4 +1,3 @@
-// app/admin/withdrawals/page.tsx
 "use client";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,13 +15,36 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { formatDistanceToNow } from "date-fns";
 import Loading from "@/app/loading";
 
+interface Withdrawal {
+  id: string;
+  amount: number;
+  cryptoType: string;
+  walletAddress: string;
+  createdAt: string;
+}
+
+interface User {
+  fullName: string;
+  email: string;
+}
+
+interface WithdrawalData {
+  withdrawal: Withdrawal;
+  user: User;
+}
+
+interface ApiResponse {
+  withdrawals: WithdrawalData[];
+  totalPages: number;
+}
+
 export default function WithdrawalsPage() {
   const [page, setPage] = useState(1);
   const [rejectionReason, setRejectionReason] = useState("");
-  const [selectedWithdrawal, setSelectedWithdrawal] = useState<any>(null);
+  const [selectedWithdrawal, setSelectedWithdrawal] = useState<Withdrawal | null>(null);
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<ApiResponse>({
     queryKey: ["withdrawals", page],
     queryFn: async () => {
       const res = await fetch(`/api/withdrawals?page=${page}`);
@@ -32,9 +54,16 @@ export default function WithdrawalsPage() {
   });
 
   const withdrawalMutation = useMutation({
-    mutationFn: async ({ withdrawalId, action, rejectionReason }: any) => {
+    mutationFn: async ({ withdrawalId, action, rejectionReason }: {
+      withdrawalId: string;
+      action: "approve" | "reject";
+      rejectionReason?: string;
+    }) => {
       const res = await fetch("/api/withdrawals", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ withdrawalId, action, rejectionReason }),
       });
       if (!res.ok) throw new Error("Failed to process withdrawal");
@@ -48,6 +77,10 @@ export default function WithdrawalsPage() {
   });
 
   if (isLoading) return <div><Loading /></div>;
+  
+  if (!data?.withdrawals || !Array.isArray(data.withdrawals)) {
+    return <div className="text-white">No withdrawals found</div>;
+  }
 
   return (
     <div className="min-h-screen bg-black p-6">
@@ -67,49 +100,53 @@ export default function WithdrawalsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.withdrawals.map((item: any) => (
-                <TableRow key={item.withdrawal.id} className="hover:bg-yellow-100">
-                  <TableCell className="text-black">
-                    <div className="flex flex-col">
-                      <span className="font-medium">{item.user.fullName}</span>
-                      <span className="text-sm text-gray-600">{item.user.email}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-black">
-                    ${item.withdrawal.amount.toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-black">
-                    {item.withdrawal.cryptoType}
-                  </TableCell>
-                  <TableCell className="text-black">
-                    {item.withdrawal.walletAddress}
-                  </TableCell>
-                  <TableCell className="text-black">
-                    {formatDistanceToNow(new Date(item.withdrawal.createdAt))} ago
-                  </TableCell>
-                  <TableCell>
-                    <div className="space-x-2">
-                      <Button
-                        onClick={() => 
-                          withdrawalMutation.mutate({
-                            withdrawalId: item.withdrawal.id,
-                            action: "approve"
-                          })
-                        }
-                        className="bg-green-600 text-white hover:bg-green-700"
-                      >
-                        Approve
-                      </Button>
-                      <Button
-                        onClick={() => setSelectedWithdrawal(item.withdrawal)}
-                        className="bg-red-600 text-white hover:bg-red-700"
-                      >
-                        Reject
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {data.withdrawals.map((item: WithdrawalData) => {
+                if (!item?.withdrawal || !item?.user) return null;
+                
+                return (
+                  <TableRow key={item.withdrawal.id} className="hover:bg-yellow-100">
+                    <TableCell className="text-black">
+                      <div className="flex flex-col">
+                        <span className="font-medium">{item.user.fullName}</span>
+                        <span className="text-sm text-gray-600">{item.user.email}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-black">
+                      ${Number(item.withdrawal.amount).toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-black">
+                      {item.withdrawal.cryptoType}
+                    </TableCell>
+                    <TableCell className="text-black">
+                      {item.withdrawal.walletAddress}
+                    </TableCell>
+                    <TableCell className="text-black">
+                      {formatDistanceToNow(new Date(item.withdrawal.createdAt))} ago
+                    </TableCell>
+                    <TableCell>
+                      <div className="space-x-2">
+                        <Button
+                          onClick={() => 
+                            withdrawalMutation.mutate({
+                              withdrawalId: item.withdrawal.id,
+                              action: "approve"
+                            })
+                          }
+                          className="bg-green-600 text-white hover:bg-green-700"
+                        >
+                          Approve
+                        </Button>
+                        <Button
+                          onClick={() => setSelectedWithdrawal(item.withdrawal)}
+                          className="bg-red-600 text-white hover:bg-red-700"
+                        >
+                          Reject
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>
@@ -152,11 +189,13 @@ export default function WithdrawalsPage() {
               />
               <Button
                 onClick={() => {
-                  withdrawalMutation.mutate({
-                    withdrawalId: selectedWithdrawal?.id,
-                    action: "reject",
-                    rejectionReason,
-                  });
+                  if (selectedWithdrawal) {
+                    withdrawalMutation.mutate({
+                      withdrawalId: selectedWithdrawal.id,
+                      action: "reject",
+                      rejectionReason,
+                    });
+                  }
                 }}
                 className="bg-red-600 text-white hover:bg-red-700 w-full"
               >
