@@ -1,6 +1,6 @@
 
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import DashboardCard from "./card";
 import useProcessInvestments from "@/lib/tenstack-hooks/cachedUseProcessInvestments";
 import { formatCurrency } from "@/lib/formatCurrency";
@@ -35,7 +35,7 @@ export const InvestmentDashboard: React.FC<{
     error,
     type: typeof balance
   });
-  
+
   const buttonVariants = {
     hover: {
       scale: 1.05,
@@ -47,6 +47,17 @@ export const InvestmentDashboard: React.FC<{
       transition: { duration: 0.5 }
     }
   }
+
+  useEffect(() => {
+    if (isLoading) {
+      console.log('00');
+    } else if (error) {
+      console.error('Error fetching balance:', error);
+    } else {
+      console.log('Balance loaded:', balance);
+    }
+  }, [balance, isLoading, error]);
+
   return (
     <div className="w-full bg-black align-middle gap-4 space-y-4">
         <div className="p-2 md:p-4">
