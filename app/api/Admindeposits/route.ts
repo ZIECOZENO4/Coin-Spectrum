@@ -25,8 +25,6 @@ export async function GET(req: Request) {
         deposit: pendingDeposits,
         user: {
           id: users.id,
-          email: users.email,
-          fullName: users.fullName
         }
       })
       .from(pendingDeposits)
