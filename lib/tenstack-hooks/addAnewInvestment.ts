@@ -6,11 +6,9 @@ import {
 } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-// Hook (addAnewInvestment.ts)
 interface CreateInvestmentData {
-  id: string; // Investment plan ID
+  id: string;
   amount: number;
-  // Optional fields
   userName?: string;
   userEmail?: string;
   imageUrl?: string;
@@ -30,7 +28,6 @@ const createInvestment: MutationFunction<Investment, CreateInvestmentData> = asy
       body: JSON.stringify({
         id: data.id,
         amount: data.amount,
-        // Include optional fields only if they exist
         ...(data.userName && { userName: data.userName }),
         ...(data.userEmail && { userEmail: data.userEmail }),
         ...(data.imageUrl && { imageUrl: data.imageUrl }),
@@ -63,5 +60,3 @@ export const useCreateInvestment = () => {
     }
   });
 };
-
-// API Route (api/addAnInvestment/route.ts)

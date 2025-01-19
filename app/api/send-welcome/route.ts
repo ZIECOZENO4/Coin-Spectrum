@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     const data = await resend.emails.send({
       from: 'support@www.coinspectrum.net',
       to: email,
-      subject: 'Welcome to COIN SPECTRUM LTD!',
+      subject: 'WELCOME TO COIN SPECTRUM LTD!',
       react: WelcomeEmail({ 
         userFirstName: firstName,
         userEmail: email 

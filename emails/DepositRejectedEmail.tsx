@@ -26,7 +26,7 @@ interface DepositRejectedEmailProps {
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL
   ? `${process.env.NEXT_PUBLIC_APP_URL}`
-  : "https://www.omnicom.com.im/";
+  : "https://www.coinspectrum.net/";
 
 export const DepositRejectedEmail = ({
   userFirstName,

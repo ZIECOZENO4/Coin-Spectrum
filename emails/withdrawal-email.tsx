@@ -25,7 +25,7 @@ interface WithdrawalEmailProps {
   isAdminCopy?: boolean;
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.coinspectrum.net";
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.coinspectrum.net/";
 
 export const WithdrawalEmail = ({
   userFirstName,
