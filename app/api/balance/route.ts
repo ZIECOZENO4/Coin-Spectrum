@@ -12,18 +12,17 @@ export async function GET() {
       return new Response("Unauthorized", { status: 401 });
     }
 
-    const userBalance = await db.query.users.findFirst({
-      where: eq(users.id, userId),
-      columns: {
-        balance: true
-      }
-    });
+    const userBalance = await db
+      .select({ balance: users.balance })
+      .from(users)
+      .where(eq(users.id, userId))
+      .execute();
 
-    if (!userBalance) {
+    if (!userBalance[0]) {
       return new Response("User not found", { status: 404 });
     }
 
-    return Response.json({ balance: userBalance.balance });
+    return Response.json({ balance: userBalance[0].balance });
   } catch (error) {
     return new Response("Internal Server Error", { status: 500 });
   }

@@ -26,7 +26,16 @@ export const InvestmentDashboard: React.FC<{
   const router = useRouter()
   const { data: balance, isLoading, error } = useUserBalance();
 
-
+  console.log('Balance:', balance);
+  
+  // Detailed logging with all states
+  console.log({
+    balance,
+    isLoading,
+    error,
+    type: typeof balance
+  });
+  
   const buttonVariants = {
     hover: {
       scale: 1.05,
@@ -79,7 +88,7 @@ export const InvestmentDashboard: React.FC<{
                 transition={{ delay: 0.4, type: "spring" }}
                 className="text-4xl font-bold text-white"
               >
-                {`${formatCurrency(balance || 0)}`}
+                {`${balance}.00`}
               </motion.div>
             </div>
 
