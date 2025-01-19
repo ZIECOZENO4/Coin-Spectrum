@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { pendingDeposits, transactionHistory } from "@/lib/db/schema";
-import { eq, or } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 export async function GET(
   request: Request,
@@ -21,12 +21,10 @@ export async function GET(
     });
 
     if (existingTransaction || existingPendingDeposit) {
-      // Generate new transaction ID if exists
-      const newTransactionId = generateUniqueTransactionId();
-      return NextResponse.json({ 
-        exists: true, 
-        newTransactionId 
-      });
+      return NextResponse.json(
+        { error: "Transaction ID already exists" },
+        { status: 400 }
+      );
     }
 
     return NextResponse.json({ exists: false });
@@ -37,11 +35,4 @@ export async function GET(
       { status: 500 }
     );
   }
-}
-
-// Helper function to generate unique transaction ID
-function generateUniqueTransactionId(): string {
-  const timestamp = Date.now();
-  const random = Math.random().toString(36).substring(2, 10);
-  return `tx_${timestamp}_${random}`;
 }

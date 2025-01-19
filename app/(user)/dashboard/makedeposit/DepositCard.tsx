@@ -92,28 +92,12 @@ const DepositCard = () => {
     }
   
     try {
-      // First check if transaction ID exists
-      const checkAndGenerateTransactionId = async () => {
-        const generatedId = `tx_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        setTransactionId(generatedId);
-        
-        try {
-          const response = await fetch(`/api/deposits/check/${generatedId}`);
-          const data = await response.json();
-          
-          if (data.exists) {
-            setTransactionId(data.newTransactionId);
-          }
-        } catch (error) {
-          console.error("Error checking transaction ID:", error);
-          toast.error("Error generating transaction ID");
-        }
-      };
-      
-      // Add this to your component's useEffect
-      useEffect(() => {
-        checkAndGenerateTransactionId();
-      }, []); // Generate ID when component mounts      
+      // Check for duplicate transaction ID first
+      const checkResponse = await fetch(`/api/deposits/check/${transactionId}`);
+      if (!checkResponse.ok) {
+        toast.error("Transaction ID already exists. Please use a different ID");
+        return;
+      }
   
       // Proceed with deposit submission
       const response = await fetch("/api/deposits", {
@@ -142,6 +126,7 @@ const DepositCard = () => {
       toast.error("Failed to submit deposit. Please try again.");
     }
   };
+  
   
 
  
