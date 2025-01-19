@@ -92,6 +92,30 @@ const DepositCard = () => {
     }
   
     try {
+      // First check if transaction ID exists
+      const checkAndGenerateTransactionId = async () => {
+        const generatedId = `tx_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        setTransactionId(generatedId);
+        
+        try {
+          const response = await fetch(`/api/deposits/check/${generatedId}`);
+          const data = await response.json();
+          
+          if (data.exists) {
+            setTransactionId(data.newTransactionId);
+          }
+        } catch (error) {
+          console.error("Error checking transaction ID:", error);
+          toast.error("Error generating transaction ID");
+        }
+      };
+      
+      // Add this to your component's useEffect
+      useEffect(() => {
+        checkAndGenerateTransactionId();
+      }, []); // Generate ID when component mounts      
+  
+      // Proceed with deposit submission
       const response = await fetch("/api/deposits", {
         method: "POST",
         headers: {
@@ -107,10 +131,8 @@ const DepositCard = () => {
         }),
       });
   
-      const data = await response.json();
-  
       if (!response.ok) {
-        throw new Error(data.error || "Failed to submit deposit");
+        throw new Error(await response.text());
       }
   
       toast.success("Deposit submitted successfully");
@@ -120,6 +142,9 @@ const DepositCard = () => {
       toast.error("Failed to submit deposit. Please try again.");
     }
   };
+  
+
+ 
   
   const [value, copy] = useCopyToClipboard();
 
