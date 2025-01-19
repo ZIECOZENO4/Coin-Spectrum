@@ -88,12 +88,12 @@ export async function POST(request: NextRequest) {
       });
 
       // Update user balance
-      await tx.update(users)
-        .set({ 
-          balance: user.balance - withdrawalAmount,
-          updatedAt: new Date()
-        })
-        .where(eq(users.id, session.user.id));
+      // await tx.update(users)
+      //   .set({ 
+      //     balance: user.balance - withdrawalAmount,
+      //     updatedAt: new Date()
+      //   })
+      //   .where(eq(users.id, session.user.id));
 
       return withdrawal;
     });
