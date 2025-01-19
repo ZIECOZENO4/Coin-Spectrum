@@ -19,24 +19,59 @@ export async function GET(req: Request) {
     const limit = 10;
     const skip = (page - 1) * limit;
 
+    // Fetch pending withdrawals with user details
     const withdrawalsList = await db
-      .select()
+      .select({
+        withdrawal: {
+          id: pendingWithdrawals.id,
+          amount: pendingWithdrawals.amount,
+          cryptoType: pendingWithdrawals.cryptoType,
+          walletAddress: pendingWithdrawals.walletAddress,
+          status: pendingWithdrawals.status,
+          createdAt: pendingWithdrawals.createdAt,
+          processedAt: pendingWithdrawals.processedAt,
+          rejectionReason: pendingWithdrawals.rejectionReason
+        },
+        user: {
+          id: users.id,
+          email: users.email,
+          fullName: sql<string>`COALESCE(${users.firstName}, '') || ' ' || COALESCE(${users.lastName}, '')`
+        }
+      })
       .from(pendingWithdrawals)
-      .leftJoin(users, eq(pendingWithdrawals.userId, users.id))
+      .innerJoin(users, eq(pendingWithdrawals.userId, users.id))
+      .where(eq(pendingWithdrawals.status, "pending"))
+      .orderBy(sql`${pendingWithdrawals.createdAt} DESC`)
       .limit(limit)
       .offset(skip);
 
+    // Get total count of pending withdrawals
     const totalCount = await db
       .select({ count: sql<number>`count(*)` })
-      .from(pendingWithdrawals);
+      .from(pendingWithdrawals)
+      .where(eq(pendingWithdrawals.status, "pending"));
 
     return NextResponse.json({
-      withdrawals: withdrawalsList,
+      withdrawals: withdrawalsList.map(item => ({
+        withdrawal: {
+          ...item.withdrawal,
+          amount: Number(item.withdrawal.amount)
+        },
+        user: {
+          id: item.user.id,
+          email: item.user.email,
+          fullName: item.user.fullName?.trim() || 'Unknown User'
+        }
+      })),
       totalPages: Math.ceil(totalCount[0].count / limit),
-      currentPage: page,
+      currentPage: page
     });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch withdrawals" }, { status: 500 });
+    console.error("Error fetching withdrawals:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch withdrawals" }, 
+      { status: 500 }
+    );
   }
 }
 
