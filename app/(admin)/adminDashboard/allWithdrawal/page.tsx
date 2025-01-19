@@ -42,6 +42,8 @@ export default function WithdrawalsPage() {
   const [page, setPage] = useState(1);
   const [rejectionReason, setRejectionReason] = useState("");
   const [selectedWithdrawal, setSelectedWithdrawal] = useState<Withdrawal | null>(null);
+  const [editAmount, setEditAmount] = useState<string>("");
+  const [isEditingAmount, setIsEditingAmount] = useState(false);
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery<ApiResponse>({
@@ -54,17 +56,18 @@ export default function WithdrawalsPage() {
   });
 
   const withdrawalMutation = useMutation({
-    mutationFn: async ({ withdrawalId, action, rejectionReason }: {
+    mutationFn: async ({ withdrawalId, action, rejectionReason, amount }: {
       withdrawalId: string;
       action: "approve" | "reject";
       rejectionReason?: string;
+      amount?: number;
     }) => {
       const res = await fetch("/api/withdrawals", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ withdrawalId, action, rejectionReason }),
+        body: JSON.stringify({ withdrawalId, action, rejectionReason, amount }),
       });
       if (!res.ok) throw new Error("Failed to process withdrawal");
       return res.json();
@@ -73,8 +76,26 @@ export default function WithdrawalsPage() {
       queryClient.invalidateQueries({ queryKey: ["withdrawals"] });
       setSelectedWithdrawal(null);
       setRejectionReason("");
+      setEditAmount("");
+      setIsEditingAmount(false);
     },
   });
+
+  const handleApproveClick = (withdrawal: Withdrawal) => {
+    setSelectedWithdrawal(withdrawal);
+    setEditAmount(withdrawal.amount.toString());
+    setIsEditingAmount(true);
+  };
+
+  const handleApproveConfirm = () => {
+    if (selectedWithdrawal && editAmount) {
+      withdrawalMutation.mutate({
+        withdrawalId: selectedWithdrawal.id,
+        action: "approve",
+        amount: parseFloat(editAmount)
+      });
+    }
+  };
 
   if (isLoading) return <div><Loading /></div>;
   
@@ -126,18 +147,16 @@ export default function WithdrawalsPage() {
                     <TableCell>
                       <div className="space-x-2">
                         <Button
-                          onClick={() => 
-                            withdrawalMutation.mutate({
-                              withdrawalId: item.withdrawal.id,
-                              action: "approve"
-                            })
-                          }
+                          onClick={() => handleApproveClick(item.withdrawal)}
                           className="bg-green-600 text-white hover:bg-green-700"
                         >
                           Approve
                         </Button>
                         <Button
-                          onClick={() => setSelectedWithdrawal(item.withdrawal)}
+                          onClick={() => {
+                            setSelectedWithdrawal(item.withdrawal);
+                            setIsEditingAmount(false);
+                          }}
                           className="bg-red-600 text-white hover:bg-red-700"
                         >
                           Reject
@@ -175,7 +194,50 @@ export default function WithdrawalsPage() {
           </div>
         </div>
 
-        <Dialog open={!!selectedWithdrawal} onOpenChange={() => setSelectedWithdrawal(null)}>
+        {/* Amount Edit Dialog */}
+        <Dialog 
+          open={isEditingAmount} 
+          onOpenChange={(open) => {
+            if (!open) {
+              setIsEditingAmount(false);
+              setSelectedWithdrawal(null);
+              setEditAmount("");
+            }
+          }}
+        >
+          <DialogContent className="bg-black text-white">
+            <DialogHeader>
+              <DialogTitle>Edit Withdrawal Amount</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm">Original Amount: ${selectedWithdrawal?.amount.toLocaleString()}</label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="Enter new amount"
+                  value={editAmount}
+                  onChange={(e) => setEditAmount(e.target.value)}
+                  className="bg-yellow-50 text-black"
+                />
+              </div>
+              <Button
+                onClick={handleApproveConfirm}
+                disabled={!editAmount || parseFloat(editAmount) <= 0}
+                className="bg-green-600 text-white hover:bg-green-700 w-full"
+              >
+                Confirm Approval
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Rejection Dialog */}
+        <Dialog 
+          open={!!selectedWithdrawal && !isEditingAmount} 
+          onOpenChange={() => setSelectedWithdrawal(null)}
+        >
           <DialogContent className="bg-black text-white">
             <DialogHeader>
               <DialogTitle>Reject Withdrawal</DialogTitle>
