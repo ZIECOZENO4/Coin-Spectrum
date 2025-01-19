@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation"
 import { FaMoneyBillTransfer, FaMoneyBillTrendUp } from "react-icons/fa6"
 import KycStatus from "./kyc-status";
 import TradingViewWidget2 from "@/app/(user)/dashboard/TradingViewWidget2";
+import { useUserBalance } from "@/hook/useUserBalance";
 
 
 const chartdata = Array.from({ length: 50 }, (_, i) => ({
@@ -23,8 +24,8 @@ export const InvestmentDashboard: React.FC<{
   runUntimed?: boolean;
 }> = ({ userId }) => {
   const router = useRouter()
-  const { data, isLoading, error } = useProcessInvestments(userId);
- 
+  const { data: balance, isLoading, error } = useUserBalance();
+
 
   const buttonVariants = {
     hover: {
@@ -38,24 +39,6 @@ export const InvestmentDashboard: React.FC<{
     }
   }
   return (
-    // <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-32 p-4 mx-auto">
-    //   <DashboardCard
-    //     label="Available Balance"
-    //     balance={`${formatCurrency(data?.userBalance || 0)}`}
-    //   />
-    //   <DashboardCard
-    //     label="Withdrawable Balance"
-    //     balance={`${formatCurrency(data?.withdrawableBalance || 0)}`}
-    //   />
-    //   <DashboardCard
-    //     label="Profits"
-    //     balance={`${formatCurrency(data?.totalProfit || 0)}`}
-    //   />
-    //   <DashboardCard
-    //     label="Total Withdrawal"
-    //     balance={`${formatCurrency(data?.totalWithdrawal || 0)}`}
-    //   />
-    // </div>
     <div className="w-full bg-black align-middle gap-4 space-y-4">
         <div className="p-2 md:p-4">
       <AnimatedWelcome />
@@ -96,7 +79,7 @@ export const InvestmentDashboard: React.FC<{
                 transition={{ delay: 0.4, type: "spring" }}
                 className="text-4xl font-bold text-white"
               >
-                {`${formatCurrency(data?.userBalance || 0)}`}
+                {`${formatCurrency(balance || 0)}`}
               </motion.div>
             </div>
 
