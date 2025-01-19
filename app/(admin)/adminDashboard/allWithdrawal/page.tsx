@@ -145,7 +145,7 @@ export default function WithdrawalsPage() {
                       {formatDistanceToNow(new Date(item.withdrawal.createdAt))} ago
                     </TableCell>
                     <TableCell>
-                      <div className="space-x-2">
+                      <div className="space-x-2 flex gap-4">
                         <Button
                           onClick={() => handleApproveClick(item.withdrawal)}
                           className="bg-green-600 text-white hover:bg-green-700"
