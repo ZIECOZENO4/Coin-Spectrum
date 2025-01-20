@@ -61,12 +61,14 @@ export default function Dashboard() {
   });
 
 
-
+  if (!isAuthenticated) {
+    return null; // Return nothing as Layout will handle showing Auth
+  }
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading dashboard</div>;
-  if (!isAuthenticated) {
-    return <Auth />;
-  }
+
+
+
 
   const transformedChartData: ChartData[] = (data?.chartData || []).map(item => ({
     ...item,
