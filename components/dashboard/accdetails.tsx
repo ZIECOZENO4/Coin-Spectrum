@@ -7,6 +7,10 @@ import ReferralCard from "./referral"
 import LoginActivities from "./activity"
 import useProcessInvestments from "@/lib/tenstack-hooks/cachedUseProcessInvestments"
 import { useReferralData } from "@/lib/tenstack-hooks/useRefferals"
+import { useUserBalance } from "@/hook/useUserBalance";
+import { useEffect } from "react"
+import { useUserStats } from "@/hook/useUserStats"
+
 
 interface StatsData {
   label: string
@@ -37,25 +41,22 @@ const formatCurrency = (amount: number): string => {
 }
 
 const StatsDashboard: React.FC<StatsDashboardProps> = ({ userId }) => {
-  const router = useRouter()
-  const { data, isLoading, error } = useProcessInvestments<ProcessedData>(userId)
-  const { data: referralData = { referrals: [] } } = useReferralData<ReferralData>()
-
-  // Calculate net profit
-  const netProfit = (data?.totalDeposit || 0) - (data?.totalWithdrawal || 0)
+  const { data: stats, isLoading: statsLoading } = useUserStats();
+  const { data: balance } = useUserBalance();
+  const { data: referralData = { referrals: [] } } = useReferralData();
 
   const statsData: StatsData[] = [
-    { label: "Withdrawable Balance", value: formatCurrency(data?.withdrawableBalance || 0) },
-    { label: "Total Trades", value: "$0.00" },
-    { label: "Total Profits", value: formatCurrency(data?.totalWithdrawal || 0) },
-    { label: "Total Withdrawals", value: formatCurrency(data?.totalProfit || 0) },
-  ]
+    { label: "Withdrawable Balance", value: `$${balance || 0}.00` },
+    { label: "Total Trades", value: formatCurrency(stats?.totalTrades || 0) },
+    { label: "Total Profits", value: formatCurrency(stats?.totalProfits || 0) },
+    { label: "Total Withdrawals", value: formatCurrency(stats?.totalWithdrawals || 0) }
+  ];
 
   const cardData: StatsData[] = [
-    { label: "Total Net Profit", value: formatCurrency(netProfit) },
-    { label: "Total Referrals", value: referralData.referrals.length },
-    { label: "Active Referrals", value: referralData.referrals.length },
-  ]
+    { label: "Total Net Profit", value: formatCurrency(stats?.netProfit || 0) },
+    { label: "Total Referrals", value: referralData?.referrals?.length || 0 },
+    { label: "Active Referrals", value: referralData?.referrals?.length || 0 }
+  ];
 
   return (
     <div className="min-h-screen bg-black p-6">
