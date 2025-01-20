@@ -32,7 +32,7 @@ export default function Dashboard() {
   const { data, isLoading, error } = useQuery<DashboardStats>({
     queryKey: ["dashboardStats"],
     queryFn: async () => {
-      const res = await fetch("/api/admin/dashboard");
+      const res = await fetch("/api/dashboard");
       if (!res.ok) {
         const error = await res.text();
         throw new Error(error || "Failed to fetch dashboard data");
