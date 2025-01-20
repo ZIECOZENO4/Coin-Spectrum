@@ -7,6 +7,8 @@ import { formatCurrencyNaira } from "@/lib/formatCurrency";
 import { toast } from "sonner";
 import SalesChart from "./chart";
 import Loading from "@/app/loading";
+import { useAuth } from "./AuthProvider";
+import Auth from "./auth";
 
 interface DashboardStats {
   statistics: {
@@ -29,6 +31,7 @@ interface ChartData {
   sales: number; // Added to match the chart's requirements
 }
 export default function Dashboard() {
+  const { isAuthenticated } = useAuth();
   const { data, isLoading, error } = useQuery<DashboardStats>({
     queryKey: ["dashboardStats"],
     queryFn: async () => {
@@ -57,8 +60,13 @@ export default function Dashboard() {
     },
   });
 
+
+
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading dashboard</div>;
+  if (!isAuthenticated) {
+    return <Auth />;
+  }
 
   const transformedChartData: ChartData[] = (data?.chartData || []).map(item => ({
     ...item,
