@@ -19,7 +19,8 @@ const Auth = () => {
   const adminEmail = process.env.NEXT_PUBLIC_ADMIN_CONTACT_EMAIL;
 
   return (
-    <div id="login" className="w-64 align-middle justify-center p-4 h-80 bg-black rounded shadow-2xl flex flex-col">       
+    <div className="w-full h-full align-middle justify-center items-center">
+  <div id="login" className="w-64 align-middle justify-center p-4 h-80 bg-black rounded shadow-2xl flex flex-col">        
       <form className="text-yellow-500" onSubmit={handleSubmit}>
         <fieldset className="border-4 border-dotted border-yellow-500 p-5">
           <legend className="px-2 italic -mx-2">Welcome admin!</legend>
@@ -60,6 +61,8 @@ const Auth = () => {
         </fieldset>
       </form>
     </div>
+    </div>
+  
   );
 };
 
