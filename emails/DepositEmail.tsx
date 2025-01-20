@@ -77,7 +77,7 @@ import {
               <Section className="text-center">
                 <Button 
                   className="bg-yellow-600 text-black rounded-lg py-3 px-6"
-                  href={`${baseUrl}/deposits/${depositId}`}
+                  href={`${baseUrl}/dashboard/makedeposit/${depositId}`}
                 >
                   {isAdminCopy ? 'View Deposit Details' : 'View Your Deposit'}
                 </Button>
