@@ -14,14 +14,18 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   return (
     <WithUserRoleCheck>
-      <div className=" relative flex">
+       <AuthProvider>
+       <div className=" relative flex">
         <Sidebar />
 
-        <main className="w-full">  <AuthProvider>
+        <main className="w-full">  
+         
           {children}
-        </AuthProvider></main>
+        </main>
         {/* <MobileNav /> */}
       </div>
+       </AuthProvider>
+    
     </WithUserRoleCheck>
   );
 };
