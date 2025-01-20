@@ -5,79 +5,90 @@ import {
   users, 
   userInvestments, 
   trades,
-  pendingDeposits,
   withdrawals,
   userCopyTrades
 } from "@/lib/db/schema";
-import { sql } from "drizzle-orm";
+import { sql, and, eq } from "drizzle-orm";
 
 export async function GET() {
   try {
     const [
-      totalUsers,
-      totalInvestors,
-      totalTraders,
+      usersCount,
+      investorsCount,
+      tradersCount,
       financialStats,
       investmentData,
       tradingData
     ] = await Promise.all([
-      // Get total users
-      db.select({ count: sql<number>`count(*)` }).from(users),
-      
-      // Get total investors (unique users with investments)
-      db.select({ count: sql<number>`count(distinct user_id)` }).from(userInvestments),
-      
-      // Get total traders (unique users with trades or copy trades)
-      db.select({ 
-        count: sql<number>`count(distinct user_id)` 
+      // Total users
+      db.select({
+        count: sql<number>`cast(count(*) as integer)`
       })
-      .from(trades)
-      .leftJoin(userCopyTrades, sql`true`),
+      .from(users)
+      .execute(),
       
-      // Get financial statistics
+      // Total investors
       db.select({
-        totalDeposits: sql<number>`COALESCE(sum(amount), 0)`.as('totalDeposits'),
-        totalWithdrawals: sql<number>`COALESCE(sum(amount), 0)`.as('totalWithdrawals'),
-      }).from(withdrawals),
-
-      // Get investment amounts for chart
-      db.select({
-        amount: sql<number>`sum(amount)`,
-        createdAt: userInvestments.createdAt,
+        count: sql<number>`cast(count(distinct ${userInvestments.userId}) as integer)`
       })
       .from(userInvestments)
-      .groupBy(userInvestments.createdAt)
-      .orderBy(userInvestments.createdAt)
-      .limit(30),
-
-      // Get trading amounts for chart
+      .execute(),
+      
+      // Total traders
       db.select({
-        amount: sql<number>`sum(amount)`,
-        createdAt: trades.createdAt,
+        count: sql<number>`cast(count(distinct ${trades.userId}) as integer)`
       })
       .from(trades)
-      .groupBy(trades.createdAt)
-      .orderBy(trades.createdAt)
-      .limit(30),
+      .execute(),
+      
+      // Financial stats
+      db.select({
+        deposits: sql<number>`coalesce(sum(case when type = 'deposit' then amount else 0 end), 0)`,
+        withdrawals: sql<number>`coalesce(sum(case when type = 'withdrawal' then amount else 0 end), 0)`
+      })
+      .from(withdrawals)
+      .execute(),
+
+      // Investment data for chart
+      db.select({
+        total: sql<number>`cast(sum(${userInvestments.amount}) as float)`,
+        date: sql<string>`date_trunc('day', ${userInvestments.createdAt})`
+      })
+      .from(userInvestments)
+      .groupBy(sql`date_trunc('day', ${userInvestments.createdAt})`)
+      .orderBy(sql`date_trunc('day', ${userInvestments.createdAt})`)
+      .limit(30)
+      .execute(),
+
+      // Trading data for chart
+      db.select({
+        total: sql<number>`cast(sum(${trades.amount}) as float)`,
+        date: sql<string>`date_trunc('day', ${trades.createdAt})`
+      })
+      .from(trades)
+      .groupBy(sql`date_trunc('day', ${trades.createdAt})`)
+      .orderBy(sql`date_trunc('day', ${trades.createdAt})`)
+      .limit(30)
+      .execute()
     ]);
 
-    const netProfit = (financialStats[0]?.totalDeposits || 0) - 
-                     (financialStats[0]?.totalWithdrawals || 0);
+    const netProfit = Number(financialStats[0]?.deposits || 0) - 
+                     Number(financialStats[0]?.withdrawals || 0);
 
     const chartData = investmentData.map((inv, index) => ({
-      name: inv.createdAt,
-      investments: inv.amount || 0,
-      trades: tradingData[index]?.amount || 0,
+      name: new Date(inv.date).toLocaleDateString(),
+      investments: Number(inv.total || 0),
+      trades: Number(tradingData[index]?.total || 0)
     }));
 
     return NextResponse.json({
       statistics: {
-        totalUsers: totalUsers[0].count,
-        totalInvestors: totalInvestors[0].count,
-        totalTraders: totalTraders[0].count,
-        netProfit,
+        totalUsers: Number(usersCount[0]?.count || 0),
+        totalInvestors: Number(investorsCount[0]?.count || 0),
+        totalTraders: Number(tradersCount[0]?.count || 0),
+        netProfit
       },
-      chartData,
+      chartData
     });
   } catch (error) {
     console.error("Dashboard error:", error);
