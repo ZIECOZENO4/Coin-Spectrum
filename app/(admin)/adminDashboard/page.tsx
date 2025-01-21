@@ -10,6 +10,7 @@ import Loading from "@/app/loading";
 import { useAuth } from "./AuthProvider";
 import Auth from "./auth";
 import DashboardComponent from "./stats";
+import AdminPage from "./stats";
 
 interface DashboardStats {
   statistics: {
@@ -87,8 +88,8 @@ export default function Dashboard() {
   };
   return (
     <div className="text-neutral-200 sm:px-8 w-full px-4 py-6 bg-black">
-      
-      <div className="sm:flex-row flex flex-col items-center justify-between mb-4">
+
+      {/* <div className="sm:flex-row flex flex-col items-center justify-between mb-4">
         <p className="text-heading3-bold sm:mb-0 mb-2">Dashboard</p>
       </div>
       <Separator className="bg-neutral-700 my-4" />
@@ -145,7 +146,9 @@ export default function Dashboard() {
         <SalesChart data={transformedChartData} />
         </CardContent>
       </Card>
-      <DashboardComponent />
+      <DashboardComponent /> */}
+
+      <AdminPage />
     </div>
   );
 }
