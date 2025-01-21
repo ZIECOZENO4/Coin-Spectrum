@@ -124,41 +124,56 @@ const Sidebar: React.FC = () => {
                 </Link>
 
                 <Link
-                  href={"/adminDashboard/allInvestments"}
-                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
-                    "/adminDashboard/allInvestments"
-                  )}`}
-                >
-                  <FaChartArea />
-                  <span className="text-[15px] ml-4 text-gray-200">
-                    All Investments
-                  </span>
-                </Link>
+              href={"/adminDashboard/allInvestments"}
+              className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                "/adminDashboard/allInvestments"
+              )}`}
+            >
+              <FaChartArea />
+              <span className="text-[15px] ml-4 text-gray-200">
+                All Investments
+              </span>
+            </Link>
 
-                <Link
-                  href={"/adminDashboard/allWithdrawal"}
-                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
-                    "/adminDashboard/allWithdrawal"
-                  )}`}
-                >
-                  <FaMoneyBillWave />
-                  <span className="text-[15px] ml-4 text-gray-200">
-                    All Withdrawals
-                  </span>
-                </Link>
-
-                <Link
-                  href={"/adminDashboard/allUsers"}
-                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
-                    "/adminDashboard/allUsers"
-                  )}`}
-                >
-                  <FaBookmark />
-                  <span className="text-[15px] ml-4 text-gray-200">
-                    All Users
-                  </span>
-                </Link>
-                <Link
+            <Link
+              href={"/adminDashboard/allWithdrawal"}
+              className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                "/adminDashboard/allWithdrawal"
+              )}`}
+            >
+              <FaMoneyBillWave />
+              <span className="text-[15px] ml-4 text-gray-200">
+                All Withdrawals
+              </span>
+            </Link>
+            <Link
+              href={"/adminDashboard/create-copy-trades"}
+              className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                "/adminDashboard/create-copy-trades"
+              )}`}
+            >
+              <FaBookmark />
+              <span className="text-[15px] ml-4 text-gray-200">Copy Trades</span>
+            </Link>
+            <Link
+              href={"/adminDashboard/purchase-signal"}
+              className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                "/adminDashboard/purchase-signal"
+              )}`}
+            >
+              <FaBookmark />
+              <span className="text-[15px] ml-4 text-gray-200">Purchase Signal</span>
+            </Link>
+            <Link
+              href={"/adminDashboard/allUsers"}
+              className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                "/adminDashboard/allUsers"
+              )}`}
+            >
+              <FaBookmark />
+              <span className="text-[15px] ml-4 text-gray-200">All Users</span>
+            </Link>
+            <Link
                   href={"/adminDashboard/signal-purchases"}
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
                     "/adminDashboard/signal-purchases"
@@ -170,17 +185,6 @@ const Sidebar: React.FC = () => {
                   </span>
                 </Link>
                 <Link
-                  href={"/adminDashboard/copy-trades"}
-                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
-                    "/adminDashboard/copy-trades"
-                  )}`}
-                >
-                  <FaBookmark />
-                  <span className="text-[15px] ml-4 text-gray-200">
-                    Copy Trades
-                  </span>
-                </Link>
-                <Link
                   href={"/adminDashboard/deposits"}
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
                     "/adminDashboard/deposits"
@@ -189,6 +193,28 @@ const Sidebar: React.FC = () => {
                   <FaBookmark />
                   <span className="text-[15px] ml-4 text-gray-200">
                     All Deposits
+                  </span>
+                </Link>
+                <Link
+                  href={"/adminDashboard/kyc"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/adminDashboard/kyc"
+                  )}`}
+                >
+                  <FaEnvelope />
+                  <span className="text-[15px] ml-4 text-gray-200">
+                    Users Kyc
+                  </span>
+                </Link>
+                <Link
+                  href={"/adminDashboard/copy-trades"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/adminDashboard/copy-trades"
+                  )}`}
+                >
+                  <FaBookmark />
+                  <span className="text-[15px] ml-4 text-gray-200">
+                    Copy Trades
                   </span>
                 </Link>
                 <Link
