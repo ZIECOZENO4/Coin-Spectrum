@@ -110,7 +110,7 @@ const Sidebar: React.FC = () => {
               </div>
               <hr className="my-2 text-gray-600" />
 
-              <div className="absolute inset-0 overflow-y-auto scrollbar-none flex flex-col gap-4
+              <div className="overflow-y-auto scrollbar-none flex flex-col gap-4
 [-ms-overflow-style:'none'] 
 [scrollbar-width:'none'] 
 [&::-webkit-scrollbar]:hidden">
