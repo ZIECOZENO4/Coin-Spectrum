@@ -101,7 +101,7 @@ const Sidebar: React.FC = () => {
             <SheetHeader>
               <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
-            <div className="text-gray-100 text-xl absolute inset-0 overflow-y-auto scrollbar-none flex flex-col gap-4
+            <div className="text-gray-100 top-4 text-xl absolute inset-0 overflow-y-auto scrollbar-none flex flex-col gap-4
 [-ms-overflow-style:'none'] 
 [scrollbar-width:'none'] 
 [&::-webkit-scrollbar]:hidden">
