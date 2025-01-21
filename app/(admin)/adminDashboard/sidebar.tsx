@@ -110,7 +110,10 @@ const Sidebar: React.FC = () => {
               </div>
               <hr className="my-2 text-gray-600" />
 
-              <div>
+              <div className="absolute inset-0 overflow-y-auto scrollbar-none flex flex-col gap-4
+[-ms-overflow-style:'none'] 
+[scrollbar-width:'none'] 
+[&::-webkit-scrollbar]:hidden">
                 <Link
                   href={"/adminDashboard"}
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
