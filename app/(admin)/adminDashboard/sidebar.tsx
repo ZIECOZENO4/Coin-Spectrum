@@ -101,7 +101,10 @@ const Sidebar: React.FC = () => {
             <SheetHeader>
               <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
-            <div className="text-gray-100 text-xl">
+            <div className="text-gray-100 text-xl absolute inset-0 overflow-y-auto scrollbar-none flex flex-col gap-4
+[-ms-overflow-style:'none'] 
+[scrollbar-width:'none'] 
+[&::-webkit-scrollbar]:hidden">
               <div className="p-2.5 mt-1 flex items-center rounded-md">
                 <User2Icon className="px-2 py-1 bg-blue-600 rounded-md" />
                 <h1 className="text-[15px] ml-3 text-xl text-gray-200 font-bold">
@@ -110,10 +113,7 @@ const Sidebar: React.FC = () => {
               </div>
               <hr className="my-2 text-gray-600" />
 
-              <div className="overflow-y-auto scrollbar-none flex flex-col gap-4
-[-ms-overflow-style:'none'] 
-[scrollbar-width:'none'] 
-[&::-webkit-scrollbar]:hidden">
+              <div>
                 <Link
                   href={"/adminDashboard"}
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
