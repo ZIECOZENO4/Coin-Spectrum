@@ -101,7 +101,7 @@ const Sidebar: React.FC = () => {
             <SheetHeader>
               <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
-            <div className="text-gray-100 top-4 text-xl absolute inset-0 overflow-y-auto scrollbar-none flex flex-col gap-4
+            <div className="text-gray-100 top-8 text-xl absolute inset-0 overflow-y-auto scrollbar-none flex flex-col gap-4
 [-ms-overflow-style:'none'] 
 [scrollbar-width:'none'] 
 [&::-webkit-scrollbar]:hidden">
@@ -243,7 +243,7 @@ const Sidebar: React.FC = () => {
                   </span>
                 </Link>
           <Link
-                  href={"/adminDashboard/kyc"}
+                  href={"/adminDashboard/send-mails"}
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
                     "/adminDashboard/send-mails"
                   )}`}
@@ -403,7 +403,7 @@ const Sidebar: React.FC = () => {
                   </span>
                 </Link>
                <Link
-                  href={"/adminDashboard/kyc"}
+                  href={"/adminDashboard/send-mails"}
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
                     "/adminDashboard/send-mails"
                   )}`}
