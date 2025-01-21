@@ -34,58 +34,25 @@ interface ChartData {
 }
 export default function Dashboard() {
   const { isAuthenticated } = useAuth();
-  const { data, isLoading, error } = useQuery<DashboardStats>({
-    queryKey: ["dashboardStats"],
-    queryFn: async () => {
-      const res = await fetch("/api/dashboard");
-      if (!res.ok) {
-        const error = await res.text();
-        throw new Error(error || "Failed to fetch dashboard data");
-      }
-      return res.json();
-    },
-    refetchInterval: 30000,
-    retry: 2,
-    staleTime: 10000,
-    gcTime: 300000,
-    meta: {
-      onSuccess: (data: DashboardStats) => {
-        toast.success("Dashboard data updated", {
-          description: `Users: ${data.statistics.totalUsers}, Investors: ${data.statistics.totalInvestors}`,
-        });
-      },
-      onError: (error: Error) => {
-        toast.error("Failed to fetch dashboard data", {
-          description: error.message,
-        });
-      },
-    },
-  });
-
-
   if (!isAuthenticated) {
     return null; // Return nothing as Layout will handle showing Auth
   }
-  if (isLoading) return <Loading />;
-  if (error) return <div>Error loading dashboard</div>;
+  // if (isLoading) return <Loading />;
 
+  // const transformedChartData: ChartData[] = (data?.chartData || []).map(item => ({
+  //   ...item,
+  //   sales: item.investments + item.trades // Calculate sales as sum of investments and trades
+  // }));
 
-
-
-  const transformedChartData: ChartData[] = (data?.chartData || []).map(item => ({
-    ...item,
-    sales: item.investments + item.trades // Calculate sales as sum of investments and trades
-  }));
-
-  const { statistics, chartData } = data || {
-    statistics: {
-      totalUsers: 0,
-      totalInvestors: 0,
-      totalTraders: 0,
-      netProfit: 0,
-    },
-    chartData: [],
-  };
+  // const { statistics, chartData } = data || {
+  //   statistics: {
+  //     totalUsers: 0,
+  //     totalInvestors: 0,
+  //     totalTraders: 0,
+  //     netProfit: 0,
+  //   },
+  //   chartData: [],
+  // };
   return (
     <div className="text-neutral-200 sm:px-8 w-full px-4 py-6 bg-black">
 
