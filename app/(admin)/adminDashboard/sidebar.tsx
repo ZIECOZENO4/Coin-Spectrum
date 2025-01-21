@@ -242,7 +242,17 @@ const Sidebar: React.FC = () => {
                     Users Kyc
                   </span>
                 </Link>
-      
+          <Link
+                  href={"/adminDashboard/kyc"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/adminDashboard/send-mails"
+                  )}`}
+                >
+                  <FaEnvelope />
+                  <span className="text-[15px] ml-4 text-gray-200">
+                    Send Mails
+                  </span>
+                </Link>
               </div>
             </div>
           </SheetContent>
@@ -392,7 +402,17 @@ const Sidebar: React.FC = () => {
                     Users Kyc
                   </span>
                 </Link>
-     
+               <Link
+                  href={"/adminDashboard/kyc"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/adminDashboard/send-mails"
+                  )}`}
+                >
+                  <FaEnvelope />
+                  <span className="text-[15px] ml-4 text-gray-200">
+                    Send Mails
+                  </span>
+                </Link>
           </div>
         </motion.div>
       )}
