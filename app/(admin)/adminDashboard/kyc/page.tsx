@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { formatDistanceToNow } from "date-fns";
 import { useDebounce } from "@/hook/useDebounce";
+import Loading from "@/app/loading";
 
 export default function KycPage() {
     const [page, setPage] = useState(1);

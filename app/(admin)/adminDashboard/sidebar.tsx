@@ -353,9 +353,9 @@ const Sidebar: React.FC = () => {
                   </span>
                 </Link>
             <Link
-                  href={"/dashboard/Kyc"}
+                  href={"/adminDashboard/Kyc"}
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
-                    "/dashboard/Kyc"
+                    "/adminDashboard/Kyc"
                   )}`}
                 >
                   <FaUserShield /> 
