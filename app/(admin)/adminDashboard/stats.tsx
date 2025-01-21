@@ -1,3 +1,22 @@
+// import { useDashboard } from "@/hook/useDashboard";
+
+// function DashboardComponent() {
+//     const { data, isLoading, error } = useDashboard();
+  
+//     if (isLoading) return <div>Loading...</div>;
+//     if (error) return <div>Error loading dashboard</div>;
+//     if (!data) return null;
+  
+//     return (
+//       <div>
+//         <h2>Dashboard Statistics</h2>
+//         <div>Total Users: {data.statistics.totalUsers}</div>
+//         {/* Rest of your dashboard UI */}
+//       </div>
+//     );
+//   }
+  
+//   export default DashboardComponent;
 
 
 'use client'
@@ -5,21 +24,7 @@
 import React from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-interface MonthlyStats {
-    createdAt: string | Date;
-    amount: number;
-  }
-  
-  interface ChartDataItem {
-    month: string;
-    deposits: number;
-    withdrawals: number;
-  }
-  
-  interface DateFormatOptions extends Intl.DateTimeFormatOptions {
-    month: 'short' | 'long' | 'narrow' | 'numeric' | '2-digit';
-  }
+
 const StatCard = ({ icon, title, value, delay }: {
   icon: React.ReactNode,
   title: string,
@@ -59,22 +64,6 @@ const AdminPage = () => {
       </div>
     )
   }
-
-  const chartData = stats?.monthlyStats?.reduce<ChartDataItem[]>((acc, curr: MonthlyStats) => {
-    const formatOptions: DateFormatOptions = { month: 'short' };
-    const month = new Date(curr.createdAt).toLocaleString('default', formatOptions);
-    const existing = acc.find((item: ChartDataItem) => item.month === month);
-    
-    if (existing) {
-      existing.deposits += curr.amount;
-    } else {
-      acc.push({ month, deposits: curr.amount, withdrawals: 0 });
-    }
-    
-    return acc;
-  }, []) || [];
-  
-  
 
   return (
     <div className="p-4">
@@ -144,42 +133,6 @@ const AdminPage = () => {
           title="Net Profit"
           value={`$${((stats?.totalDeposits || 0) - (stats?.totalWithdrawals || 0)).toLocaleString()}`}
         />
-       <StatCard
-          delay={0.7}
-          icon={
-            <svg width="30" height="30" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="stroke-current text-black">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-            </svg>
-          }
-          title="Total Trades"
-          value={stats?.totalTrades || 0}
-        />
-
-        <StatCard
-          delay={0.8}
-          icon={
-            <svg width="30" height="30" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="stroke-current text-black">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-          }
-          title="Signal Purchases"
-          value={stats?.totalSignalPurchases || 0}
-        />
-      </div>
-
-      <div className="mt-8 bg-white p-4 rounded-lg shadow">
-        <h3 className="text-xl font-semibold mb-4">Monthly Deposits & Withdrawals</h3>
-        <ResponsiveContainer width="100%" height={400}>
-          <LineChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="deposits" stroke="#FFD700" strokeWidth={2} />
-            <Line type="monotone" dataKey="withdrawals" stroke="#FF4444" strokeWidth={2} />
-          </LineChart>
-        </ResponsiveContainer>
       </div>
     </div>
   )
