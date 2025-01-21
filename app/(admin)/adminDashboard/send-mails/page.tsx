@@ -82,6 +82,7 @@ export default function AdminEmailPage() {
             Content
           </label>
           <Editor
+            apiKey='zum6i1eulm2wgpf5jdfvzigouwfv01yssv6zxsn7bzxlkb69'
             value={content}
             onEditorChange={(content, editor) => setContent(content)}
             init={{
