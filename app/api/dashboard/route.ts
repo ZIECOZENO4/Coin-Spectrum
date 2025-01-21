@@ -4,29 +4,28 @@ import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { sql, eq, and } from "drizzle-orm";
 import { 
-  users, 
+  users as usersTable, 
   userInvestments, 
-  trades,
+  trades as tradesTable,
   transactionHistory
 } from "@/lib/db/schema";
 
-interface ChartDataPoint {
-  name: string;
-  investments: number;
-  trades: number;
-  sales: number;
-}
-
-interface DashboardStatistics {
-  totalUsers: number;
-  totalInvestors: number;
-  totalTraders: number;
-  netProfit: number;
-}
-
-interface DashboardResponse {
-  statistics: DashboardStatistics;
-  chartData: ChartDataPoint[];
+export interface DashboardData {
+  users: { count: number }[];
+  investors: { count: number }[];
+  traders: { count: number }[];
+  transactions: {
+    deposits: number;
+    withdrawals: number;
+  }[];
+  investments: {
+    total: number;
+    date: string;
+  }[];
+  trades: {
+    total: number;
+    date: string;
+  }[];
 }
 
 export async function GET() {
@@ -36,13 +35,12 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Verify admin role
     const adminUser = await db
       .select()
-      .from(users)
+      .from(usersTable)
       .where(and(
-        eq(users.id, userId),
-        eq(users.role, "admin")
+        eq(usersTable.id, userId),
+        eq(usersTable.role, "admin")
       ));
 
     if (!adminUser.length) {
@@ -52,34 +50,24 @@ export async function GET() {
       );
     }
 
-    const [
-      usersCount,
-      investorsCount,
-      tradersCount,
-      transactions,
-      investmentData,
-      tradingData
-    ] = await Promise.all([
+    const [userCount, investorCount, traderCount, transactionData, investmentData, tradeData] = 
+    await Promise.all([
       db.select({
         count: sql<number>`count(*)::int`
-      })
-      .from(users),
+      }).from(usersTable),
       
       db.select({
         count: sql<number>`count(distinct ${userInvestments.userId})::int`
-      })
-      .from(userInvestments),
+      }).from(userInvestments),
       
       db.select({
-        count: sql<number>`count(distinct ${trades.userId})::int`
-      })
-      .from(trades),
+        count: sql<number>`count(distinct ${tradesTable.userId})::int`
+      }).from(tradesTable),
       
       db.select({
         deposits: sql<number>`COALESCE(SUM(CASE WHEN ${transactionHistory.type} = 'deposit' THEN ${transactionHistory.amount} ELSE 0 END), 0)::float`,
         withdrawals: sql<number>`COALESCE(SUM(CASE WHEN ${transactionHistory.type} = 'withdrawal' THEN ${transactionHistory.amount} ELSE 0 END), 0)::float`
-      })
-      .from(transactionHistory),
+      }).from(transactionHistory),
 
       db.select({
         total: sql<number>`COALESCE(SUM(${userInvestments.amount}), 0)::float`,
@@ -91,53 +79,26 @@ export async function GET() {
       .orderBy(sql`DATE_TRUNC('day', ${userInvestments.createdAt})`),
 
       db.select({
-        total: sql<number>`COALESCE(SUM(${trades.amount}), 0)::float`,
-        date: sql<string>`DATE_TRUNC('day', ${trades.createdAt})::date`
+        total: sql<number>`COALESCE(SUM(${tradesTable.amount}), 0)::float`,
+        date: sql<string>`DATE_TRUNC('day', ${tradesTable.createdAt})::date`
       })
-      .from(trades)
-      .where(sql`${trades.createdAt} >= NOW() - INTERVAL '30 days'`)
-      .groupBy(sql`DATE_TRUNC('day', ${trades.createdAt})`)
-      .orderBy(sql`DATE_TRUNC('day', ${trades.createdAt})`)
+      .from(tradesTable)
+      .where(sql`${tradesTable.createdAt} >= NOW() - INTERVAL '30 days'`)
+      .groupBy(sql`DATE_TRUNC('day', ${tradesTable.createdAt})`)
+      .orderBy(sql`DATE_TRUNC('day', ${tradesTable.createdAt})`)
     ]);
 
-    const netProfit = Number(transactions[0]?.deposits || 0) - 
-                     Number(transactions[0]?.withdrawals || 0);
-
-    const chartData: ChartDataPoint[] = Array.from({ length: 30 }, (_, i) => {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      const dateStr = date.toISOString().split('T')[0];
-      
-      const investmentEntry = investmentData.find(d => 
-        new Date(d.date).toISOString().split('T')[0] === dateStr
-      );
-      const tradingEntry = tradingData.find(d => 
-        new Date(d.date).toISOString().split('T')[0] === dateStr
-      );
-
-      return {
-        name: new Date(dateStr).toLocaleDateString(),
-        investments: Number(investmentEntry?.total || 0),
-        trades: Number(tradingEntry?.total || 0),
-        sales: Number(investmentEntry?.total || 0) + Number(tradingEntry?.total || 0)
-      };
-    }).reverse();
-
-    const response: DashboardResponse = {
-      statistics: {
-        totalUsers: Number(usersCount[0]?.count || 0),
-        totalInvestors: Number(investorsCount[0]?.count || 0),
-        totalTraders: Number(tradersCount[0]?.count || 0),
-        netProfit
-      },
-      chartData
-    };
-
-    return NextResponse.json(response);
+    return NextResponse.json({ 
+      users: userCount, 
+      investors: investorCount, 
+      traders: traderCount, 
+      transactions: transactionData, 
+      investments: investmentData, 
+      trades: tradeData 
+    });
 
   } catch (error: unknown) {
     console.error("Dashboard error:", error);
-    
     const errorMessage = error instanceof Error 
       ? error.message 
       : 'Unknown error occurred';

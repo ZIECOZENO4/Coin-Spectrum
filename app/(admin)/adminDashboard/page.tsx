@@ -9,6 +9,7 @@ import SalesChart from "./chart";
 import Loading from "@/app/loading";
 import { useAuth } from "./AuthProvider";
 import Auth from "./auth";
+import DashboardComponent from "./stats";
 
 interface DashboardStats {
   statistics: {
@@ -143,6 +144,7 @@ export default function Dashboard() {
         <SalesChart data={transformedChartData} />
         </CardContent>
       </Card>
+      <DashboardComponent />
     </div>
   );
 }
