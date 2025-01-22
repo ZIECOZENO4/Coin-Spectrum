@@ -1,5 +1,3 @@
-
-
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { trades, users } from "@/lib/db/schema";
@@ -10,9 +8,9 @@ import { TradeEmail } from "@/emails/TradeEmail";
 
 interface TradeRequest {
   symbol: string;
-  type: 'BUY' | 'SELL';
+  type: string;  // Changed from 'BUY' | 'SELL' to accept lowercase
   amount: number;
-  leverage: string | number;
+  leverage: string;
   expiry: string;
 }
 
@@ -20,56 +18,45 @@ const MINIMUM_BALANCE = 50;
 const VALID_EXPIRY_TIMES = ['5m', '15m', '30m', '1h', '4h', '1d'];
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Mock function - Replace with actual market price fetching logic
 async function getMarketPrice(symbol: string): Promise<number> {
-  // Implement real market price fetching here
   return 1.0000;
 }
 
-const logError = (error: unknown, context: string) => {
-  console.error({
-    message: `Error in ${context}`,
-    error: error instanceof Error ? error.message : String(error),
-    timestamp: new Date().toISOString()
-  });
-};
-
 export async function POST(req: NextRequest) {
   try {
-    if (!process.env.DATABASE_URL) {
-      throw new Error("DATABASE_URL is not configured");
-    }
-
     const body = await req.json();
+    console.log("Received request body:", body); // Debug log
+
     const { symbol, type, amount, leverage, expiry } = body as TradeRequest;
 
-    // Enhanced input validation
-    if (!symbol || !type || !amount || !leverage || !expiry) {
+    // Basic validation
+    if (!symbol || !type || amount === undefined || !leverage || !expiry) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Missing required fields", received: { symbol, type, amount, leverage, expiry } },
         { status: 400 }
       );
     }
 
-    // Validate trade type
+    // Convert type to uppercase and validate
     const normalizedType = type.toUpperCase();
     if (!['BUY', 'SELL'].includes(normalizedType)) {
       return NextResponse.json(
-        { error: "Invalid trade type. Must be BUY or SELL" },
+        { error: "Invalid trade type. Must be buy or sell" },
         { status: 400 }
       );
     }
 
-    // Validate amount
-    if (typeof amount !== 'number' || amount <= 0) {
+    // Parse amount as number if it's a string
+    const parsedAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
       return NextResponse.json(
         { error: "Amount must be a positive number" },
         { status: 400 }
       );
     }
 
-    // Validate leverage
-    const leverageNum = Number(leverage);
+    // Parse leverage
+    const leverageNum = parseInt(leverage.replace(/[^0-9]/g, ''));
     if (isNaN(leverageNum) || leverageNum <= 0) {
       return NextResponse.json(
         { error: "Invalid leverage value" },
@@ -77,7 +64,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validate expiry
     if (!VALID_EXPIRY_TIMES.includes(expiry)) {
       return NextResponse.json(
         { error: "Invalid expiry time" },
@@ -93,85 +79,92 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const trade = await db.transaction(async (tx) => {
-      // Lock the user row for update
-      const user = await tx.query.users.findFirst({
-        where: eq(users.id, session.user.id),
-        forUpdate: true
-      });
-
-      if (!user) {
-        throw new Error("User not found");
-      }
-
-      if (!user.email) {
-        throw new Error("User email not found");
-      }
-
-      if (user.balance < MINIMUM_BALANCE) {
-        throw new Error(`Minimum balance of $${MINIMUM_BALANCE} required`);
-      }
-
-      if (user.balance < amount) {
-        throw new Error("Insufficient balance");
-      }
-
-      const marketPrice = await getMarketPrice(symbol);
-      
-      const [newTrade] = await tx.insert(trades).values({
-        id: `trade_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        userId: session.user.id,
-        symbol,
-        type: normalizedType,
-        amount,
-        leverage: leverageNum,
-        expiry,
-        status: "active",
-        openPrice: marketPrice,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }).returning();
-
-      await tx.update(users)
-        .set({ 
-          balance: user.balance - amount,
-          updatedAt: new Date()
-        })
-        .where(eq(users.id, user.id));
-
-      return { newTrade, userEmail: user.email, userName: user.firstName };
+    // Get user without forUpdate
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, session.user.id)
     });
 
-    // Send email notification
+    if (!user) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
+    }
+
+    if (!user.email) {
+      return NextResponse.json(
+        { error: "User email not found" },
+        { status: 400 }
+      );
+    }
+
+    if (user.balance < MINIMUM_BALANCE) {
+      return NextResponse.json(
+        { error: `Minimum balance of $${MINIMUM_BALANCE} required` },
+        { status: 400 }
+      );
+    }
+
+    if (user.balance < parsedAmount) {
+      return NextResponse.json(
+        { error: "Insufficient balance" },
+        { status: 400 }
+      );
+    }
+
+    const marketPrice = await getMarketPrice(symbol);
+
+    const [newTrade] = await db.insert(trades).values({
+      id: `trade_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      userId: session.user.id,
+      symbol,
+      type: normalizedType,
+      amount: parsedAmount,
+      leverage: leverageNum,
+      expiry,
+      status: "active",
+      openPrice: marketPrice,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }).returning();
+
+    await db.update(users)
+      .set({ 
+        balance: user.balance - parsedAmount,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, user.id));
+
+    // Email notification
     if (process.env.RESEND_API_KEY && process.env.RESEND_FROM_EMAIL) {
       try {
         await resend.emails.send({
           from: process.env.RESEND_FROM_EMAIL,
-          to: trade.userEmail,
+          to: user.email,
           subject: "Trade Placed Successfully",
           react: TradeEmail({
-            userName: trade.userName || trade.userEmail,
+            userName: user.firstName || user.email,
             symbol,
             type: normalizedType,
-            amount: amount.toString(),
+            amount: parsedAmount.toString(),
             leverage: leverageNum.toString(),
             expiry,
-            tradeId: trade.newTrade.id
+            tradeId: newTrade.id
           })
         });
       } catch (emailError) {
-        logError(emailError, "Email sending");
+        console.error("Email sending failed:", emailError);
       }
     }
 
     return NextResponse.json({
       success: true,
       message: "Trade placed successfully",
-      trade: trade.newTrade
+      trade: newTrade
     });
 
   } catch (error) {
-    logError(error, "Trade placement");
+    console.error("Trade placement error:", error);
     
     if (error instanceof Error) {
       return NextResponse.json(
