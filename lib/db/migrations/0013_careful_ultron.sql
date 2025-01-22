@@ -1,0 +1,1 @@
+ALTER TABLE "investment" ALTER COLUMN "name" SET DATA TYPE text;
