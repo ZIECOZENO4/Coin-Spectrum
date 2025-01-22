@@ -1,10 +1,34 @@
-// app/admin/email/page.tsx
 'use client';
 
 import { useState } from 'react';
-import { Editor } from '@tinymce/tinymce-react';
-import { Editor as TinyMCEEditor } from 'tinymce';
+import dynamic from 'next/dynamic';
+import 'react-quill/dist/quill.snow.css';
 import { toast } from 'sonner';
+
+// Import ReactQuill dynamically to avoid SSR issues
+const ReactQuill = dynamic(() => import('react-quill'), {
+  ssr: false,
+  loading: () => <div className="h-[500px] w-full bg-gray-800 text-white animate-pulse" />
+});
+
+const modules = {
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    ['link', 'image'],
+    [{ align: [] }],
+    ['clean']
+  ]
+};
+
+const formats = [
+  'header',
+  'bold', 'italic', 'underline', 'strike',
+  'list', 'bullet',
+  'link', 'image',
+  'align'
+];
 
 export default function AdminEmailPage() {
   const [email, setEmail] = useState('');
@@ -81,25 +105,16 @@ export default function AdminEmailPage() {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Content
           </label>
-          <Editor
-            apiKey='zum6i1eulm2wgpf5jdfvzigouwfv01yssv6zxsn7bzxlkb69'
-            value={content}
-            onEditorChange={(content, editor) => setContent(content)}
-            init={{
-              height: 500,
-              menubar: false,
-              plugins: [
-                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap',
-                'preview', 'anchor', 'searchreplace', 'visualblocks', 'code',
-                'fullscreen', 'insertdatetime', 'media', 'table', 'code', 'help',
-                'wordcount'
-              ],
-              toolbar: 'undo redo | blocks | ' +
-                'bold italic forecolor | alignleft aligncenter ' +
-                'alignright alignjustify | bullist numlist outdent indent | ' +
-                'removeformat | help',
-            }}
-          />
+          <div className="h-[500px]">
+            <ReactQuill
+              theme="snow"
+              value={content}
+              onChange={setContent}
+              modules={modules}
+              formats={formats}
+              className="h-[400px]"
+            />
+          </div>
         </div>
 
         <button
