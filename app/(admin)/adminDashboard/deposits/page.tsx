@@ -71,7 +71,7 @@ export default function PendingDepositsPage() {
                 <TableRow key={item.deposit.id} className="hover:bg-yellow-100">
                   <TableCell className="text-black">
                     <div className="flex flex-col">
-                      <span className="font-medium">{item.user.fullName}</span>
+                      <span className="font-medium">{item.user.userName}</span>
                       <span className="text-sm text-gray-600">{item.user.email}</span>
                     </div>
                   </TableCell>

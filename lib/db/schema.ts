@@ -121,6 +121,7 @@ export const investments = pgTable("investment", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+
 export const userInvestments = pgTable("user_investment", {
   id: text("id").primaryKey(),
   userId: text("user_id").notNull().references(() => users.id),
