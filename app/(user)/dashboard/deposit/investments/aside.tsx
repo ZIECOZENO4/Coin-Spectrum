@@ -5,19 +5,31 @@ import { useInView } from "react-intersection-observer";
 import NoData from "@/components/noData";
 import InvestmentCard from "./investmentCard";
 
-interface InvestmentWithRelations {
+interface Investment {
   id: string;
-  investments: {
-    id: string;
-    name: string;
-    minAmount: number;
-    maxAmount: number | null;
-    roi: number;
-    durationHours: number;
-    instantWithdrawal: boolean;
-    createdAt: string;
-    updatedAt: string;
-  }
+  name: string;
+  minAmount: number;
+  maxAmount: number | null;
+  roi: number;
+  durationHours: number;
+  instantWithdrawal: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface InvestmentsResponse {
+  investments: Investment[];
+}
+
+interface InvestmentCardProps {
+  id: string;
+  name: string;
+  createdAt: string | Date;
+  status: string;
+  minAmount: number;
+  maxAmount: number | null;
+  roi: number;
+  durationHours: number;
 }
 
 const InfiniteScrollComponent = () => {
@@ -29,6 +41,7 @@ const InfiniteScrollComponent = () => {
     isFetchingNextPage,
     status,
     error,
+    isLoading,
   } = useAUserAllInvestments();
 
   React.useEffect(() => {
@@ -37,7 +50,15 @@ const InfiniteScrollComponent = () => {
     }
   }, [inView, fetchNextPage, hasNextPage]);
 
-  if (data?.pages.length === 0) {
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading investments</div>;
+  }
+
+  if (!data || !data.pages || data.pages.length === 0) {
     return <NoData shortText="There is no investment found" />;
   }
 
@@ -45,14 +66,18 @@ const InfiniteScrollComponent = () => {
     <div className="flex flex-col justify-center gap-4">
       <h1 className="text-2xl font-extrabold text-center">YOUR INVESTMENTS</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
-        {data?.pages.map((page, pageIndex) => (
+        {data.pages.map((page: InvestmentsResponse, pageIndex: number) => (
           <React.Fragment key={pageIndex}>
-            {page.investments.map((investment) => (
+            {page.investments?.map((investment: Investment) => (
               <InvestmentCard
                 key={investment.id}
                 id={investment.id}
                 name={investment.name}
-                createdAt={investment.createdAt}
+                createdAt={new Intl.DateTimeFormat('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                }).format(new Date(investment.createdAt))}
                 status={investment.instantWithdrawal ? "Active" : "Pending"}
                 minAmount={investment.minAmount}
                 maxAmount={investment.maxAmount}
@@ -62,13 +87,20 @@ const InfiniteScrollComponent = () => {
             ))}
           </React.Fragment>
         ))}
-        <div ref={ref}>
-          {isFetchingNextPage
-            ? "Loading more..."
-            : hasNextPage
-            ? "Load more"
-            : "No more data"}
-        </div>
+        {hasNextPage && (
+          <div ref={ref} className="col-span-full text-center p-4">
+            {isFetchingNextPage ? (
+              <span>Loading more...</span>
+            ) : (
+              <span>Load more</span>
+            )}
+          </div>
+        )}
+        {!hasNextPage && !isFetchingNextPage && data.pages[0].investments.length > 0 && (
+          <div className="col-span-full text-center p-4">
+            <span>No more investments to load</span>
+          </div>
+        )}
       </div>
     </div>
   );
