@@ -25,16 +25,19 @@ export default function TradingInterface({ selectedPair, onSymbolChange }: Tradi
       toast.error('Please enter a valid amount')
       return
     }
-
+  
+    const tradeData = {
+      symbol: selectedPair,
+      type,
+      amount: parseFloat(amount),
+      leverage,
+      expiry
+    };
+    
+    console.log('Trade Data:', tradeData);
+  
     try {
-      await createTrade.mutateAsync({
-        symbol: selectedPair,
-        type,
-        amount: parseFloat(amount),
-        leverage,
-        expiry
-      })
-      
+      await createTrade.mutateAsync(tradeData);
       toast.success('Trade placed successfully')
       setAmount("0.00")
     } catch (error: any) {
@@ -42,6 +45,7 @@ export default function TradingInterface({ selectedPair, onSymbolChange }: Tradi
     }
   }
 
+  
   return (
     <div className="h-auto bg-black p-6">
       <motion.div
