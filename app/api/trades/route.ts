@@ -22,9 +22,11 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export async function POST(req: NextRequest) {
   try {
     console.log("Processing trade request...");
-    
+
     // Validate request body
     const body = await req.json();
+    console.log("Request body:", body); // Log the request body
+
     const { symbol, type, amount, leverage, expiry } = body as TradeRequest;
 
     if (!symbol || !type || !amount || !leverage || !expiry) {
@@ -43,6 +45,8 @@ export async function POST(req: NextRequest) {
 
     // Authenticate user
     const { session } = await getUserAuth();
+    console.log("Session:", session); // Log the session
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: "Unauthorized" },
@@ -57,6 +61,8 @@ export async function POST(req: NextRequest) {
       console.error("Database query error:", error);
       throw new Error("Failed to fetch user data");
     });
+
+    console.log("User:", user); // Log the user
 
     if (!user) {
       return NextResponse.json(
@@ -89,6 +95,8 @@ export async function POST(req: NextRequest) {
     // Create trade with transaction
     const trade = await db.transaction(async (tx) => {
       try {
+        console.log("Creating trade..."); // Log the start of the transaction
+
         const [newTrade] = await tx.insert(trades).values({
           id: `trade_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           userId: session.user.id,
@@ -103,12 +111,16 @@ export async function POST(req: NextRequest) {
           updatedAt: new Date()
         }).returning();
 
+        console.log("Trade created:", newTrade); // Log the created trade
+
         await tx.update(users)
           .set({ 
             balance: user.balance - amount,
             updatedAt: new Date()
           })
           .where(eq(users.id, user.id));
+
+        console.log("User balance updated"); // Log the balance update
 
         return newTrade;
       } catch (txError) {
@@ -137,7 +149,6 @@ export async function POST(req: NextRequest) {
         console.log("Trade confirmation email sent");
       } catch (emailError) {
         console.error("Failed to send trade email:", emailError);
-        // Continue execution even if email fails
       }
     }
 
