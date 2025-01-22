@@ -135,7 +135,7 @@ export function WithdrawalInput() {
   );
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div className="flex flex-col justify-center items-center min-h-screen">
        <WithdrawalWarning />
 
 {/* Loading state */}
