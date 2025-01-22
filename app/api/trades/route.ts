@@ -1,23 +1,4 @@
-// app/api/trades/route.ts
-import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { trades, users } from "@/lib/db/schema";
-import { getUserAuth } from "@/lib/auth/utils";
-import { eq } from "drizzle-orm";
-import { Resend } from "resend";
-import { TradeEmail } from "@/emails/TradeEmail";
 
-// Input validation interface
-interface TradeRequest {
-  symbol: string;
-  type: 'buy' | 'sell';
-  amount: number;
-  leverage: number;
-  expiry: string;
-}
-
-const MINIMUM_BALANCE = 50;
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
