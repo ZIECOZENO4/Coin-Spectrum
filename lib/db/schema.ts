@@ -40,16 +40,6 @@ export const TransactionType = pgEnum("transaction_type", [
   "investment",
 ]);
 
-export const InvestmentName = pgEnum("investment_name", [
-  "vip1",
-  "vip2",
-  "vip3",
-  "vip4",
-  "vip5",
-  "vip6",
-  "vip7",
-]);
-
 export const KycStatus = pgEnum("kyc_status", ["pending", "approved", "rejected"]);
 
 export const IdType = pgEnum("id_type", [
@@ -107,7 +97,7 @@ export const userReferrals = pgTable("user_referral", {
 
 export const investments = pgTable("investment", {
   id: text("id").primaryKey(),
-  name: InvestmentName("name").notNull(),
+  name: text("name").notNull(),
   price: doublePrecision("price").notNull(),
   profitPercent: doublePrecision("profit_percent").notNull(),
   rating: integer("rating").notNull(),
