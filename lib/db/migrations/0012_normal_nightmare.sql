@@ -1,0 +1,1 @@
+ALTER TABLE "trades" ALTER COLUMN "open_price" DROP NOT NULL;

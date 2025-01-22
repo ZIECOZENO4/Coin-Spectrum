@@ -316,7 +316,7 @@ export const trades = pgTable("trades", {
   leverage: integer("leverage").notNull(),
   expiry: text("expiry").notNull(),
   status: text("status").notNull().default("active"),
-  openPrice: doublePrecision("open_price").notNull(),
+  openPrice: doublePrecision("open_price"),
   closePrice: doublePrecision("close_price"),
   profit: doublePrecision("profit"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
