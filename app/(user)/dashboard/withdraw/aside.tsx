@@ -42,7 +42,7 @@ export const formSchema = z.object({
 });
 
 const fetchUserTrades = async () => {
-  const response = await fetch('/api/trades');
+  const response = await fetch('/api/getTrades');
   if (!response.ok) throw new Error('Failed to fetch trades');
   return response.json();
 };
