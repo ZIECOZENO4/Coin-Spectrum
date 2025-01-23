@@ -3,8 +3,11 @@
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ChevronRight } from 'lucide-react'
+import { useRef, useState } from "react"
 
 export default function PlatformSection() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -33,6 +36,19 @@ export default function PlatformSection() {
     "Superior execution speeds",
     "Trader's calculator, performance statistics, sentiment",
   ]
+
+
+const handlePlayPause = () => {
+  if (videoRef.current) {
+    if (videoRef.current.paused) {
+      videoRef.current.play();
+      setIsPlaying(true);
+    } else {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
+  }
+};
 
   return (
     <div className="h-auto bg-black text-white py-8 md:py-16 px-4">
@@ -86,22 +102,37 @@ export default function PlatformSection() {
           </motion.div>
 
           <motion.div 
-            className="w-full lg:w-1/2"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-          >
-            <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-900">
-              <video
-                className="w-full h-full object-cover"
-                controls
-                poster="https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/coinspectrum.png"
-              >
-                <source src="/https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/coinspectrum.mp4?t=2025-01-23T06%3A33%3A13.924Z" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
-          </motion.div>
+  className="w-full lg:w-1/2"
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.5, duration: 0.8 }}
+>
+  <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-900">
+    <video
+      className="w-full h-full object-cover"
+      ref={videoRef}
+      poster="https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/coinspectrum.png"
+    >
+      <source src="/https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/coinspectrum.mp4?t=2025-01-23T06%3A33%3A13.924Z" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    
+    <button 
+      onClick={handlePlayPause}
+      className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-black bg-opacity-50 rounded-full flex items-center justify-center hover:bg-opacity-75 transition-all duration-200"
+      aria-label="Play video"
+    >
+      <svg 
+        className="w-8 h-8 text-white" 
+        fill="currentColor" 
+        viewBox="0 0 24 24"
+      >
+        <path d="M8 5v14l11-7z"/>
+      </svg>
+    </button>
+  </div>
+</motion.div>
+
         </div>
       </div>
     </div>
