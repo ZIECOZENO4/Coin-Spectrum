@@ -7,7 +7,8 @@ import { useRef, useState } from "react"
 
 export default function PlatformSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
-const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -37,18 +38,21 @@ const [isPlaying, setIsPlaying] = useState<boolean>(false);
     "Trader's calculator, performance statistics, sentiment",
   ]
 
-
-const handlePlayPause = () => {
-  if (videoRef.current) {
-    if (videoRef.current.paused) {
-      videoRef.current.play();
-      setIsPlaying(true);
-    } else {
-      videoRef.current.pause();
-      setIsPlaying(false);
+  const handlePlayPause = () => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play();
+        setIsPlaying(true);
+      } else {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      }
     }
-  }
-};
+  };
+
+  const handleError = (e: any) => {
+    console.error("Error playing video:", e);
+  };
 
   return (
     <div className="h-auto bg-black text-white py-8 md:py-16 px-4">
@@ -64,7 +68,7 @@ const handlePlayPause = () => {
               className="text-yellow-400 font-semibold tracking-wide"
               variants={item}
             >
-             COIN SPECTRUM TRADERS
+              COIN SPECTRUM TRADERS
             </motion.p>
             
             <motion.h1 
@@ -102,40 +106,48 @@ const handlePlayPause = () => {
           </motion.div>
 
           <motion.div 
-  className="w-full lg:w-1/2"
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ delay: 0.5, duration: 0.8 }}
->
-  <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-900">
-    <video
-      className="w-full h-full object-cover"
-      ref={videoRef}
-      poster="https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/coinspectrum.png"
-    >
-      <source src="/https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/coinspectrum.mp4?t=2025-01-23T06%3A33%3A13.924Z" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
-    
-    <button 
-      onClick={handlePlayPause}
-      className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-black bg-opacity-50 rounded-full flex items-center justify-center hover:bg-opacity-75 transition-all duration-200"
-      aria-label="Play video"
-    >
-      <svg 
-        className="w-8 h-8 text-white" 
-        fill="currentColor" 
-        viewBox="0 0 24 24"
-      >
-        <path d="M8 5v14l11-7z"/>
-      </svg>
-    </button>
-  </div>
-</motion.div>
-
+            className="w-full lg:w-1/2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+          >
+            <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-900">
+              <video
+                className="w-full h-full object-cover"
+                ref={videoRef}
+                poster="https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/coinspectrum.png"
+                playsInline
+                preload="metadata"
+                onError={handleError}
+              >
+                <source 
+                  src="https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/coinspectrum.mp4?t=2025-01-23T06%3A33%3A13.924Z" 
+                  type="video/mp4" 
+                />
+                Your browser does not support the video tag.
+              </video>
+              
+              <button 
+                onClick={handlePlayPause}
+                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-black bg-opacity-50 rounded-full flex items-center justify-center hover:bg-opacity-75 transition-all duration-200"
+                aria-label={isPlaying ? "Pause video" : "Play video"}
+              >
+                <svg 
+                  className="w-8 h-8 text-white" 
+                  fill="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  {isPlaying ? (
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                  ) : (
+                    <path d="M8 5v14l11-7z"/>
+                  )}
+                </svg>
+              </button>
+            </div>
+          </motion.div>
         </div>
       </div>
     </div>
   )
 }
-
