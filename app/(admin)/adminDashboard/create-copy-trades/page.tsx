@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { UploadButton } from "@/lib/uploadthing";
+import Image from "next/image";
 
 export default function AdminTradersPage() {
   const router = useRouter();
@@ -76,7 +78,7 @@ export default function AdminTradersPage() {
                 }))}
               /> 
                 </div>
-            
+{/*             
                  <div className="div">
                  <label>Image URL</label>
               <Input
@@ -87,7 +89,39 @@ export default function AdminTradersPage() {
                   imageUrl: e.target.value
                 }))}
               />
-                    </div>
+                    </div> */}
+                      <div className="div">
+    <label>Trader Image</label>
+    <div className="mt-2 space-y-4">
+    {formData.imageUrl && (
+  <Image 
+    src={formData.imageUrl} 
+    alt="Trader image"
+    width={200}
+    height={200}
+    style={{ objectFit: "cover" }}
+    className="rounded-lg"
+  />
+)}
+
+      <UploadButton
+        endpoint="imageUploader"
+        onClientUploadComplete={(res) => {
+          if (res?.[0]) {
+            setFormData(prev => ({
+              ...prev,
+              imageUrl: res[0].url
+            }));
+            toast.success("Image uploaded successfully");
+          }
+        }}
+        onUploadError={(error: Error) => {
+          toast.error(`Upload failed: ${error.message}`);
+        }}
+      />
+    </div>
+  </div>
+
              
                  <div className="div">
                  <label>Followers</label>
