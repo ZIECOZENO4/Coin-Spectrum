@@ -95,9 +95,9 @@ export default function PlatformSection() {
               <video
                 className="w-full h-full object-cover"
                 controls
-                poster="/placeholder.svg?height=720&width=1280"
+                poster="https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/coinspectrum.png"
               >
-                <source src="/trading-video.mp4" type="video/mp4" />
+                <source src="/https://xmrjeomtnodlwoxjzjgy.supabase.co/storage/v1/object/public/license-images/coinspectrum.mp4?t=2025-01-23T06%3A33%3A13.924Z" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>
