@@ -111,7 +111,6 @@ export const investments = pgTable("investment", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-
 export const userInvestments = pgTable("user_investment", {
   id: text("id").primaryKey(),
   userId: text("user_id").notNull().references(() => users.id),
@@ -234,6 +233,7 @@ export const investmentStatuses = pgTable("investment_statuses", {
 });
 
 export const InvestmentStatusEnum = pgEnum('investment_status', ['CONFIRMED', 'SOLD', 'NOT_CONFIRMED']);
+
 export const imageProofs = pgTable("image_proofs", {
   id: text("id").primaryKey(),
   url: text("url").notNull(),
@@ -296,7 +296,6 @@ export const signalPurchases = pgTable("signal_purchases", {
   expiresAt: timestamp("expires_at").notNull(),
 });
 
-// Add to schema.ts
 export const trades = pgTable("trades", {
   id: text("id").primaryKey(),
   userId: text("user_id").notNull().references(() => users.id),

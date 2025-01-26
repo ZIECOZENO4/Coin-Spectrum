@@ -6,6 +6,7 @@ import TradingViewWidget2 from "./TradingViewChart";
 import TradingViewSymbolInfo from "./TradingViewSymbolInfo";
 import TradingViewTechnicalAnalysis from "./TradingViewTechnicalAnalysis";
 import TradingViewFinancials from "./TradingViewFinancials";
+import { TradesHistory } from "./TradesHistory";
 
 const TradePage = () => {
   const [selectedSymbol, setSelectedSymbol] = useState("EUR/USD");
@@ -21,7 +22,7 @@ const TradePage = () => {
             selectedPair={selectedSymbol} 
             onSymbolChange={setSelectedSymbol} 
           />
-          {/* <LatestTrades /> */}
+        <TradesHistory />
           <div className="">
             <TradingViewTechnicalAnalysis symbol={selectedSymbol} />
           </div>
