@@ -67,7 +67,7 @@ export function ConfirmWithdrawal({
         <DialogTitle>Confirm Withdrawal</DialogTitle>
         <DialogDescription>
           Are you sure that the wallet address and the crypto type are correct?
-          Incorrect information might lead to money loss.
+          Incorrect information might lead to money loss and also make sure have up to three successful trades.
         </DialogDescription>
       </DialogHeader>
       <DialogFooter>
