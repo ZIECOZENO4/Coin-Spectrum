@@ -21,7 +21,7 @@ export default function TradesPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["trades", page],
     queryFn: async () => {
-      const res = await fetch(`/api/admin/trades?page=${page}`);
+      const res = await fetch(`/api/trades?page=${page}`);
       if (!res.ok) throw new Error("Failed to fetch");
       return res.json();
     },
@@ -30,7 +30,7 @@ export default function TradesPage() {
 
   const tradeMutation = useMutation({
     mutationFn: async ({ tradeId, action }: { tradeId: string; action: "approve" | "reject" }) => {
-      const res = await fetch("/api/admin/trades", {
+      const res = await fetch("/api/trades", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tradeId, action }),
