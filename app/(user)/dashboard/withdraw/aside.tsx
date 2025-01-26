@@ -70,15 +70,45 @@ export function WithdrawalInput() {
     }
   }, [isConfirmed]);
 
+  // const handleDialogOpen = async () => {
+  //   const isValid = await form.trigger();
+  //   if (isValid) {
+  //     setIsDialogOpen(true);
+  //   } else {
+  //     setIsDialogOpen(false);
+  //   }
+  // };
+
   const handleDialogOpen = async () => {
     const isValid = await form.trigger();
-    if (isValid) {
+    if (!isValid) {
+      setIsDialogOpen(false);
+      return;
+    }
+  
+    try {
+      const trades = await fetchUserTrades();
+      const tradesCount = trades?.length || 0;
+      const remainingTrades = Math.max(3 - tradesCount, 0);
+  
+      if (tradesCount < 3) {
+        toast.error(`You must place ${remainingTrades} more trade${remainingTrades > 1 ? 's' : ''} before withdrawing.`);
+        console.log(`User has ${tradesCount} trades. ${remainingTrades} more trade(s) needed to withdraw.`);
+        setIsDialogOpen(false);
+        return;
+      }
+  
+      toast.success(`You are eligible to withdraw. You have placed ${tradesCount} trades.`);
+      console.log(`User is eligible to withdraw with ${tradesCount} trades.`);
       setIsDialogOpen(true);
-    } else {
+    } catch (error) {
+      toast.error("An error occurred while fetching trades.");
+      console.error(error);
       setIsDialogOpen(false);
     }
   };
 
+  
   async function onSubmit(values: z.infer<typeof formSchema>) {
     toast.promise(
       processWithdrawal.mutateAsync(values, {
@@ -136,20 +166,7 @@ export function WithdrawalInput() {
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
-       <WithdrawalWarning />
-
-{/* Loading state */}
-{isLoading && (
-  <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    className="text-center text-gray-500 mb-4"
-  >
-    Loading trade information...
-  </motion.div>
-)}
-
-      <div className="max-w-[32rem] w-full px-6 py-8 rounded-lg shadow-md">
+     <div className="max-w-[32rem] w-full px-6 py-8 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold mb-6 text-center">
           Withdrawal Form
         </h2>

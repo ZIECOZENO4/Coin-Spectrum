@@ -78,18 +78,6 @@ export default function AdminTradersPage() {
                 }))}
               /> 
                 </div>
-{/*             
-                 <div className="div">
-                 <label>Image URL</label>
-              <Input
-                placeholder="Image URL"
-                value={formData.imageUrl}
-                onChange={(e) => setFormData(prev => ({
-                  ...prev,
-                  imageUrl: e.target.value
-                }))}
-              />
-                    </div> */}
                       <div className="div">
     <label>Trader Image</label>
     <div className="mt-2 space-y-4">
