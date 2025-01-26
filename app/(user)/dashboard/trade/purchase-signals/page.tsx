@@ -101,7 +101,7 @@ export default function TradingSignals(): JSX.Element {
             </motion.div>
           ))}
         </div>
-        <div className="container mx-auto py-10">
+        <div className="container w-screen md:w-auto py-10">
       <h1 className="md:text-2xl text-xl text-center font-bold mb-6">Signal Purchase History</h1>
       <SignalPurchaseHistory />
     </div>
