@@ -1,4 +1,4 @@
-// app/api/admin/deposits/route.ts
+
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { Resend } from "resend";
@@ -20,11 +20,15 @@ export async function GET(req: Request) {
     const limit = 10;
     const offset = (page - 1) * limit;
 
+    // Modified query to select specific user fields
     const deposits = await db
       .select({
         deposit: pendingDeposits,
         user: {
           id: users.id,
+          email: users.email,
+          userName: users.username,
+          fullName: users.fullName
         }
       })
       .from(pendingDeposits)
@@ -32,6 +36,9 @@ export async function GET(req: Request) {
       .limit(limit)
       .offset(offset)
       .orderBy(sql`${pendingDeposits.createdAt} desc`);
+
+    // Add console.log to debug the response
+    console.log('Deposits with user data:', JSON.stringify(deposits, null, 2));
 
     const totalCount = await db
       .select({ count: sql<number>`count(*)` })
@@ -43,9 +50,11 @@ export async function GET(req: Request) {
       currentPage: page
     });
   } catch (error) {
+    console.error('Error fetching deposits:', error);
     return NextResponse.json({ error: "Failed to fetch deposits" }, { status: 500 });
   }
 }
+
 
 export async function POST(req: Request) {
   try {

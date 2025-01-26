@@ -47,7 +47,7 @@ const StatsDashboard: React.FC<StatsDashboardProps> = ({ userId }) => {
 
   const statsData: StatsData[] = [
     { label: "Withdrawable Balance", value: `$${balance || 0}.00` },
-    { label: "Total Trades", value: formatCurrency(stats?.totalTrades || 0) },
+    { label: "Total Trades Profits", value: formatCurrency(stats?.totalTrades || 0) },
     { label: "Total Profits", value: formatCurrency(stats?.totalProfits || 0) },
     { label: "Total Withdrawals", value: formatCurrency(stats?.totalWithdrawals || 0) }
   ];
@@ -130,7 +130,6 @@ const StatsDashboard: React.FC<StatsDashboardProps> = ({ userId }) => {
                   {card.value}
                 </motion.p>
               </motion.div>
-              
               <motion.div
                 className="absolute top-2 right-2 w-2 h-2 bg-yellow-400 rounded-full"
                 animate={{ 
