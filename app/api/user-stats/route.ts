@@ -1,4 +1,4 @@
-// app/api/user-stats/route.ts
+
 import { db } from "@/lib/db";
 import { 
   users, 
@@ -6,10 +6,12 @@ import {
   trades,
   pendingDeposits,
   pendingWithdrawals,
-  TransactionTypeEnum 
+  investments,
+  TransactionTypeEnum, 
+  userInvestments
 } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
-import { eq, and, sum, count } from "drizzle-orm";
+import { eq, and, sum, count, sql } from "drizzle-orm";
 
 interface StatsResponse {
   totalDeposits: number;
@@ -40,7 +42,7 @@ export async function GET() {
       deposits,
       withdrawals,
       tradesData,
-      profitsData,
+      investmentProfits,
       pendingDepositsData,
       pendingWithdrawalsData
     ] = await Promise.all([
@@ -75,12 +77,19 @@ export async function GET() {
         .where(eq(trades.userId, userId))
         .execute(),
 
-      // Calculate profits from trades
-      db
-        .select({ total: sum(trades.profit) })
-        .from(trades)
-        .where(eq(trades.userId, userId))
-        .execute(),
+      // Calculate profits from investments
+    // Calculate profits from user investments
+db
+.select({
+  total: sql`SUM((${userInvestments.amount} * ${investments.profitPercent}) / 100)`
+})
+.from(userInvestments)
+.innerJoin(
+  investments,
+  eq(userInvestments.investmentId, investments.id)
+)
+.where(eq(userInvestments.userId, userId))
+.execute(),
 
       // Get pending deposits
       db
@@ -109,11 +118,34 @@ export async function GET() {
 
     const totalDeposits = toNumber(deposits[0]?.total);
     const totalWithdrawals = toNumber(withdrawals[0]?.total);
-    const totalProfits = toNumber(profitsData[0]?.total);
+    const totalProfits = toNumber(investmentProfits[0]?.total);
     const totalTrades = toNumber(tradesData[0]?.count);
     const pendingDepositsTotal = toNumber(pendingDepositsData[0]?.total);
     const pendingWithdrawalsTotal = toNumber(pendingWithdrawalsData[0]?.total);
+    
+    // Calculate net profit (deposits - withdrawals)
     const netProfit = totalDeposits - totalWithdrawals;
+
+    // Log all the data for debugging
+    console.log('User Stats Data:', {
+      raw: {
+        deposits: deposits[0],
+        withdrawals: withdrawals[0],
+        trades: tradesData[0],
+        investmentProfits: investmentProfits[0],
+        pendingDeposits: pendingDepositsData[0],
+        pendingWithdrawals: pendingWithdrawalsData[0]
+      },
+      calculated: {
+        totalDeposits,
+        totalWithdrawals,
+        totalProfits,
+        totalTrades,
+        netProfit,
+        pendingDepositsTotal,
+        pendingWithdrawalsTotal
+      }
+    });
 
     const response: StatsResponse = {
       totalDeposits,
