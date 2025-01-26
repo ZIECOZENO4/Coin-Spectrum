@@ -30,7 +30,7 @@ export function TradesHistory() {
   const { data: trades, isLoading } = useQuery({
     queryKey: ["trades"],
     queryFn: async () => {
-      const response = await fetch("/api/trades");
+      const response = await fetch("/api/tradeshistory");
       if (!response.ok) {
         throw new Error("Failed to fetch trades");
       }
@@ -47,7 +47,7 @@ export function TradesHistory() {
   }
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border ">
       <Table>
         <TableHeader>
           <TableRow>
