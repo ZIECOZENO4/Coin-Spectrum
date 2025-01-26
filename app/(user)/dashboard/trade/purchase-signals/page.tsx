@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import SignalCard from "./signal-card";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { SignalPurchaseHistory } from "./SignalPurchaseHistory";
 
 // Define the Signal type
 interface Signal {
@@ -100,6 +101,10 @@ export default function TradingSignals(): JSX.Element {
             </motion.div>
           ))}
         </div>
+        <div className="container mx-auto py-10">
+      <h1 className="md:text-2xl text-xl text-center font-bold mb-6">Signal Purchase History</h1>
+      <SignalPurchaseHistory />
+    </div>
       </motion.div>
     </div>
   );

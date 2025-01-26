@@ -47,7 +47,7 @@ export function TradesHistory() {
   }
 
   return (
-    <div className="rounded-md border ">
+    <div className="rounded-md border max-w-screen-lg md:w-full">
       <Table>
         <TableHeader>
           <TableRow>
@@ -72,7 +72,7 @@ export function TradesHistory() {
               <TableCell>${trade.amount.toFixed(2)}</TableCell>
               <TableCell>{trade.leverage}x</TableCell>
               <TableCell>${trade.openPrice?.toFixed(2) || "N/A"}</TableCell>
-              <TableCell>${trade.closePrice?.toFixed(2) || "N/A"}</TableCell>
+              <TableCell>${trade.closePrice?.toFixed(2) || "***"}</TableCell>
               <TableCell className={trade.profit >= 0 ? "text-green-600" : "text-red-600"}>
                 ${trade.profit?.toFixed(2) || "0.00"}
               </TableCell>
