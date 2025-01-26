@@ -70,15 +70,6 @@ export function WithdrawalInput() {
     }
   }, [isConfirmed]);
 
-  // const handleDialogOpen = async () => {
-  //   const isValid = await form.trigger();
-  //   if (isValid) {
-  //     setIsDialogOpen(true);
-  //   } else {
-  //     setIsDialogOpen(false);
-  //   }
-  // };
-
   const handleDialogOpen = async () => {
     const isValid = await form.trigger();
     if (!isValid) {
@@ -135,34 +126,6 @@ export function WithdrawalInput() {
   const remainingTrades = Math.max(3 - tradesCount, 0);
   const canWithdraw = tradesCount >= 3;
 
-  // Warning banner component
-  const WithdrawalWarning = () => (
-    <AnimatePresence>
-      {!canWithdraw && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          className="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6"
-        >
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <p className="text-sm text-amber-700">
-                {remainingTrades > 0 
-                  ? `You must place ${remainingTrades} more trade${remainingTrades > 1 ? 's' : ''} before withdrawing.`
-                  : 'You can now withdraw your funds.'}
-              </p>
-            </div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
@@ -269,18 +232,19 @@ export function WithdrawalInput() {
               isOpen={isDialogOpen}
               setIsOpen={setIsDialogOpen}
             >
-              <Button
-                type="button"
-                disabled={processWithdrawal.isPending || !canWithdraw}
-                className={`w-full max-w-[12rem] py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white 
-                  ${canWithdraw 
-                    ? 'bg-indigo-600 hover:bg-indigo-700' 
-                    : 'bg-gray-400 cursor-not-allowed'} 
-                  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
-                onClick={async () => await handleDialogOpen()}
-              >
-                Submit
-              </Button>
+       <Button
+  type="button"
+  disabled={processWithdrawal.isPending}
+  className={`w-full max-w-[12rem] py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white 
+    ${canWithdraw 
+      ? 'bg-indigo-600 hover:bg-indigo-700' 
+      : 'bg-gray-400'} 
+    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+  onClick={async () => await handleDialogOpen()}
+>
+  Submit
+</Button>
+
             </DrawerDialogDemo>
           </div>
           </form>
