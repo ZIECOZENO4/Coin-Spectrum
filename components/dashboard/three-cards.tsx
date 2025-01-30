@@ -91,7 +91,7 @@ export const InvestmentDashboard: React.FC<{
                 transition={{ delay: 0.3 }}
                 className="text-gray-400"
               >
-                Total Balance
+                Total Balance (USD)
               </motion.div>
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
@@ -99,7 +99,7 @@ export const InvestmentDashboard: React.FC<{
                 transition={{ delay: 0.4, type: "spring" }}
                 className="text-4xl font-bold text-white"
               >
-                {`${balance}.00`}
+                {`$${balance}.00`}
               </motion.div>
             </div>
 
