@@ -15,6 +15,16 @@ import GetInTouch from "./getintouch";
 import ReferralCard from "@/components/dashboard/referral";
 
 const HomePage = () => {
+  React.useEffect(() => {
+    // Get ref from URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const refId = params.get('ref');
+    
+    if (refId) {
+      // Store in localStorage
+      localStorage.setItem('referralId', refId);
+    }
+  }, []);
   return (
     <main>
       <div className="div">
@@ -29,7 +39,6 @@ const HomePage = () => {
       <div className="div">
         <TimelineDemo />
       </div>
- 
       <div className="div">
         <FAQ />
       </div>
