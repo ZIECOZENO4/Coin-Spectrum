@@ -1,4 +1,4 @@
-// import { AnimatedListDemo } from "@/components/aminated-list";
+'use client'
 import { AnimatedListDemo } from "@/components/animated-list-calc";
 import Blog1 from "@/components/blog1";
 import MarqueeDemo from "@/components/comments";
