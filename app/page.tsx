@@ -6,31 +6,31 @@ import FAQ from "@/components/FAQ";
 import Features from "@/components/features";
 import Footer from "@/components/Footer";
 import ImagesSliderDemo from "@/components/hero-section";
-import StackitInvestment from "@/components/hero-section";
-import Section from "@/components/sections-page";
 import Section2 from "@/components/sections-page2";
 import { TimelineDemo } from "@/components/timeline";
 import React from "react";
 import GetInTouch from "./getintouch";
-import ReferralCard from "@/components/dashboard/referral";
+import { toast } from "sonner";
 
 const HomePage = () => {
   React.useEffect(() => {
-    // Get ref from URL parameters
     const params = new URLSearchParams(window.location.search);
     const refId = params.get('ref');
     
     if (refId) {
-      // Store in localStorage
       localStorage.setItem('referralId', refId);
+      toast.success('Referral code stored successfully!', {
+        description: `Referral ID: ${refId}`,
+        duration: 3000
+      });
     }
   }, []);
+
   return (
     <main>
       <div className="div">
-      <ImagesSliderDemo />
+        <ImagesSliderDemo />
       </div>
-      
       <Features />
       <div className="flex flex-col items-center justify-centers">
         <AnimatedListDemo />
@@ -48,11 +48,9 @@ const HomePage = () => {
       <div className="div">
         <GetInTouch />
       </div>
-    
       <div className="div">
         <Footer />
       </div>
-
     </main>
   );
 };
