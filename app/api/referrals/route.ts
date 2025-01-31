@@ -22,12 +22,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const { referralId } = await request.json();
   
     try {
-      // Check if user is trying to refer themselves
       if (referralId === session.user.id) {
         return NextResponse.json({ error: "Self referral not allowed" }, { status: 400 });
       }
-  
-      // Get referrer details
+
       const referrer = await db.query.users.findFirst({
         where: eq(users.id, referralId),
       });
@@ -35,8 +33,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       if (!referrer) {
         return NextResponse.json({ error: "Invalid referral" }, { status: 404 });
       }
-  
-      // Get referred user details
+
       const referredUser = await db.query.users.findFirst({
         where: eq(users.id, session.user.id),
       });

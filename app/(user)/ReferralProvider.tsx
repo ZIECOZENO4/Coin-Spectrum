@@ -21,6 +21,10 @@ export function ReferralProvider({ children }: { children: React.ReactNode }) {
 
   const createReferral = async (ref: string) => {
     setIsProcessing(true);
+    toast.info('Processing your referral...', {
+      duration: 2000,
+    });
+
     try {
       const response = await fetch('/api/referrals', {
         method: 'POST',
@@ -36,18 +40,22 @@ export function ReferralProvider({ children }: { children: React.ReactNode }) {
         throw new Error(data.error || 'Failed to process referral');
       }
 
-      // Only clear ref from storage on successful processing
       localStorage.removeItem('ref');
       setReferralId(null);
-      toast.success('Referral processed successfully');
+      toast.success('Referral processed successfully', {
+        duration: 3000,
+      });
 
     } catch (error) {
       if (error instanceof Error) {
-        toast.error(error.message);
+        toast.error(error.message, {
+          duration: 4000,
+        });
       } else {
-        toast.error('Failed to process referral');
+        toast.error('Failed to process referral', {
+          duration: 4000,
+        });
       }
-      // Keep the ref in storage if processing failed
       setReferralId(ref);
     } finally {
       setIsProcessing(false);
@@ -56,9 +64,14 @@ export function ReferralProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const ref = localStorage.getItem('ref');
-    if (ref && !isProcessing) {
+    if (ref) {
+      toast.info('Referral link detected!', {
+        duration: 3000,
+      });
       setReferralId(ref);
-      createReferral(ref);
+      if (!isProcessing) {
+        createReferral(ref);
+      }
     }
   }, []);
 
@@ -69,7 +82,6 @@ export function ReferralProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Custom hook for using the referral context
 export const useReferral = () => {
   const context = useContext(ReferralContext);
   if (context === undefined) {
