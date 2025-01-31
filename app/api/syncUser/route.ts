@@ -58,7 +58,6 @@
 //   }
 // }
 
-
 // app/sync-user/create-user.ts
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
@@ -67,11 +66,13 @@ import { getUserAuth } from "@/lib/auth/utils";
 import { eq } from "drizzle-orm";
 import { Resend } from 'resend';
 import { WelcomeEmail } from "@/emails/WelcomeEmail";
-import { createUserTracker } from "@/app/_action/prisma-core-functionns";
+import { createUserTracker } from "@/app/_action/supabase-core-clients";
+
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function createUser(ref: string) {
+  console.log("Starting createUser function");
   const { session } = await getUserAuth();
   if (!session?.user?.email) {
     redirect("/sign-in");
@@ -85,6 +86,7 @@ export async function createUser(ref: string) {
     .limit(1);
 
   if (existingUser.length > 0) {
+    console.log("Existing user found, skipping email send");
     return existingUser[0];
   }
 
@@ -101,38 +103,38 @@ export async function createUser(ref: string) {
     })
     .returning();
 
+  // Send emails only for new users
   try {
-    // Send welcome email to new user
-    await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL!,
-      to: newUser[0].email,
-      subject: 'Welcome to Coin Spectrum!',
-      react: WelcomeEmail({
-        userFirstName: newUser[0].firstName || newUser[0].username || 'User',
-        userEmail: newUser[0].email
+    await Promise.all([
+      // Send welcome email to user
+      resend.emails.send({
+        from: process.env.RESEND_FROM_EMAIL!,
+        to: newUser[0].email,
+        subject: 'Welcome to Coin Spectrum!',
+        react: WelcomeEmail({
+          userFirstName: newUser[0].firstName || newUser[0].username || 'User',
+          userEmail: newUser[0].email
+        })
+      }),
+      // Send admin notification
+      resend.emails.send({
+        from: process.env.RESEND_FROM_EMAIL!,
+        to: process.env.ADMIN_EMAIL!,
+        subject: 'New User Registration on Coin Spectrum',
+        html: `
+          <h1>New User Registration</h1>
+          <p>A new user has registered:</p>
+          <ul>
+            <li>Name: ${newUser[0].fullName || newUser[0].username}</li>
+            <li>Email: ${newUser[0].email}</li>
+            <li>Registration Time: ${new Date().toLocaleString()}</li>
+          </ul>
+        `
       })
-    });
-
-    // Send notification to admin
-    await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL!,
-      to: 'coinspectrum1@gmail.com'!,
-      subject: 'New User Registration on Coin Spectrum',
-      html: `
-        <h1>New User Registration</h1>
-        <p>A new user has registered:</p>
-        <ul>
-          <li>Name: ${newUser[0].fullName || newUser[0].username}</li>
-          <li>Email: ${newUser[0].email}</li>
-          <li>Registration Time: ${new Date().toLocaleString()}</li>
-        </ul>
-      `
-    });
-
-    console.log('Welcome and admin notification emails sent successfully');
+    ]);
+    console.log("Welcome and admin notification emails sent successfully");
   } catch (error) {
     console.error('Error sending emails:', error);
-    // Don't throw error to prevent user creation from failing
   }
 
   // Handle referral if exists
