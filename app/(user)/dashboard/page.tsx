@@ -30,7 +30,7 @@ export default function Home() {
 
     console.log('Checking for referral:', ref);
     if (ref) {
-      toast.info('Processing referral...');
+      toast.info('Checking referral status...');
       processReferral(ref);
     }
   }, []);
