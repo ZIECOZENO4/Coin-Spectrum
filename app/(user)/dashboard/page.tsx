@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import { getUserAuth, getUserId } from "@/lib/auth/utils";
 import Link from "next/link";
 import Dashboard from "@/components/dashboard/card";
 import UserBalances from "@/components/dashboard/three-cards-2";
@@ -21,9 +20,11 @@ import ReferralCard from "@/components/dashboard/referral";
 import TradingViewSymbolInfo from "./trade/TradingViewSymbolInfo";
 import TradingViewFinancials from "./trade/TradingViewFinancials";
 import { toast } from "sonner";
+import { useAuth } from '@clerk/nextjs';
+
 
 export default function Home() {
-  const userId = getUserId();
+  const { userId, isLoaded } = useAuth();
 
   const processReferral = async (ref: string) => {
     console.log('Processing referral:', ref);
@@ -64,9 +65,11 @@ export default function Home() {
       processReferral(ref);
     }
   }, []);
-
+  if (!isLoaded) {
+    return <div className="text-center align-middle">Getting user info...</div>;
+  }
+  
   if (!userId) {
-    console.log('No user ID found');
     return <NoData shortText="user is not authenticated" />;
   }
   
