@@ -47,7 +47,6 @@ export async function createUser(ref: string) {
   
   console.log("New user created:", newUser[0].id);
 
-  // Immediately send welcome and admin emails
   try {
     await Promise.all([
       resend.emails.send({
@@ -79,7 +78,6 @@ export async function createUser(ref: string) {
     console.error('Error sending welcome emails:', error);
   }
 
-  // Handle referral if exists
   if (ref && ref !== "noRef") {
     console.log("Processing referral for:", ref);
     const referrer = await db
