@@ -8,7 +8,6 @@ export default async function AppLayout({
   children: React.ReactNode;
 }) {
   return (
- 
       <main>
         <div className="flex flex-row">
           <div className="flex-none">
@@ -20,6 +19,5 @@ export default async function AppLayout({
         </div>
         <Toaster richColors />
       </main>
-
   );
 }

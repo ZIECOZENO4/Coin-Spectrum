@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { getUserAuth, getUserId } from "@/lib/auth/utils";
 import Link from "next/link";
@@ -5,7 +7,7 @@ import Dashboard from "@/components/dashboard/card";
 import UserBalances from "@/components/dashboard/three-cards-2";
 import { InvestmentDashboard } from "@/components/dashboard/three-cards";
 import { SkeletonDemo } from "@/components/dashboard/skeleton";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import NoData from "@/components/noData";
 import StatsDashboard from "@/components/dashboard/accdetails";
 import TradingViewWidget from './TradingViewWidget';
@@ -18,27 +20,70 @@ import Loading from "@/app/loading";
 import ReferralCard from "@/components/dashboard/referral";
 import TradingViewSymbolInfo from "./trade/TradingViewSymbolInfo";
 import TradingViewFinancials from "./trade/TradingViewFinancials";
+import { toast } from "sonner";
 
 export default function Home() {
   const userId = getUserId();
+
+  const processReferral = async (ref: string) => {
+    console.log('Processing referral:', ref);
+    try {
+      const response = await fetch('/api/referrals', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ referralId: ref }),
+      });
+
+      const data = await response.json();
+      console.log('Referral API response:', data);
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to process referral');
+      }
+
+      localStorage.removeItem('ref');
+      toast.success('Referral processed successfully');
+
+    } catch (error) {
+      console.error('Referral processing error:', error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error('Failed to process referral');
+      }
+    }
+  };
+
+  useEffect(() => {
+    const ref = localStorage.getItem('ref');
+    console.log('Checking for referral:', ref);
+    if (ref) {
+      toast.info('Processing referral...');
+      processReferral(ref);
+    }
+  }, []);
+
   if (!userId) {
+    console.log('No user ID found');
     return <NoData shortText="user is not authenticated" />;
   }
   
   return (
     <main className="w-full">
       <Suspense fallback={<SkeletonDemo />}>
-      <div className="flex flex-col md:flex-row justify-center md:justify-between">
-      <InvestmentDashboard userId={userId}/>
-      <StatsDashboard userId={userId}  />
-      </div>
-
-            <UserBalances />
- <div>
-        <div className="">
-        <div className="">
+        <div className="flex flex-col md:flex-row justify-center md:justify-between">
+          <InvestmentDashboard userId={userId}/>
+          <StatsDashboard userId={userId} />
         </div>
-      </div>
+
+        <UserBalances />
+        <div>
+          <div className="">
+            <div className="">
+            </div>
+          </div>
         </div>
       </Suspense>
     </main>
