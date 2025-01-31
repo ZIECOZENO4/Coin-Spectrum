@@ -3,6 +3,10 @@
 import { db } from '@/lib/db';
 import { users } from '@/lib/db/schema';
 import { clerkClient } from "@clerk/clerk-sdk-node";
+import { Resend } from 'resend';
+import { WelcomeEmail } from "@/emails/WelcomeEmail";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function signUp(formData: FormData) {
   try {
@@ -25,9 +29,7 @@ export async function signUp(formData: FormData) {
     if (existingUsername.data.length > 0) {
       return { success: false, error: 'Username is already taken.' };
     }
-    
 
-    // If email and username are unique, proceed with user creation
     const firstName = formData.get('firstName') as string;
     const lastName = formData.get('lastName') as string;
     const password = formData.get('password') as string;
@@ -49,6 +51,7 @@ export async function signUp(formData: FormData) {
       password,
     });
 
+    // Create user in database
     await db.insert(users).values({
       id: clerkUser.id,
       firstName,
@@ -65,6 +68,36 @@ export async function signUp(formData: FormData) {
       xrpAccountId,
       usdtErc20AccountId,
       country,
+    });
+
+    // Send welcome email to user
+    await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL!,
+      to: email,
+      subject: 'Welcome to Coin Spectrum!',
+      react: WelcomeEmail({
+        userFirstName: firstName || username,
+        userEmail: email
+      })
+    });
+
+    // Send notification to admin
+    await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL!,
+      to: process.env.ADMIN_EMAIL!,
+      subject: 'New User Registration on Coin Spectrum',
+      html: `
+        <h1>New User Registration</h1>
+        <p>A new user has registered:</p>
+        <ul>
+          <li>Name: ${firstName} ${lastName}</li>
+          <li>Username: ${username}</li>
+          <li>Email: ${email}</li>
+          <li>Country: ${country}</li>
+          <li>Phone: ${phoneNumber}</li>
+          <li>Registration Time: ${new Date().toLocaleString()}</li>
+        </ul>
+      `
     });
 
     return { success: true };
