@@ -25,7 +25,15 @@ import { useAuth } from '@clerk/nextjs';
 
 export default function Home() {
   const { userId, isLoaded } = useAuth();
-
+  useEffect(() => {
+    const ref = localStorage.getItem('ref');
+    console.log('Checking for referral:', ref);
+    if (ref) {
+      toast.info('Processing referral...');
+      processReferral(ref);
+    }
+  }, []);
+  
   const processReferral = async (ref: string) => {
     console.log('Processing referral:', ref);
     try {
@@ -57,14 +65,7 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    const ref = localStorage.getItem('ref');
-    console.log('Checking for referral:', ref);
-    if (ref) {
-      toast.info('Processing referral...');
-      processReferral(ref);
-    }
-  }, []);
+ 
   if (!isLoaded) {
     return <div className="text-center align-middle">Getting user info...</div>;
   }
