@@ -26,7 +26,8 @@ import { useAuth } from '@clerk/nextjs';
 export default function Home() {
   const { userId, isLoaded } = useAuth();
   useEffect(() => {
-    const ref = localStorage.getItem('ref');
+    const ref = localStorage.getItem('referralId');
+
     console.log('Checking for referral:', ref);
     if (ref) {
       toast.info('Processing referral...');
@@ -52,7 +53,7 @@ export default function Home() {
         throw new Error(data.error || 'Failed to process referral');
       }
 
-      localStorage.removeItem('ref');
+      localStorage.removeItem('referralId');
       toast.success('Referral processed successfully');
 
     } catch (error) {
