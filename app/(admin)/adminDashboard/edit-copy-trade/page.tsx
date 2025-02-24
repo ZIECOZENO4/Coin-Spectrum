@@ -18,22 +18,24 @@ export default function AdminTradersPage() {
     retry: 2
   });
 
-  const updateMutation = useMutation({
-    mutationFn: async (updatedTrader: Trader) => {
-      const res = await fetch(`/api/traders/${updatedTrader.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedTrader)
-      });
-      if (!res.ok) throw new Error("Failed to update trader");
-      return res.json();
-    },
-    onSuccess: () => {
-      toast.success("Trader updated successfully");
-      refetch();
-    },
-    onError: (error: Error) => toast.error(error.message)
-  });
+// app/admin/traders/page.tsx
+const updateMutation = useMutation({
+  mutationFn: async (updatedTrader: Trader) => {
+    const res = await fetch(`/api/traders/${updatedTrader.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedTrader)
+    });
+    if (!res.ok) throw new Error("Failed to update trader");
+    return res.json();
+  },
+  onSuccess: () => {
+    toast.success("Trader updated successfully");
+    refetch();
+  },
+  onError: (error: Error) => toast.error(error.message)
+});
+
 
   if (isLoading) return (
     <div className="space-y-4">

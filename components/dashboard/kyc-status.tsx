@@ -36,41 +36,6 @@ export default function KycStatus() {
   }
 
   return (
-    // <div className="p-4 rounded-lg border">
-    //   <h2 className="text-xl font-semibold mb-4">KYC Status</h2>
-      
-    //   <div className="space-y-2">
-    //     <div className="flex items-center gap-2">
-    //       <span className="font-medium">Status:</span>
-    //       <span className={`px-2 py-1 rounded-full text-sm ${
-    //         kycStatus.status === "approved" 
-    //           ? "bg-green-100 text-green-800"
-    //           : kycStatus.status === "pending"
-    //           ? "bg-yellow-100 text-yellow-800"
-    //           : "bg-red-100 text-red-800"
-    //       }`}>
-    //         {kycStatus.status?.toUpperCase() || "NOT SUBMITTED"}
-    //       </span>
-    //     </div>
-
-    //     {kycStatus.firstName && (
-    //       <>
-    //         <div>
-    //           <span className="font-medium">Name:</span>
-    //           {" "}{kycStatus.firstName} {kycStatus.lastName}
-    //         </div>
-    //         <div>
-    //           <span className="font-medium">ID Type:</span>
-    //           {" "}{kycStatus.idType}
-    //         </div>
-    //         <div>
-    //           <span className="font-medium">Submitted:</span>
-    //           {" "}{new Date(kycStatus.createdAt).toLocaleDateString()}
-    //         </div>
-    //       </>
-    //     )}
-    //   </div>
-    // </div>
 
     <div className="flex items-center gap-2">
       <span className={`px-2 py-1 rounded-full text-xs ${
