@@ -221,6 +221,17 @@ const Sidebar: React.FC = () => {
                   </span>
                 </Link>
                 <Link
+                  href={"/adminDashboard/edit-copy-trade"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/adminDashboard/edit-copy-trade"
+                  )}`}
+                >
+                  <FaBookmark />
+                  <span className="text-[15px] ml-4 text-gray-200">
+                    Edit Copy Trades
+                  </span>
+                </Link>
+                <Link
                   href={"/adminDashboard/trades"}
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
                     "/adminDashboard/trades"
@@ -400,6 +411,17 @@ const Sidebar: React.FC = () => {
                   <FaEnvelope />
                   <span className="text-[15px] ml-4 text-gray-200">
                     Users Kyc
+                  </span>
+                </Link>
+                <Link
+                  href={"/adminDashboard/edit-copy-trade"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/adminDashboard/edit-copy-trade"
+                  )}`}
+                >
+                  <FaBookmark />
+                  <span className="text-[15px] ml-4 text-gray-200">
+                    Edit Copy Trades
                   </span>
                 </Link>
                <Link

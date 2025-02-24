@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import Image from "next/image";
 
 
 interface TraderProps {
@@ -128,11 +129,17 @@ export default function TraderCard({ id, ...props }: TraderProps & { id: string 
               whileHover={{ scale: 1.05 }}
               className="w-24 h-24 rounded-full overflow-hidden border-2 border-yellow-400"
             >
-              <img
-                src={image}
-                alt={name}
-                className="w-full h-full object-cover"
-              />
+          <Image
+  src={image}
+  alt={name}
+  width={96}
+  height={96}
+  className="w-full h-full object-cover"
+  onError={(e) => {
+    console.error('Image load failed:', e);
+    e.target.src = '/images/COIN SPECTRUM.png'; 
+  }}
+/>
             </motion.div>
             <motion.h3
               initial={{ opacity: 0 }}
