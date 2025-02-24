@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import TraderCard from "./trader-card";
 
-// Define proper interface for trader data
 interface Trader {
   id: string;
   name: string;

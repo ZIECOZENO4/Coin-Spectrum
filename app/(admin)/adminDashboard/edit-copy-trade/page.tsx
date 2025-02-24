@@ -8,13 +8,14 @@ import { toast } from "sonner";
 import EditableTraderCard from "./EditableTraderCard";
 
 export default function AdminTradersPage() {
-  const { data: traders, isLoading, refetch } = useQuery<Trader[]>({
+  const { data, isLoading, error, refetch } = useQuery<{ traders: Trader[] }>({
     queryKey: ['admin-traders'],
     queryFn: async () => {
       const res = await fetch("/api/traders");
       if (!res.ok) throw new Error("Failed to fetch traders");
       return res.json();
-    }
+    },
+    retry: 2
   });
 
   const updateMutation = useMutation({
@@ -42,12 +43,21 @@ export default function AdminTradersPage() {
     </div>
   );
 
+  if (error) return (
+    <div className="text-center p-8">
+      <p className="text-red-500">Error loading traders: {error.message}</p>
+      <Button onClick={() => refetch()} className="mt-4">
+        Retry
+      </Button>
+    </div>
+  );
+
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-2xl font-bold mb-6">Manage Traders</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {traders?.map((trader) => (
+        {data?.traders?.map((trader) => (
           <EditableTraderCard
             key={trader.id}
             trader={trader}

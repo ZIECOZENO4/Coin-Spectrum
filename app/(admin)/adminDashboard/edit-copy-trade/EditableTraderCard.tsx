@@ -1,6 +1,6 @@
-
+// components/EditableTraderCard.tsx
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Trader } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -14,13 +14,42 @@ interface EditableTraderCardProps {
 }
 
 export default function EditableTraderCard({ trader, onSave, isSaving }: EditableTraderCardProps) {
+  const [isMounted, setIsMounted] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedTrader, setEditedTrader] = useState<Trader>({ ...trader });
+  const [editedTrader, setEditedTrader] = useState<Trader>({
+    id: '',
+    name: '',
+    imageUrl: '',
+    followers: 0,
+    minCapital: 0,
+    percentageProfit: 0,
+    totalProfit: 0,
+    rating: 5,
+    isPro: false,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  });
+
+  useEffect(() => {
+    setIsMounted(true);
+    setEditedTrader(trader);
+  }, [trader]);
 
   const handleSave = () => {
-    onSave(editedTrader);
+    const validatedTrader: Trader = {
+      ...editedTrader,
+      followers: Number(editedTrader.followers) || 0,
+      minCapital: Number(editedTrader.minCapital),
+      percentageProfit: Number(editedTrader.percentageProfit),
+      totalProfit: Number(editedTrader.totalProfit) || 0,
+      rating: Math.min(Math.max(Number(editedTrader.rating), 1), 5)
+    };
+    
+    onSave(validatedTrader);
     setIsEditing(false);
   };
+
+  if (!isMounted) return null;
 
   return (
     <div className="bg-card rounded-xl p-6 shadow-lg space-y-4">
@@ -130,7 +159,7 @@ function EditableField({
           {prefix && <span>{prefix}</span>}
           <Input
             type={type}
-            value={value}
+            value={value || 0}
             onChange={(e) => onChange(e.target.value)}
             className="w-full"
           />
@@ -138,7 +167,7 @@ function EditableField({
         </div>
       ) : (
         <p className="font-medium">
-          {prefix}{value.toLocaleString()}{suffix}
+          {prefix}{(value || 0).toLocaleString()}{suffix}
         </p>
       )}
     </div>
