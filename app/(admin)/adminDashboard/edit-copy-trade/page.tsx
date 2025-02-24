@@ -19,14 +19,46 @@ export default function AdminTradersPage() {
   });
 
 // app/admin/traders/page.tsx
+// const updateMutation = useMutation({
+//   mutationFn: async (updatedTrader: Trader) => {
+//     const res = await fetch(`/api/traders/${updatedTrader.id}`, {
+//       method: "PUT",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(updatedTrader)
+//     });
+//     if (!res.ok) throw new Error("Failed to update trader");
+//     return res.json();
+//   },
+  // onSuccess: () => {
+  //   toast.success("Trader updated successfully");
+  //   refetch();
+  // },
+  // onError: (error: Error) => toast.error(error.message)
+// });
+
+// Update your mutation handler
 const updateMutation = useMutation({
   mutationFn: async (updatedTrader: Trader) => {
     const res = await fetch(`/api/traders/${updatedTrader.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedTrader)
+      body: JSON.stringify({
+        name: updatedTrader.name,
+        imageUrl: updatedTrader.imageUrl,
+        followers: updatedTrader.followers,
+        minCapital: updatedTrader.minCapital,
+        percentageProfit: updatedTrader.percentageProfit,
+        totalProfit: updatedTrader.totalProfit,
+        rating: updatedTrader.rating,
+        isPro: updatedTrader.isPro
+      })
     });
-    if (!res.ok) throw new Error("Failed to update trader");
+    
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error || 'Failed to update trader');
+    }
+    
     return res.json();
   },
   onSuccess: () => {
