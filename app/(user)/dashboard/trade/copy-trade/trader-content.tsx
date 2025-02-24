@@ -7,7 +7,7 @@ import TraderCard from "./trader-card";
 interface Trader {
   id: string;
   name: string;
-  image: string;
+  imageUrl: string;
   followers: number;
   minCapital: number;
   percentageProfit: number;

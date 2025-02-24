@@ -1,7 +1,7 @@
 
 
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -9,11 +9,12 @@ import { Input } from "@/components/ui/input";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import Image from "next/image";
+import { Trader } from "@/lib/types";
 
 
 interface TraderProps {
   name: string
-  image: string
+  imageUrl: string
   followers: number
   minCapital: number
   percentageProfit: number
@@ -21,7 +22,6 @@ interface TraderProps {
   rating: number
   isPro?: boolean
 }
-// Hook to fetch traders
 const useTraders = () => {
   return useQuery({
     queryKey: ["traders"],
@@ -35,7 +35,7 @@ const useTraders = () => {
   });
 };
 
-// Hook for copy trading
+
 const useCopyTrade = () => {
   return useMutation({
     mutationFn: async ({ traderId, amount }: { traderId: string; amount: number }) => {
@@ -58,7 +58,7 @@ const useCopyTrade = () => {
 export default function TraderCard({ id, ...props }: TraderProps & { id: string }) {
   const { 
     name,
-    image,
+    imageUrl,
     followers,
     minCapital,
     percentageProfit,
@@ -69,6 +69,14 @@ export default function TraderCard({ id, ...props }: TraderProps & { id: string 
   const [isOpen, setIsOpen] = useState(false);
   const [amount, setAmount] = useState(props.minCapital);
   const copyTradeMutation = useCopyTrade();
+  const [imgSrc, setImgSrc] = useState(imageUrl);
+  const [hasError, setHasError] = useState(false);
+  
+  useEffect(() => {
+    // Reset state when imageUrl changes
+    setImgSrc(imageUrl);
+    setHasError(false);
+  }, [imageUrl]);
 
   const handleCopyTrade = async () => {
     if (amount < props.minCapital) {
@@ -129,16 +137,21 @@ export default function TraderCard({ id, ...props }: TraderProps & { id: string 
               whileHover={{ scale: 1.05 }}
               className="w-24 h-24 rounded-full overflow-hidden border-2 border-yellow-400"
             >
-          <Image
-  src={image}
+     <Image
+  src={hasError ? '/COIN-SPECTRUM.png' : imgSrc}
   alt={name}
   width={96}
   height={96}
   className="w-full h-full object-cover"
-  onError={(e) => {
-    console.error('Image load failed:', e);
-    e.target.src = '/images/COIN SPECTRUM.png'; 
+  unoptimized={hasError} // Bypass Next.js optimization for fallback
+  onError={() => {
+    if (!hasError) {
+      console.error('Image load failed:', imageUrl);
+      setHasError(true);
+      setImgSrc('/COIN-SPECTRUM.png');
+    }
   }}
+  onLoad={() => setHasError(false)}
 />
             </motion.div>
             <motion.h3
