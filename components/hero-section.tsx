@@ -41,7 +41,7 @@ function ImagesSliderDemo() {
           <p className="mx-auto mb-4 max-w-4xl bg-gradient-to-r from-emerald-500 to-lime-600 bg-clip-text text-4xl font-bold leading-tight text-transparent sm:text-5xl sm:leading-tight lg:text-6xl lg:leading-tight">
             Coin Spectrum Investment Platform
           </p>
-          <h1 className="font-inter mx-auto max-w-2xl px-6 text-lg text-gray-300">
+          <h1 className="font-inter mx-auto max-w-2xl px-6 text-2xl text-gray-300">
             We ensure maximum returns and investments for our stakeholders at
             Coin Spectrum Incorporation. Build your portfolio with confidence
             knowing that your investments are in capable hands. Join our
