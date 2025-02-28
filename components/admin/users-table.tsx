@@ -21,7 +21,7 @@ export function UsersTable() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('/api/users');
+        const response = await fetch('/api/adminusers');
         const data = await response.json();
         if (data.success) setUsers(data.users);
       } catch (error) {
@@ -101,7 +101,7 @@ export function UsersTable() {
   if (loading) return <div>Loading users...</div>;
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border text-sm md:text-xl">
       <table className="w-full">
         <thead className="bg-muted">
           {table.getHeaderGroups().map(headerGroup => (
