@@ -11,6 +11,7 @@ import { TimelineDemo } from "@/components/timeline";
 import React from "react";
 import GetInTouch from "./getintouch";
 import { toast } from "sonner";
+import AboutHero from "@/components/abouthero";
 
 const HomePage = () => {
   React.useEffect(() => {
@@ -34,6 +35,9 @@ const HomePage = () => {
       <Features />
       <div className="flex flex-col items-center justify-centers">
         <AnimatedListDemo />
+      </div>
+      <div className="div">
+        <AboutHero />
       </div>
       <Section2 />
       <div className="div">
