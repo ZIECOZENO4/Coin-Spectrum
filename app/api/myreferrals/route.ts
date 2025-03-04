@@ -15,7 +15,6 @@ export async function GET() {
         email: users.email,
         fullName: users.fullName,
         createdAt: userReferrals.createdAt,
-        status: users.kycStatus
       })
       .from(userReferrals)
       .innerJoin(users, eq(userReferrals.referredUserId, users.id))
