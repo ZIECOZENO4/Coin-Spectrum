@@ -47,7 +47,7 @@ export default clerkMiddleware((auth, request: NextRequest) => {
   if (auth().userId) {
     // Redirect authenticated users away from public routes
     if (isPublicRoute(request)) {
-      let redirectPath = "/dashboard";
+      let redirectPath = "/sync-user";
       
       // Special case for sync-user route
       if (request.nextUrl.pathname === "/sync-user") {
@@ -56,7 +56,7 @@ export default clerkMiddleware((auth, request: NextRequest) => {
 
       // Redirect from auth pages to dashboard
       if (request.nextUrl.pathname.startsWith("/sign-")) {
-        redirectPath = "/dashboard";
+        redirectPath = "/sync-user";
       }
 
       return NextResponse.redirect(new URL(redirectPath, request.url));
