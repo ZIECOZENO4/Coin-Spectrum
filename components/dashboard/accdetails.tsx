@@ -100,14 +100,13 @@ const StatsDashboard: React.FC<StatsDashboardProps> = ({ userId }) => {
         {cardData.map((card, index) => (
           <motion.div
             key={card.label}
-            onClick={() => card.label.includes("Referral") && router.push('/dashboard/myreferrals')}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4 + (index * 0.2) }}
             whileHover={{ scale: 1.02 }}
-            className="relative"
+            className="relative cursor-pointer"
           >
-            <Card className="p-6 bg-slate-200 hover:bg-yellow-100 transition-colors duration-300">
+            <Card      onClick={() => card.label.includes("Referral") && router.push('/dashboard/myreferrals')}  className="p-6 bg-slate-200 cursor-pointer hover:bg-yellow-100 transition-colors duration-300">
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
