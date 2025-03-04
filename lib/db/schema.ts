@@ -7,6 +7,7 @@ import {
   timestamp,
   uniqueIndex,
   pgEnum,
+  jsonb,
 } from "drizzle-orm/pg-core";
 import { InferSelectModel, relations } from "drizzle-orm";
 import { varchar } from "drizzle-orm/mysql-core";
@@ -59,20 +60,44 @@ export const users = pgTable("user", {
   email: text("email").notNull(),
   balance: doublePrecision("balance").notNull().default(0),
   phoneNumber: text("phone_number"),
-  bitcoinAccountId: text("bitcoin_account_id"),
-  usdtTrc20AccountId: text("usdt_trc20_account_id"),
-  ethereumAccountId: text("ethereum_account_id"),
-  litecoinAccountId: text("litecoin_account_id"),
-  dogecoinAccountId: text("dogecoin_account_id"),
-  xrpAccountId: text("xrp_account_id"),
-  usdtErc20AccountId: text("usdt_erc20_account_id"),
+  cryptoAccounts: jsonb("crypto_accounts").default({}),
   country: text("country"),
+  currency: text("currency"),
+  tradingAccountType: text("trading_account_type"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 }, (users) => ({
   usernameIndex: uniqueIndex("user_username_key").on(users.username),
   emailIndex: uniqueIndex("user_email_key").on(users.email),
 }));
+
+
+
+// export const users = pgTable("user", {
+//   id: text("id").primaryKey(),
+//   role: UserRole("role").notNull().default("user"),
+//   firstName: text("first_name"),
+//   lastName: text("last_name"),
+//   username: text("username"),
+//   fullName: text("full_name"),
+//   imageUrl: text("image_url"),
+//   email: text("email").notNull(),
+//   balance: doublePrecision("balance").notNull().default(0),
+//   phoneNumber: text("phone_number"),
+//   bitcoinAccountId: text("bitcoin_account_id"),
+//   usdtTrc20AccountId: text("usdt_trc20_account_id"),
+//   ethereumAccountId: text("ethereum_account_id"),
+//   litecoinAccountId: text("litecoin_account_id"),
+//   dogecoinAccountId: text("dogecoin_account_id"),
+//   xrpAccountId: text("xrp_account_id"),
+//   usdtErc20AccountId: text("usdt_erc20_account_id"),
+//   country: text("country"),
+//   createdAt: timestamp("created_at").notNull().defaultNow(),
+//   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+// }, (users) => ({
+//   usernameIndex: uniqueIndex("user_username_key").on(users.username),
+//   emailIndex: uniqueIndex("user_email_key").on(users.email),
+// }));
 
 export const userTrackers = pgTable("user_trackers", {
   id: text("id").primaryKey(),

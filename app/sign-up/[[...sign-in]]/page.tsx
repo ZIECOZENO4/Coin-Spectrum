@@ -7,35 +7,74 @@ import Image from "next/image";
 import { signUp } from "../../_action/signup";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { countries } from "@/lib/countries"; // You'll need to create this
 
 export default function SignupFormDemo() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [selectedCrypto, setSelectedCrypto] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     username: '',
     email: '',
     password: '',
+    confirmPassword: '',
     phoneNumber: '',
-    bitcoinAccountId: '',
-    usdtTrc20AccountId: '',
-    ethereumAccountId: '',
-    litecoinAccountId: '',
-    dogecoinAccountId: '',
-    xrpAccountId: '',
-    usdtErc20AccountId: '',
     country: '',
+    currency: 'USD',
+    tradingAccountType: 'MT5',
+    cryptoAccounts: {} as Record<string, string>,
   });
+
+  const cryptoOptions = [
+    { value: 'bitcoin', label: 'Bitcoin' },
+    { value: 'usdt_trc20', label: 'USDT TRC20' },
+    { value: 'ethereum', label: 'Ethereum' },
+    { value: 'litecoin', label: 'Litecoin' },
+    { value: 'dogecoin', label: 'Dogecoin' },
+    { value: 'xrp', label: 'XRP' },
+    { value: 'usdt_erc20', label: 'USDT ERC20' },
+  ];
+
+  const currencyOptions = [
+    { value: 'KWD', label: 'Kuwaiti Dinar (Strongest)' },
+    { value: 'BHD', label: 'Bahraini Dinar' },
+    { value: 'OMR', label: 'Omani Rial' },
+    { value: 'JOD', label: 'Jordanian Dinar' },
+    { value: 'GBP', label: 'British Pound' },
+    { value: 'GIP', label: 'Gibraltar Pound' },
+    { value: 'KYD', label: 'Cayman Islands Dollar' },
+    { value: 'CHF', label: 'Swiss Franc' },
+    { value: 'EUR', label: 'Euro' },
+    { value: 'USD', label: 'US Dollar (Most Traded)' },
+    { value: 'CAD', label: 'Canadian Dollar' },
+    { value: 'AUD', label: 'Australian Dollar' },
+    { value: 'NZD', label: 'New Zealand Dollar' },
+    { value: 'SGD', label: 'Singapore Dollar' },
+    { value: 'BND', label: 'Brunei Dollar' },
+    { value: 'JPY', label: 'Japanese Yen' },
+    { value: 'CNY', label: 'Chinese Yuan' },
+    { value: 'HKD', label: 'Hong Kong Dollar' },
+    { value: 'SEK', label: 'Swedish Krona' },
+    { value: 'NOK', label: 'Norwegian Krone' }
+  ];
+  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     const formDataToSend = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      formDataToSend.append(key, value);
+    (Object.entries(formData) as Array<[keyof typeof formData, string | Record<string, string>]>).forEach(([key, value]) => {
+      if (key === 'cryptoAccounts') {
+        formDataToSend.append(key, JSON.stringify(value));
+      } else {
+        formDataToSend.append(key, value as string);
+      }
     });
-
+    
     startTransition(async () => {
       const result = await signUp(formDataToSend);
 
@@ -48,9 +87,32 @@ export default function SignupFormDemo() {
     });
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const filteredCountries = countries
+  .filter(country => 
+    country.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    country.code.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === 'cryptoType') {
+      setSelectedCrypto(value);
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
+  
+  const handleCryptoAccountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      cryptoAccounts: {
+        ...prev.cryptoAccounts,
+        [selectedCrypto]: value
+      }
+    }));
   };
 
   return (
@@ -112,7 +174,109 @@ export default function SignupFormDemo() {
             required
           />
         </LabelInputContainer>
+
         <LabelInputContainer className="mb-4">
+          <Label htmlFor="phoneNumber">Phone Number</Label>
+          <Input
+            id="phoneNumber"
+            name="phoneNumber"
+            placeholder="+1234567890"
+            type="tel"
+            onChange={handleInputChange}
+          />
+        </LabelInputContainer>
+        <LabelInputContainer className="mb-4">
+        <Label htmlFor="currency">Currency</Label>
+        <select
+          id="currency"
+          name="currency"
+          value={formData.currency}
+          onChange={handleInputChange}
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {currencyOptions.map((currency) => (
+            <option key={currency.value} value={currency.value}>
+              {currency.label}
+            </option>
+          ))}
+        </select>
+      </LabelInputContainer>
+
+      <LabelInputContainer className="mb-4">
+        <Label htmlFor="tradingAccountType">Trading Account Type</Label>
+        <select
+          id="tradingAccountType"
+          name="tradingAccountType"
+          value={formData.tradingAccountType}
+          onChange={handleInputChange}
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <option value="MT4">MetaTrader 4</option>
+          <option value="MT5">MetaTrader 5</option>
+        </select>
+      </LabelInputContainer>
+
+      <LabelInputContainer className="mb-4">
+        <Label htmlFor="cryptoType">Crypto Account Type</Label>
+        <select
+          id="cryptoType"
+          name="cryptoType"
+          value={selectedCrypto}
+          onChange={handleInputChange}
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <option value="">Select Crypto Type</option>
+          {cryptoOptions.map((crypto) => (
+            <option key={crypto.value} value={crypto.value}>
+              {crypto.label}
+            </option>
+          ))}
+        </select>
+      </LabelInputContainer>
+
+      {selectedCrypto && (
+        <LabelInputContainer className="mb-4">
+          <Label htmlFor="cryptoAccountId">{cryptoOptions.find(c => c.value === selectedCrypto)?.label} Account ID</Label>
+          <Input
+            id="cryptoAccountId"
+            name="cryptoAccountId"
+            placeholder={`Enter ${cryptoOptions.find(c => c.value === selectedCrypto)?.label} Account ID`}
+            type="text"
+            value={formData.cryptoAccounts[selectedCrypto] || ''}
+            onChange={handleCryptoAccountChange}
+          />
+        </LabelInputContainer>
+      )}
+
+<LabelInputContainer className="mb-4">
+    <Label htmlFor="country">Country</Label>
+    
+    {/* Search Input */}
+    <input
+      type="text"
+      placeholder="Search countries..."
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      className="w-full mb-2 px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+    />
+
+    {/* Country Select */}
+    <select
+      id="country"
+      name="country"
+      value={formData.country}
+      onChange={handleInputChange}
+      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+    >
+      <option value="">Select Country</option>
+      {filteredCountries.map((country) => (
+        <option key={country.code} value={country.code}>
+          {country.name}
+        </option>
+      ))}
+    </select>
+  </LabelInputContainer>
+  <LabelInputContainer className="mb-4">
           <Label htmlFor="password">Password</Label>
           <Input
             id="password"
@@ -134,103 +298,12 @@ export default function SignupFormDemo() {
             required
           />
         </LabelInputContainer>
-        <LabelInputContainer className="mb-4">
-          <Label htmlFor="phoneNumber">Phone Number</Label>
-          <Input
-            id="phoneNumber"
-            name="phoneNumber"
-            placeholder="+1234567890"
-            type="tel"
-            onChange={handleInputChange}
-          />
-        </LabelInputContainer>
-        <LabelInputContainer className="mb-4">
-          <Label htmlFor="bitcoinAccountId">Bitcoin Account ID</Label>
-          <Input
-            id="bitcoinAccountId"
-            name="bitcoinAccountId"
-            placeholder="Bitcoin Account ID"
-            type="text"
-            onChange={handleInputChange}
-          />
-        </LabelInputContainer>
-        <LabelInputContainer className="mb-4">
-          <Label htmlFor="usdtTrc20AccountId">USDT TRC20 Account ID</Label>
-          <Input
-            id="usdtTrc20AccountId"
-            name="usdtTrc20AccountId"
-            placeholder="USDT TRC20 Account ID"
-            type="text"
-            onChange={handleInputChange}
-          />
-        </LabelInputContainer>
-        <LabelInputContainer className="mb-4">
-          <Label htmlFor="ethereumAccountId">Ethereum Account ID</Label>
-          <Input
-            id="ethereumAccountId"
-            name="ethereumAccountId"
-            placeholder="Ethereum Account ID"
-            type="text"
-            onChange={handleInputChange}
-          />
-        </LabelInputContainer>
-        <LabelInputContainer className="mb-4">
-          <Label htmlFor="litecoinAccountId">Litecoin Account ID</Label>
-          <Input
-            id="litecoinAccountId"
-            name="litecoinAccountId"
-            placeholder="Litecoin Account ID"
-            type="text"
-            onChange={handleInputChange}
-          />
-        </LabelInputContainer>
-        <LabelInputContainer className="mb-4">
-          <Label htmlFor="dogecoinAccountId">Dogecoin Account ID</Label>
-          <Input
-            id="dogecoinAccountId"
-            name="dogecoinAccountId"
-            placeholder="Dogecoin Account ID"
-            type="text"
-            onChange={handleInputChange}
-          />
-        </LabelInputContainer>
-        <LabelInputContainer className="mb-4">
-          <Label htmlFor="xrpAccountId">XRP Account ID</Label>
-          <Input
-            id="xrpAccountId"
-            name="xrpAccountId"
-            placeholder="XRP Account ID"
-            type="text"
-            onChange={handleInputChange}
-          />
-        </LabelInputContainer>
-        <LabelInputContainer className="mb-4">
-          <Label htmlFor="usdtErc20AccountId">USDT ERC20 Account ID</Label>
-          <Input
-            id="usdtErc20AccountId"
-            name="usdtErc20AccountId"
-            placeholder="USDT ERC20 Account ID"
-            type="text"
-            onChange={handleInputChange}
-          />
-        </LabelInputContainer>
-        <LabelInputContainer className="mb-8">
-          <Label htmlFor="country">Country</Label>
-          <Input
-            id="country"
-            name="country"
-            placeholder="Enter your country"
-            type="text"
-            onChange={handleInputChange}
-          />
-        </LabelInputContainer>
-
         <button
           className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
           type="submit"
           disabled={isPending}
         >
-          {isPending ? 'Creating account...' : `Sign up and Sync`}
+          {isPending ? 'Creating account...' : `Sign up and Get Started`}
           
           <BottomGradient />
         </button>
