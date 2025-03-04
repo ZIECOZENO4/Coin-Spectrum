@@ -114,10 +114,6 @@ export default function RootLayout({
             <Providers>
               <ProvidersProgressBar>
                 <Navbar />
-                <ClerkLoading>
-                  <Loader className="flex items-center justify-center w-screen h-screen" />
-                </ClerkLoading>
-                <ClerkLoaded>
                   <AdminMessage />
                   <NotificationComponent disabledPaths={[]} />
                   <div className="bg-neutral-200 dark:bg-neutral-950 min-h-screen">
@@ -127,7 +123,6 @@ export default function RootLayout({
                   <div className="w-full align-middle items-center flex flex-row justify-center flex-wrap">
                     <GoogleTranslate />
                   </div>
-                </ClerkLoaded>
                 <Toaster richColors />
               </ProvidersProgressBar>
             </Providers>

@@ -2,11 +2,10 @@
 
 "use client";
 import { motion } from "framer-motion";
-import React, { Suspense } from "react";
+import React from "react";
 import ShineBorder from "./ui/shine-border-button";
 import { ImagesSlider } from "./ui/image-slider";
 import Link from "next/link";
-import { DynamicButton } from "./dynamic-button";
 
 function ImagesSliderDemo() {
   const images = [
@@ -55,9 +54,6 @@ function ImagesSliderDemo() {
               Invest Now
             </ShineBorder>
           </Link>
-          {/* <Suspense>
-            <DynamicButton />
-          </Suspense> */}
         </div>
       </motion.div>
     </ImagesSlider>

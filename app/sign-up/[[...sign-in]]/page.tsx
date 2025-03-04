@@ -62,7 +62,7 @@ export default function SignupFormDemo() {
         Register
       </h2>
       <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300 text-center">
-        Signup now and get started  Spectrum.
+        Signup now and get started with COIN SPECTRUM.
       </p>
 
       <form className="my-8" onSubmit={handleSubmit}>
