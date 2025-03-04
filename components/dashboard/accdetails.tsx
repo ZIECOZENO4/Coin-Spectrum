@@ -41,6 +41,7 @@ const formatCurrency = (amount: number): string => {
 }
 
 const StatsDashboard: React.FC<StatsDashboardProps> = ({ userId }) => {
+  const router = useRouter()
   const { data: stats, isLoading: statsLoading } = useUserStats();
   const { data: balance } = useUserBalance();
   const { data: referralData = { referrals: [] } } = useReferralData();
@@ -99,6 +100,7 @@ const StatsDashboard: React.FC<StatsDashboardProps> = ({ userId }) => {
         {cardData.map((card, index) => (
           <motion.div
             key={card.label}
+            onClick={() => card.label.includes("Referral") && router.push('/dashboard/myreferrals')}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4 + (index * 0.2) }}
