@@ -568,6 +568,22 @@ const Sidebar: React.FC = () => {
                     >
                       Withdrawals
                     </Link>
+                    <Link
+                        href={"/dashboard/withdraw/Transactionpin"}
+                        className={`cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1 ${isActive(
+                          "/dashboard/withdraw/Transactionpin"
+                        )}`}
+                      >
+                       Transaction Pin
+                      </Link>
+                      <Link
+                        href={"/dashboard/withdraw/transfer"}
+                        className={`cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1 ${isActive(
+                          "/dashboard/withdraw/transfer"
+                        )}`}
+                      >
+                       Transfer Funds
+                      </Link>
                   </motion.div>
                 )}
               </AnimatePresence>
