@@ -13,7 +13,7 @@ export const useTrades = () => {
   return useQuery({
     queryKey: ['trades'],
     queryFn: async () => {
-      const response = await fetch('/api/trades');
+      const response = await fetch('/api/trade');
       if (!response.ok) throw new Error('Failed to fetch trades');
       return response.json();
     }
@@ -25,7 +25,7 @@ export const useCreateTrade = () => {
   
   return useMutation({
     mutationFn: async (data: TradePayload) => {
-      const response = await fetch('/api/trades', {
+      const response = await fetch('/api/trade', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
