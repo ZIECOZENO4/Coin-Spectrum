@@ -9,7 +9,7 @@ async function TransactionPinPage() {
   const { session } = await getUserAuth();
 
   if (!session?.user?.id) {
-    return <div>Not authenticated</div>; // Or redirect
+    return <div>Not authenticated</div>;
   }
 
   const user = await db.query.users.findFirst({
