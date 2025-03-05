@@ -3,7 +3,7 @@ import { db } from '@/lib/db'
 import { users } from '@/lib/db/schema'
 import { getUserAuth } from '@/lib/auth/utils'
 import { eq } from 'drizzle-orm'
-import { PinManagement } from '../(user)/dashboard/withdraw/Transactionpin/page';
+import { PinManagement } from '../(user)/dashboard/withdraw/Transactionpin/aside';
 
 async function SecuritySettingsPage() {
   const { session } = await getUserAuth();
