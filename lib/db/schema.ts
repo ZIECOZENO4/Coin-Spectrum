@@ -9,7 +9,7 @@ import {
   pgEnum,
   jsonb,
 } from "drizzle-orm/pg-core";
-import { InferSelectModel, relations } from "drizzle-orm";
+import { InferSelectModel, relations, sql } from "drizzle-orm";
 import { varchar } from "drizzle-orm/mysql-core";
 
 export const UserRole = pgEnum("user_role", ["user", "admin"]);
@@ -66,38 +66,14 @@ export const users = pgTable("user", {
   tradingAccountType: text("trading_account_type"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  transactionPin: text("transaction_pin").$type<string | null>(),
 }, (users) => ({
   usernameIndex: uniqueIndex("user_username_key").on(users.username),
   emailIndex: uniqueIndex("user_email_key").on(users.email),
+    transactionPinUnique: uniqueIndex("transaction_pin_unique").on(users.transactionPin),
+  transactionPinCheck: sql`CHECK (transaction_pin ~ '^[0-9]{4}$')`
 }));
 
-
-
-// export const users = pgTable("user", {
-//   id: text("id").primaryKey(),
-//   role: UserRole("role").notNull().default("user"),
-//   firstName: text("first_name"),
-//   lastName: text("last_name"),
-//   username: text("username"),
-//   fullName: text("full_name"),
-//   imageUrl: text("image_url"),
-//   email: text("email").notNull(),
-//   balance: doublePrecision("balance").notNull().default(0),
-//   phoneNumber: text("phone_number"),
-//   bitcoinAccountId: text("bitcoin_account_id"),
-//   usdtTrc20AccountId: text("usdt_trc20_account_id"),
-//   ethereumAccountId: text("ethereum_account_id"),
-//   litecoinAccountId: text("litecoin_account_id"),
-//   dogecoinAccountId: text("dogecoin_account_id"),
-//   xrpAccountId: text("xrp_account_id"),
-//   usdtErc20AccountId: text("usdt_erc20_account_id"),
-//   country: text("country"),
-//   createdAt: timestamp("created_at").notNull().defaultNow(),
-//   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-// }, (users) => ({
-//   usernameIndex: uniqueIndex("user_username_key").on(users.username),
-//   emailIndex: uniqueIndex("user_email_key").on(users.email),
-// }));
 
 export const userTrackers = pgTable("user_trackers", {
   id: text("id").primaryKey(),

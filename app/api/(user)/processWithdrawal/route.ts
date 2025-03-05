@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
         userId: session.user.id,
         type: TransactionTypeEnum.Withdrawal,
         amount: withdrawalAmount,
-        description: `Pending withdrawal via ${cryptoType}`,
+        description: `Successful withdrawal via ${cryptoType}`,
         createdAt: new Date(),
         updatedAt: new Date()
       });
