@@ -11,23 +11,61 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
   const [confirmPin, setConfirmPin] = useState<string[]>(Array(4).fill(''))
   const [currentPin, setCurrentPin] = useState<string[]>(Array(4).fill(''))
   const inputsRef = useRef<(HTMLInputElement | null)[]>([])
-  const [step, setStep] = useState(hasExistingPin ? 'current' : 'create')
   const [state, formAction] = useFormState(updateUserPin, { success: false, error: null })
 
-  const handleInputChange = (value: string, index: number, setter: Function) => {
-    if (/^\d$/.test(value) || value === '') {
-      const newPin = [...setter === setCurrentPin ? currentPin : setter === setPin ? pin : confirmPin]
-      newPin[index] = value
-      setter([...newPin])
-
-      if (value && index < 3) inputsRef.current[index + 1]?.focus()
+  // Auto-focus first input on mount
+  useEffect(() => {
+    if (inputsRef.current[0]) {
+      inputsRef.current[0].focus()
     }
+  }, [])
+
+  const handleInputChange = (value: string, index: number, setter: Function) => {
+    if (/^\d$/.test(value)) {
+      const newPin = [...(setter === setCurrentPin ? currentPin : setter === setPin ? pin : confirmPin)]
+      newPin[index] = value
+      setter(newPin)
+
+      // Move to next input
+      if (index < 3) {
+        setTimeout(() => {
+          inputsRef.current[index + 1]?.focus()
+        }, 10)
+      }
+    } else if (value === '') {
+      // Handle backspace
+      const newPin = [...(setter === setCurrentPin ? currentPin : setter === setPin ? pin : confirmPin)]
+      newPin[index] = ''
+      setter(newPin)
+      
+      if (index > 0) {
+        setTimeout(() => {
+          inputsRef.current[index - 1]?.focus()
+        }, 10)
+      }
+    }
+  }
+
+  // Handle paste event
+  const handlePaste = (e: React.ClipboardEvent, setter: Function) => {
+    e.preventDefault()
+    const pasteData = e.clipboardData.getData('text/plain').slice(0, 4)
+    const newPin = Array(4).fill('')
+    
+    pasteData.split('').forEach((char, index) => {
+      if (/^\d$/.test(char) && index < 4) {
+        newPin[index] = char
+      }
+    })
+    
+    setter(newPin)
   }
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
       className="max-w-md mx-auto p-6 bg-card rounded-lg shadow-lg"
     >
       <h2 className="text-2xl font-bold mb-6 text-center">
@@ -39,6 +77,7 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
           <motion.div
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.2 }}
             className="space-y-4"
           >
             <label className="block text-sm font-medium">Current PIN</label>
@@ -48,11 +87,14 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
                   key={i}
                   ref={el => inputsRef.current[i] = el}
                   type="password"
+                  inputMode="numeric"
                   maxLength={1}
                   name="currentPin"
                   value={digit}
                   onChange={(e) => handleInputChange(e.target.value, i, setCurrentPin)}
-                  className="w-12 h-12 text-center border rounded-lg focus:ring-2 focus:ring-primary"
+                  onPaste={(e) => handlePaste(e, setCurrentPin)}
+                  className="w-12 h-12 text-center border-2 rounded-lg focus:ring-2 focus:ring-primary transition-all duration-150"
+                  autoComplete="one-time-code"
                 />
               ))}
             </div>
@@ -62,6 +104,7 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
         <motion.div
           initial={{ x: -20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.2 }}
           className="space-y-4"
         >
           <label className="block text-sm font-medium">
@@ -72,11 +115,14 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
               <input
                 key={i}
                 type="password"
+                inputMode="numeric"
                 maxLength={1}
                 name="newPin"
                 value={digit}
                 onChange={(e) => handleInputChange(e.target.value, i, setPin)}
-                className="w-12 h-12 text-center border rounded-lg focus:ring-2 focus:ring-primary"
+                onPaste={(e) => handlePaste(e, setPin)}
+                className="w-12 h-12 text-center border-2 rounded-lg focus:ring-2 focus:ring-primary transition-all duration-150"
+                autoComplete="one-time-code"
               />
             ))}
           </div>
@@ -85,6 +131,7 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
         <motion.div
           initial={{ x: -20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.2 }}
           className="space-y-4"
         >
           <label className="block text-sm font-medium">Confirm PIN</label>
@@ -93,11 +140,14 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
               <input
                 key={i}
                 type="password"
+                inputMode="numeric"
                 maxLength={1}
                 name="confirmPin"
                 value={digit}
                 onChange={(e) => handleInputChange(e.target.value, i, setConfirmPin)}
-                className="w-12 h-12 text-center border rounded-lg focus:ring-2 focus:ring-primary"
+                onPaste={(e) => handlePaste(e, setConfirmPin)}
+                className="w-12 h-12 text-center border-2 rounded-lg focus:ring-2 focus:ring-primary transition-all duration-150"
+                autoComplete="one-time-code"
               />
             ))}
           </div>
@@ -109,11 +159,11 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
 
         <Button
           type="submit"
-          className="w-full"
+          className="w-full h-12 text-lg font-semibold transition-all"
           disabled={state.pending}
         >
           {state.pending ? (
-            <Loader className="h-4 w-4 animate-spin" />
+            <Loader className="h-6 w-6 animate-spin" />
           ) : hasExistingPin ? 'Update PIN' : 'Create PIN'}
         </Button>
 
@@ -121,7 +171,7 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-red-500 text-sm text-center"
+            className="text-red-500 text-sm text-center p-3 bg-red-50 rounded-lg"
           >
             {state.error}
           </motion.div>
