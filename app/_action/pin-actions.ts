@@ -33,10 +33,6 @@ export async function updateUserPin(prevState: State, formData: FormData): Promi
       return { success: false, error: "PINs do not match" };
     }
 
-    if (!/^\d{4}$/.test(newPin)) {
-      return { success: false, error: "Invalid PIN format" };
-    }
-
     const user = await db.query.users.findFirst({
       where: eq(users.id, session.user.id)
     });
