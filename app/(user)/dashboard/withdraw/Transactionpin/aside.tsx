@@ -2,21 +2,31 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { useFormState } from 'react-dom'
+import { useFormState, useFormStatus } from 'react-dom'
 import { updateUserPin } from '@/app/_action/pin-actions'
 import Loader from '@/components/loader'
+import { toast } from 'sonner'
 
 export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
   const [pin, setPin] = useState<string[]>(Array(4).fill(''))
   const [confirmPin, setConfirmPin] = useState<string[]>(Array(4).fill(''))
   const [currentPin, setCurrentPin] = useState<string[]>(Array(4).fill(''))
   const inputsRef = useRef<(HTMLInputElement | null)[]>(Array(4).fill(null))
-  const [state, formAction] = useFormState(updateUserPin, { success: false, error: null })
+  const [state, formAction] = useFormState(updateUserPin.bind(null, hasExistingPin), {
+    success: false,
+    error: null
+  })
 
-  // Auto-focus first input on mount
   useEffect(() => {
-    inputsRef.current[0]?.focus()
-  }, [])
+    if (state.success) {
+      toast.success(`PIN ${hasExistingPin ? 'updated' : 'created'} successfully!`)
+      setPin(Array(4).fill(''))
+      setConfirmPin(Array(4).fill(''))
+      if (hasExistingPin) setCurrentPin(Array(4).fill(''))
+      inputsRef.current[0]?.focus()
+    }
+    if (state.error) toast.error(state.error)
+  }, [state, hasExistingPin])
 
   const handleInputChange = (value: string, index: number, setter: React.Dispatch<React.SetStateAction<string[]>>) => {
     if (/^\d$/.test(value)) {
@@ -26,10 +36,9 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
         return newPin
       })
 
-      // Move to next input after state update
-      setTimeout(() => {
-        if (index < 3) inputsRef.current[index + 1]?.focus()
-      }, 10)
+      if (index < 3) {
+        setTimeout(() => inputsRef.current[index + 1]?.focus(), 10)
+      }
     } else if (value === '') {
       setter(prev => {
         const newPin = [...prev]
@@ -37,36 +46,16 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
         return newPin
       })
 
-      // Move to previous input on backspace
-      setTimeout(() => {
-        if (index > 0) inputsRef.current[index - 1]?.focus()
-      }, 10)
-    }
-  }
-
-  const handlePaste = (e: React.ClipboardEvent, setter: React.Dispatch<React.SetStateAction<string[]>>) => {
-    e.preventDefault()
-    const pasteData = e.clipboardData.getData('text/plain').slice(0, 4)
-    const newPin = Array(4).fill('')
-    
-    pasteData.split('').forEach((char, index) => {
-      if (/^\d$/.test(char) && index < 4) {
-        newPin[index] = char
+      if (index > 0) {
+        setTimeout(() => inputsRef.current[index - 1]?.focus(), 10)
       }
-    })
-    
-    setter(newPin)
-    setTimeout(() => {
-      const firstEmpty = newPin.findIndex(v => v === '')
-      inputsRef.current[firstEmpty === -1 ? 3 : firstEmpty]?.focus()
-    }, 10)
+    }
   }
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2 }}
       className="max-w-md mx-auto p-6 bg-card rounded-lg shadow-lg"
     >
       <h2 className="text-2xl font-bold mb-6 text-center">
@@ -75,101 +64,36 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
 
       <form action={formAction} className="space-y-8">
         {hasExistingPin && (
-          <motion.div
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.2 }}
-            className="space-y-4"
-          >
-            <label className="block text-sm font-medium">Current PIN</label>
-            <div className="flex gap-2 justify-center">
-              {currentPin.map((digit, i) => (
-                <input
-                  key={i}
-                  ref={el => inputsRef.current[i] = el}
-                  type="password"
-                  inputMode="numeric"
-                  maxLength={1}
-                  name="currentPin"
-                  value={digit}
-                  onChange={(e) => handleInputChange(e.target.value, i, setCurrentPin)}
-                  onPaste={(e) => handlePaste(e, setCurrentPin)}
-                  className="w-12 h-12 text-center border-2 rounded-lg focus:ring-2 focus:ring-primary transition-all duration-150"
-                  autoComplete="one-time-code"
-                />
-              ))}
-            </div>
-          </motion.div>
+          <PinInputGroup
+            label="Current PIN"
+            values={currentPin}
+            onChange={(i, v) => handleInputChange(v, i, setCurrentPin)}
+            name="currentPin"
+            inputsRef={inputsRef}
+            startIndex={0}
+          />
         )}
 
-        <motion.div
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.2 }}
-          className="space-y-4"
-        >
-          <label className="block text-sm font-medium">
-            {hasExistingPin ? 'New PIN' : 'Create PIN'}
-          </label>
-          <div className="flex gap-2 justify-center">
-            {pin.map((digit, i) => (
-              <input
-                key={i}
-                ref={el => inputsRef.current[i + (hasExistingPin ? 4 : 0)] = el}
-                type="password"
-                inputMode="numeric"
-                maxLength={1}
-                name="newPin"
-                value={digit}
-                onChange={(e) => handleInputChange(e.target.value, i, setPin)}
-                onPaste={(e) => handlePaste(e, setPin)}
-                className="w-12 h-12 text-center border-2 rounded-lg focus:ring-2 focus:ring-primary transition-all duration-150"
-                autoComplete="one-time-code"
-              />
-            ))}
-          </div>
-        </motion.div>
+        <PinInputGroup
+          label={hasExistingPin ? 'New PIN' : 'Create PIN'}
+          values={pin}
+          onChange={(i, v) => handleInputChange(v, i, setPin)}
+          name="pin"
+          inputsRef={inputsRef}
+          startIndex={hasExistingPin ? 4 : 0}
+        />
 
-        <motion.div
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.2 }}
-          className="space-y-4"
-        >
-          <label className="block text-sm font-medium">Confirm PIN</label>
-          <div className="flex gap-2 justify-center">
-            {confirmPin.map((digit, i) => (
-              <input
-                key={i}
-                ref={el => inputsRef.current[i + (hasExistingPin ? 8 : 4)] = el}
-                type="password"
-                inputMode="numeric"
-                maxLength={1}
-                name="confirmPin"
-                value={digit}
-                onChange={(e) => handleInputChange(e.target.value, i, setConfirmPin)}
-                onPaste={(e) => handlePaste(e, setConfirmPin)}
-                className="w-12 h-12 text-center border-2 rounded-lg focus:ring-2 focus:ring-primary transition-all duration-150"
-                autoComplete="one-time-code"
-              />
-            ))}
-          </div>
-        </motion.div>
+        <PinInputGroup
+          label="Confirm PIN"
+          values={confirmPin}
+          onChange={(i, v) => handleInputChange(v, i, setConfirmPin)}
+          name="confirmPin"
+          inputsRef={inputsRef}
+          startIndex={hasExistingPin ? 8 : 4}
+        />
 
-        <input type="hidden" name="pin" value={pin.join('')} />
-        <input type="hidden" name="confirmPin" value={confirmPin.join('')} />
-        {hasExistingPin && <input type="hidden" name="currentPin" value={currentPin.join('')} />}
-
-        <Button
-          type="submit"
-          className="w-full h-12 text-lg font-semibold transition-all"
-          disabled={state.pending}
-        >
-          {state.pending ? (
-            <Loader className="h-6 w-6 animate-spin" />
-          ) : hasExistingPin ? 'Update PIN' : 'Create PIN'}
-        </Button>
-
+        <SubmitButton hasExistingPin={hasExistingPin} />
+        
         {state.error && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -181,5 +105,63 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
         )}
       </form>
     </motion.div>
+  )
+}
+
+function PinInputGroup({
+  label,
+  values,
+  onChange,
+  name,
+  inputsRef,
+  startIndex
+}: {
+  label: string
+  values: string[]
+  onChange: (index: number, value: string) => void
+  name: string
+  inputsRef: React.MutableRefObject<(HTMLInputElement | null)[]>
+  startIndex: number
+}) {
+  return (
+    <motion.div
+      initial={{ x: -20, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      className="space-y-4"
+    >
+      <label className="block text-sm font-medium">{label}</label>
+      <div className="flex gap-2 justify-center">
+        {values.map((digit, i) => (
+          <input
+            key={i}
+            ref={el => inputsRef.current[startIndex + i] = el}
+            type="password"
+            inputMode="numeric"
+            maxLength={1}
+            name={name}
+            value={digit}
+            onChange={(e) => onChange(i, e.target.value)}
+            className="w-12 h-12 text-center border-2 rounded-lg focus:ring-2 focus:ring-primary"
+            autoComplete="one-time-code"
+          />
+        ))}
+      </div>
+      <input type="hidden" name={name} value={values.join('')} />
+    </motion.div>
+  )
+}
+
+function SubmitButton({ hasExistingPin }: { hasExistingPin: boolean }) {
+  const { pending } = useFormStatus()
+  
+  return (
+    <Button
+      type="submit"
+      className="w-full h-12 text-lg font-semibold"
+      disabled={pending}
+    >
+      {pending ? <Loader className="h-6 w-6 animate-spin" /> : 
+      hasExistingPin ? 'Update PIN' : 'Create PIN'}
+    </Button>
   )
 }
