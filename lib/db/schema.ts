@@ -70,8 +70,6 @@ export const users = pgTable("user", {
 }, (users) => ({
   usernameIndex: uniqueIndex("user_username_key").on(users.username),
   emailIndex: uniqueIndex("user_email_key").on(users.email),
-    transactionPinUnique: uniqueIndex("transaction_pin_unique").on(users.transactionPin),
-  transactionPinCheck: sql`CHECK (transaction_pin ~ '^[0-9]{4}$')`
 }));
 
 

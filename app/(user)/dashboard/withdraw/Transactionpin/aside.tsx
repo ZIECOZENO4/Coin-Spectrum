@@ -10,44 +10,41 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
   const [pin, setPin] = useState<string[]>(Array(4).fill(''))
   const [confirmPin, setConfirmPin] = useState<string[]>(Array(4).fill(''))
   const [currentPin, setCurrentPin] = useState<string[]>(Array(4).fill(''))
-  const inputsRef = useRef<(HTMLInputElement | null)[]>([])
+  const inputsRef = useRef<(HTMLInputElement | null)[]>(Array(4).fill(null))
   const [state, formAction] = useFormState(updateUserPin, { success: false, error: null })
 
   // Auto-focus first input on mount
   useEffect(() => {
-    if (inputsRef.current[0]) {
-      inputsRef.current[0].focus()
-    }
+    inputsRef.current[0]?.focus()
   }, [])
 
-  const handleInputChange = (value: string, index: number, setter: Function) => {
+  const handleInputChange = (value: string, index: number, setter: React.Dispatch<React.SetStateAction<string[]>>) => {
     if (/^\d$/.test(value)) {
-      const newPin = [...(setter === setCurrentPin ? currentPin : setter === setPin ? pin : confirmPin)]
-      newPin[index] = value
-      setter(newPin)
+      setter(prev => {
+        const newPin = [...prev]
+        newPin[index] = value
+        return newPin
+      })
 
-      // Move to next input
-      if (index < 3) {
-        setTimeout(() => {
-          inputsRef.current[index + 1]?.focus()
-        }, 10)
-      }
+      // Move to next input after state update
+      setTimeout(() => {
+        if (index < 3) inputsRef.current[index + 1]?.focus()
+      }, 10)
     } else if (value === '') {
-      // Handle backspace
-      const newPin = [...(setter === setCurrentPin ? currentPin : setter === setPin ? pin : confirmPin)]
-      newPin[index] = ''
-      setter(newPin)
-      
-      if (index > 0) {
-        setTimeout(() => {
-          inputsRef.current[index - 1]?.focus()
-        }, 10)
-      }
+      setter(prev => {
+        const newPin = [...prev]
+        newPin[index] = ''
+        return newPin
+      })
+
+      // Move to previous input on backspace
+      setTimeout(() => {
+        if (index > 0) inputsRef.current[index - 1]?.focus()
+      }, 10)
     }
   }
 
-  // Handle paste event
-  const handlePaste = (e: React.ClipboardEvent, setter: Function) => {
+  const handlePaste = (e: React.ClipboardEvent, setter: React.Dispatch<React.SetStateAction<string[]>>) => {
     e.preventDefault()
     const pasteData = e.clipboardData.getData('text/plain').slice(0, 4)
     const newPin = Array(4).fill('')
@@ -59,6 +56,10 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
     })
     
     setter(newPin)
+    setTimeout(() => {
+      const firstEmpty = newPin.findIndex(v => v === '')
+      inputsRef.current[firstEmpty === -1 ? 3 : firstEmpty]?.focus()
+    }, 10)
   }
 
   return (
@@ -114,6 +115,7 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
             {pin.map((digit, i) => (
               <input
                 key={i}
+                ref={el => inputsRef.current[i + (hasExistingPin ? 4 : 0)] = el}
                 type="password"
                 inputMode="numeric"
                 maxLength={1}
@@ -139,6 +141,7 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
             {confirmPin.map((digit, i) => (
               <input
                 key={i}
+                ref={el => inputsRef.current[i + (hasExistingPin ? 8 : 4)] = el}
                 type="password"
                 inputMode="numeric"
                 maxLength={1}

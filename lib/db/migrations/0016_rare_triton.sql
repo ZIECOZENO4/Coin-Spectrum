@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS "transaction_pin_unique";

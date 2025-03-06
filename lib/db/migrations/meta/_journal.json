@@ -113,6 +113,13 @@
       "when": 1741197222949,
       "tag": "0015_chief_starhawk",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1741283665713,
+      "tag": "0016_rare_triton",
+      "breakpoints": true
     }
   ]
 }
