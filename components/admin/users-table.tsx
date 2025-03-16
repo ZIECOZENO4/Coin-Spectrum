@@ -89,7 +89,57 @@ export function UsersTable() {
           </div>
         );
       }
-    }
+    },
+    {
+      header: 'Withdrawal Status',
+      cell: ({ row }) => {
+        const [isUpdating, setIsUpdating] = useState(false);
+        
+        const handleStatusUpdate = async (newStatus: "fulfilled" | "unfulfilled") => {
+          setIsUpdating(true);
+          try {
+            const response = await fetch(`/api/users/${row.original.id}/withdrawal-status`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ status: newStatus })
+            });
+    
+            if (!response.ok) throw new Error('Update failed');
+            
+            setUsers(users.map(user => 
+              user.id === row.original.id ? { ...user, withdrawalRequirement: newStatus } : user
+            ));
+            
+            if (newStatus === "fulfilled") {
+              toast.success(`User ${row.original.email} can now withdraw`);
+            }
+          } catch (error) {
+            toast.error('Status update failed');
+          } finally {
+            setIsUpdating(false);
+          }
+        };
+    
+        return (
+          <div className="flex gap-2">
+            <Button
+              variant={row.original.withdrawalRequirement === "fulfilled" ? "default" : "outline"}
+              disabled={row.original.withdrawalRequirement === "fulfilled" || isUpdating}
+              onClick={() => handleStatusUpdate("fulfilled")}
+            >
+              {isUpdating ? "Updating..." : "Mark Fulfilled"}
+            </Button>
+            <Button
+              variant={row.original.withdrawalRequirement === "unfulfilled" ? "destructive" : "outline"}
+              disabled={row.original.withdrawalRequirement === "unfulfilled" || isUpdating}
+              onClick={() => handleStatusUpdate("unfulfilled")}
+            >
+              {isUpdating ? "Updating..." : "Mark Unfulfilled"}
+            </Button>
+          </div>
+        );
+      }
+    }    
   ];
 
   const table = useReactTable({

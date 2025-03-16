@@ -48,7 +48,7 @@ import {
   
               <Section className="mb-8">
                 <Img
-                  src={`${baseUrl}/images/cs.png`}
+                  src={`${baseUrl}/images/bitcoin.png`}
                   width="400"
                   height="300"
                   alt="Approval Illustration"
