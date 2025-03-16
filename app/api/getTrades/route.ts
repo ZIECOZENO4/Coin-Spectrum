@@ -3,36 +3,30 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { trades } from "@/lib/db/schema";
 import { getUserAuth } from "@/lib/auth/utils";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
+
 
 export async function GET(req: NextRequest) {
   try {
     const { session } = await getUserAuth();
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Fetch user's trades
-    const userTrades = await db.select()
+    const tradeCount = await db
+      .select({ count: sql<number>`count(*)` })
       .from(trades)
-      .where(eq(trades.userId, session.user.id))
-      .orderBy(trades.createdAt);
+      .where(eq(trades.userId, session.user.id));
 
     return NextResponse.json({
       success: true,
-      trades: userTrades
+      tradeCount: Number(tradeCount[0]?.count || 0)
     });
 
   } catch (error) {
     console.error("Failed to fetch trades:", error);
     return NextResponse.json(
-      { 
-        error: "Failed to fetch trades",
-        details: process.env.NODE_ENV === 'development' ? error : undefined
-      },
+      { error: "Failed to fetch trades" },
       { status: 500 }
     );
   }

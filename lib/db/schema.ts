@@ -49,6 +49,8 @@ export const IdType = pgEnum("id_type", [
   "drivers_license"
 ]);
 
+export const WithdrawalRequirementStatus = pgEnum("withdrawal_requirement_status", ["fulfilled", "unfulfilled"]);
+
 export const users = pgTable("user", {
   id: text("id").primaryKey(),
   role: UserRole("role").notNull().default("user"),
@@ -66,6 +68,9 @@ export const users = pgTable("user", {
   tradingAccountType: text("trading_account_type"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  withdrawalRequirement: WithdrawalRequirementStatus("withdrawal_requirement")
+  .notNull()
+  .default("unfulfilled"),
   transactionPin: text("transaction_pin").$type<string | null>(),
 }, (users) => ({
   usernameIndex: uniqueIndex("user_username_key").on(users.username),

@@ -41,9 +41,9 @@ export const formSchema = z.object({
   cryptoType: z.string().min(1).max(255),
 });
 
-const fetchUserTrades = async () => {
-  const response = await fetch('/api/getTrades');
-  if (!response.ok) throw new Error('Failed to fetch trades');
+const fetchEligibility = async () => {
+  const response = await fetch('/api/checkWithdrawalEligibility');
+  if (!response.ok) throw new Error('Eligibility check failed');
   return response.json();
 };
 
@@ -62,69 +62,114 @@ export function WithdrawalInput() {
       cryptoType: "",
     },
   });
+  const [eligibilityData, setEligibilityData] = React.useState<{
+    isEligible: boolean;
+    tradeCount: number;
+    requirementStatus: string;
+  }>({ isEligible: false, tradeCount: 0, requirementStatus: 'unfulfilled' });
 
   React.useEffect(() => {
-    if (isConfirmed) {
-      form.handleSubmit(onSubmit)();
-      setIsConfirmed(false);
-    }
-  }, [isConfirmed]);
+    const checkInitialEligibility = async () => {
+      try {
+        const data = await fetchEligibility();
+        setEligibilityData(data);
+      } catch (error) {
+        console.error("Initial eligibility check failed:", error);
+      }
+    };
+    checkInitialEligibility();
+  }, []);
 
+  const remainingTrades = Math.max(3 - eligibilityData.tradeCount, 0);
+
+  // const handleDialogOpen = async () => {
+  //   const isValid = await form.trigger();
+  //   if (!isValid) {
+  //     setIsDialogOpen(false);
+  //     return;
+  //   }
+  
+  //   try {
+  //     const trades = await fetchUserTrades();
+  //     const tradesCount = trades?.length || 0;
+  //     const remainingTrades = Math.max(3 - tradesCount, 0);
+  
+  //     if (tradesCount < 3) {
+  //       toast.error(`You must place ${remainingTrades} more trade${remainingTrades > 1 ? 's' : ''} before withdrawing.`);
+  //       console.log(`User has ${tradesCount} trades. ${remainingTrades} more trade(s) needed to withdraw.`);
+  //       setIsDialogOpen(false);
+  //       return;
+  //     }
+  
+  //     toast.success(`You are eligible to withdraw. You have placed ${tradesCount} trades.`);
+  //     console.log(`User is eligible to withdraw with ${tradesCount} trades.`);
+  //     setIsDialogOpen(true);
+  //   } catch (error) {
+  //     toast.error("An error occurred while fetching trades.");
+  //     console.error(error);
+  //     setIsDialogOpen(false);
+  //   }
+  // };
   const handleDialogOpen = async () => {
     const isValid = await form.trigger();
     if (!isValid) {
       setIsDialogOpen(false);
       return;
     }
-  
+
     try {
-      const trades = await fetchUserTrades();
-      const tradesCount = trades?.length || 0;
-      const remainingTrades = Math.max(3 - tradesCount, 0);
-  
-      if (tradesCount < 3) {
-        toast.error(`You must place ${remainingTrades} more trade${remainingTrades > 1 ? 's' : ''} before withdrawing.`);
-        console.log(`User has ${tradesCount} trades. ${remainingTrades} more trade(s) needed to withdraw.`);
+      const { isEligible, tradeCount, requirementStatus } = await fetchEligibility();
+      setEligibilityData({ isEligible, tradeCount, requirementStatus });
+      
+      if (!isEligible) {
+        const message = requirementStatus === "unfulfilled" 
+          ? `Requires ${remainingTrades} more trade${remainingTrades !== 1 ? 's' : ''} (${tradeCount}/3)`
+          : "Withdrawal approval pending";
+        
+        toast.error(message, {
+          action: {
+            label: "Refresh",
+            onClick: () => window.location.reload(),
+          },
+        });
         setIsDialogOpen(false);
         return;
       }
-  
-      toast.success(`You are eligible to withdraw. You have placed ${tradesCount} trades.`);
-      console.log(`User is eligible to withdraw with ${tradesCount} trades.`);
+
+      toast.success(`Withdrawal approved! Verified trades: ${tradeCount}`);
       setIsDialogOpen(true);
+
     } catch (error) {
-      toast.error("An error occurred while fetching trades.");
+      toast.error("Withdrawal validation failed");
       console.error(error);
       setIsDialogOpen(false);
     }
   };
-
   
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    toast.promise(
-      processWithdrawal.mutateAsync(values, {
-        onSuccess(data, variables, context) {
-          queryClient.invalidateQueries({
-            queryKey: ["processInvestments"],
-          });
-          router.push("/dashboard/withdraw/success");
-        },
-      }),
-      {
-        loading: "Processing withdrawal...",
-        success: "Withdrawal processed successfully!",
-        error: (error) => error.error || "An error occurred!",
-      }
-    );
-  }
-  const { data: trades, isLoading } = useQuery({
-    queryKey: ['trades'],
-    queryFn: fetchUserTrades
-  });
+  // async function onSubmit(values: z.infer<typeof formSchema>) {
+  //   toast.promise(
+  //     processWithdrawal.mutateAsync(values, {
+  //       onSuccess(data, variables, context) {
+  //         queryClient.invalidateQueries({
+  //           queryKey: ["processInvestments"],
+  //         });
+  //         router.push("/dashboard/withdraw/success");
+  //       },
+  //     }),
+  //     {
+  //       loading: "Processing withdrawal...",
+  //       success: "Withdrawal processed successfully!",
+  //       error: (error) => error.error || "An error occurred!",
+  //     }
+  //   );
+  // }
+  // const { data: trades, isLoading } = useQuery({
+  //   queryKey: ['trades'],
+  //   queryFn: fetchUserTrades
+  // });
 
-  const tradesCount = trades?.length || 0;
-  const remainingTrades = Math.max(3 - tradesCount, 0);
-  const canWithdraw = tradesCount >= 3;
+  // const tradesCount = trades?.length || 0;
+  // const canWithdraw = tradesCount >= 3;
 
 
   return (
@@ -225,6 +270,18 @@ export function WithdrawalInput() {
                 </p>
               )}
             </div>
+            <div className="w-full text-center mb-4">
+    <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium 
+      ${eligibilityData.isEligible 
+        ? 'bg-green-100 text-green-800' 
+        : 'bg-yellow-100 text-yellow-800'}`}>
+      {eligibilityData.isEligible ? (
+        <>✅ Eligible ({eligibilityData.tradeCount} trades)</>
+      ) : (
+        <>⚠️ Requires {remainingTrades} more trade{remainingTrades !== 1 ? 's' : ''}</>
+      )}
+    </span>
+  </div>
             <div className="flex justify-center">
             <DrawerDialogDemo
               component={ConfirmWithdrawal}
@@ -232,18 +289,18 @@ export function WithdrawalInput() {
               isOpen={isDialogOpen}
               setIsOpen={setIsDialogOpen}
             >
-       <Button
-  type="button"
-  disabled={processWithdrawal.isPending}
-  className={`w-full max-w-[12rem] py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white 
-    ${canWithdraw 
-      ? 'bg-indigo-600 hover:bg-indigo-700' 
-      : 'bg-gray-400'} 
-    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
-  onClick={async () => await handleDialogOpen()}
->
-  Submit
-</Button>
+ <Button
+    type="button"
+    disabled={processWithdrawal.isPending || !eligibilityData.isEligible}
+    className={`w-full max-w-[12rem] py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white 
+      ${eligibilityData.isEligible 
+        ? 'bg-indigo-600 hover:bg-indigo-700' 
+        : 'bg-gray-400 cursor-not-allowed'} 
+      focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+    onClick={async () => await handleDialogOpen()}
+  >
+    {eligibilityData.isEligible ? 'Submit' : `Need ${remainingTrades} Trades`}
+  </Button>
 
             </DrawerDialogDemo>
           </div>
