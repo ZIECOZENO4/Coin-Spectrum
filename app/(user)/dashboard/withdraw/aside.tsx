@@ -36,9 +36,14 @@ import { motion, AnimatePresence } from "framer-motion";
 
 
 export const formSchema = z.object({
-  withdrawalAmount: z.coerce.number().gte(1),
-  walletAddress: z.string().min(1).max(255),
-  cryptoType: z.string().min(1).max(255),
+  withdrawalAmount: z.coerce.number()
+    .positive("Amount must be positive")
+    .min(100, "Minimum withdrawal is $100")
+    .max(10000, "Maximum withdrawal is $10,000"),
+  walletAddress: z.string()
+    .min(10, "Wallet address must be at least 10 characters")
+    .max(255, "Wallet address too long"),
+  cryptoType: z.string().min(1, "Select a cryptocurrency"),
 });
 
 const fetchEligibility = async () => {
@@ -62,11 +67,12 @@ export function WithdrawalInput() {
       cryptoType: "",
     },
   });
-  const [eligibilityData, setEligibilityData] = React.useState<{
-    isEligible: boolean;
-    tradeCount: number;
-    requirementStatus: string;
-  }>({ isEligible: false, tradeCount: 0, requirementStatus: 'unfulfilled' });
+
+  const [eligibilityData, setEligibilityData] = React.useState({
+    isEligible: false,
+    tradeCount: 0,
+    requirementStatus: 'unfulfilled'
+  });
 
   React.useEffect(() => {
     const checkInitialEligibility = async () => {
@@ -82,97 +88,13 @@ export function WithdrawalInput() {
 
   const remainingTrades = Math.max(3 - eligibilityData.tradeCount, 0);
 
-  // const handleDialogOpen = async () => {
-  //   const isValid = await form.trigger();
-  //   if (!isValid) {
-  //     setIsDialogOpen(false);
-  //     return;
-  //   }
-  
-  //   try {
-  //     const trades = await fetchUserTrades();
-  //     const tradesCount = trades?.length || 0;
-  //     const remainingTrades = Math.max(3 - tradesCount, 0);
-  
-  //     if (tradesCount < 3) {
-  //       toast.error(`You must place ${remainingTrades} more trade${remainingTrades > 1 ? 's' : ''} before withdrawing.`);
-  //       console.log(`User has ${tradesCount} trades. ${remainingTrades} more trade(s) needed to withdraw.`);
-  //       setIsDialogOpen(false);
-  //       return;
-  //     }
-  
-  //     toast.success(`You are eligible to withdraw. You have placed ${tradesCount} trades.`);
-  //     console.log(`User is eligible to withdraw with ${tradesCount} trades.`);
-  //     setIsDialogOpen(true);
-  //   } catch (error) {
-  //     toast.error("An error occurred while fetching trades.");
-  //     console.error(error);
-  //     setIsDialogOpen(false);
-  //   }
-  // };
-
-  // const handleDialogOpen = async () => {
-  //   const isValid = await form.trigger();
-  //   if (!isValid) {
-  //     setIsDialogOpen(false);
-  //     return;
-  //   }
-
-  //   try {
-  //     const { isEligible, tradeCount, requirementStatus } = await fetchEligibility();
-  //     setEligibilityData({ isEligible, tradeCount, requirementStatus });
-      
-  //     if (!isEligible) {
-  //       const message = requirementStatus === "unfulfilled" 
-  //         ? `Requires ${remainingTrades} more trade${remainingTrades !== 1 ? 's' : ''} (${tradeCount}/3)`
-  //         : "Withdrawal approval pending";
-        
-  //       toast.error(message, {
-  //         action: {
-  //           label: "Refresh",
-  //           onClick: () => window.location.reload(),
-  //         },
-  //       });
-  //       setIsDialogOpen(false);
-  //       return;
-  //     }
-
-  //     toast.success(`Withdrawal initiated! Verified trades: ${tradeCount}`);
-  //     setIsDialogOpen(true);
-  //     onSubmit();
-
-  //   } catch (error) {
-  //     toast.error("Withdrawal validation failed");
-  //     console.error(error);
-  //     setIsDialogOpen(false);
-  //   }
-  // };
-  
-  // async function onSubmit(values: z.infer<typeof formSchema>) {
-  //   toast.promise(
-  //     processWithdrawal.mutateAsync(values, {
-  //       onSuccess(data, variables, context) {
-  //         queryClient.invalidateQueries({
-  //           queryKey: ["processInvestments"],
-  //         });
-  //         router.push("/dashboard/withdraw/success");
-  //       },
-  //     }),
-  //     {
-  //       loading: "Processing withdrawal...",
-  //       success: "Withdrawal processed successfully!",
-  //       error: (error) => error.error || "An error occurred!",
-  //     }
-  //   );
-  // }
-
   const handleDialogOpen = async () => {
     const isValid = await form.trigger();
     if (!isValid) {
       setIsDialogOpen(false);
       return;
     }
-  
+
     try {
       const { isEligible, tradeCount, requirementStatus } = await fetchEligibility();
       setEligibilityData({ isEligible, tradeCount, requirementStatus });
@@ -188,19 +110,17 @@ export function WithdrawalInput() {
         setIsDialogOpen(false);
         return;
       }
-  
-      // Only open dialog without submitting
+
       setIsDialogOpen(true);
       toast.success(`Verified trades: ${tradeCount}. Confirm withdrawal details.`);
-  
+
     } catch (error) {
       toast.error("Withdrawal validation failed");
       console.error(error);
       setIsDialogOpen(false);
     }
   };
-  
-  // Fix 2: Update useEffect to include form validation
+
   React.useEffect(() => {
     if (isConfirmed) {
       const executeSubmission = async () => {
@@ -209,26 +129,22 @@ export function WithdrawalInput() {
           setIsConfirmed(false);
           return;
         }
-  
+
         const values = form.getValues();
-        await toast.promise(
-          processWithdrawal.mutateAsync(values, {
-            onSuccess() {
+        try {
+          await processWithdrawal.mutateAsync(values, {
+            onSuccess: () => {
               queryClient.invalidateQueries({ 
                 queryKey: ["processInvestments"] 
               });
               router.push("/dashboard/withdraw/success");
-            },
-          }),
-          {
-            loading: "Processing withdrawal...",
-            success: "Withdrawal processed successfully!",
-            error: (error) => error?.message || "An error occurred!",
-          }
-        );
-        setIsConfirmed(false);
+            }
+          });
+        } finally {
+          setIsConfirmed(false);
+        }
       };
-  
+
       executeSubmission();
     }
   }, [isConfirmed]);
@@ -242,7 +158,10 @@ export function WithdrawalInput() {
         </h2>
         
         <Form {...form}>
-        <form noValidate className="space-y-6" onSubmit={form.handleSubmit(handleDialogOpen)}>
+          <form 
+            onSubmit={form.handleSubmit(handleDialogOpen)}
+            className="space-y-6"
+          >
             <FormField
               control={form.control}
               name="withdrawalAmount"
@@ -354,7 +273,7 @@ export function WithdrawalInput() {
           formValues={form.getValues()} 
             >
  <Button
-    type="button"
+ type="submit"
     disabled={processWithdrawal.isPending || !eligibilityData.isEligible}
     className={`w-full max-w-[12rem] py-2 px-8 border border-transparent rounded-md shadow-sm text-sm font-medium text-white 
       ${eligibilityData.isEligible 
