@@ -136,7 +136,7 @@ export function WithdrawalInput() {
         return;
       }
 
-      toast.success(`Withdrawal approved! Verified trades: ${tradeCount}`);
+      toast.success(`Withdrawal placed! Verified trades: ${tradeCount}`);
       setIsDialogOpen(true);
 
     } catch (error) {
@@ -284,19 +284,20 @@ export function WithdrawalInput() {
   </div>
             <div className="flex justify-center">
             <DrawerDialogDemo
-              component={ConfirmWithdrawal}
-              setIsConfirmed={setIsConfirmed}
-              isOpen={isDialogOpen}
-              setIsOpen={setIsDialogOpen}
+          component={ConfirmWithdrawal}
+          setIsConfirmed={setIsConfirmed}
+          isOpen={isDialogOpen}
+          setIsOpen={setIsDialogOpen}
+          eligibilityData={eligibilityData}
             >
  <Button
     type="button"
     disabled={processWithdrawal.isPending || !eligibilityData.isEligible}
-    className={`w-full max-w-[12rem] py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white 
+    className={`w-full max-w-[12rem] py-2 px-8 border border-transparent rounded-md shadow-sm text-sm font-medium text-white 
       ${eligibilityData.isEligible 
-        ? 'bg-indigo-600 hover:bg-indigo-700' 
+        ? 'bg-yellow-400 hover:bg-yellow-600' 
         : 'bg-gray-400 cursor-not-allowed'} 
-      focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+      focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500`}
     onClick={async () => await handleDialogOpen()}
   >
     {eligibilityData.isEligible ? 'Submit' : `Need ${remainingTrades} Trades`}

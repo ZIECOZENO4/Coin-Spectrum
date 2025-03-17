@@ -7,81 +7,71 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { useQuery } from "@tanstack/react-query";
-
-interface Trade {
-  // Define your trade properties here
-  id: string;
-  // Add other trade properties as needed
-}
-
-const fetchUserTrades = async (): Promise<Trade[]> => {
-  const response = await fetch('/api/getTrades');
-  if (!response.ok) throw new Error('Failed to fetch trades');
-  const data = await response.json();
-  console.log('Trade Response:', {
-    totalTrades: data?.length || 0,
-    tradeData: data
-  });
-  return data;
-};
 
 interface ConfirmWithdrawalProps {
   open: boolean;
   setIsOpen: (open: boolean) => void;
   setIsConfirmed: (confirmed: boolean) => void;
+  eligibilityData: {
+    isEligible: boolean;
+    tradeCount: number;
+    requirementStatus: string;
+  };
 }
 
 export function ConfirmWithdrawal({
   open,
   setIsOpen,
   setIsConfirmed,
+  eligibilityData
 }: ConfirmWithdrawalProps) {
-  const { data: trades } = useQuery({
-    queryKey: ['trades'],
-    queryFn: fetchUserTrades,
-    staleTime: 5000,
-    cacheTime: 10000
-  });
-
-  const tradesCount = trades?.length || 0;
-  const canWithdraw = tradesCount >= 3;
+  const remainingTrades = Math.max(3 - eligibilityData.tradeCount, 0);
 
   const handleYes = () => {
     console.log('Confirming withdrawal:', {
-      tradesCount,
-      canWithdraw
+      tradeCount: eligibilityData.tradeCount,
+      isEligible: eligibilityData.isEligible,
+      status: eligibilityData.requirementStatus
     });
     setIsOpen(false);
     setIsConfirmed(true);
   };
 
   const handleCheck = () => {
-    console.log('Checking withdrawal details');
+    console.log('Checking withdrawal requirements');
     setIsOpen(false);
   };
 
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Confirm Withdrawal</DialogTitle>
+        <DialogTitle>Withdrawal Verification</DialogTitle>
         <DialogDescription>
-          Are you sure that the wallet address and the crypto type are correct?
-          Incorrect information might lead to money loss and also make sure have up to three successful trades.
+          {eligibilityData.isEligible ? (
+            `You have ${eligibilityData.tradeCount} verified trades. Confirm wallet details:`
+          ) : (
+            `Requires ${remainingTrades} more trades (${eligibilityData.tradeCount}/3 completed)`
+          )}
         </DialogDescription>
       </DialogHeader>
-      <DialogFooter>
+      <DialogFooter className="gap-3">
         <Button 
           onClick={handleYes} 
-          disabled={!canWithdraw}
-          className={`${canWithdraw 
-            ? 'bg-green-600 hover:bg-green-700' 
-            : 'bg-gray-400 cursor-not-allowed'}`}
+          disabled={!eligibilityData.isEligible}
+          className={`w-full ${
+            eligibilityData.isEligible 
+              ? 'bg-green-600 hover:bg-green-700' 
+              : 'bg-gray-400 cursor-not-allowed'
+          }`}
         >
-          Yes
+          {eligibilityData.isEligible ? 'Confirm Withdrawal' : 'Requirements Not Met'}
         </Button>
-        <Button onClick={handleCheck} className="bg-red-600 hover:bg-red-700">
-          Check
+        <Button 
+          onClick={handleCheck}
+          variant="outline" 
+          className="w-full bg-red-600 text-white hover:bg-red-700"
+        >
+          Review Details
         </Button>
       </DialogFooter>
     </>
