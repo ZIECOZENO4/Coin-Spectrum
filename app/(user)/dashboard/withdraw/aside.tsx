@@ -36,14 +36,9 @@ import { motion, AnimatePresence } from "framer-motion";
 
 
 export const formSchema = z.object({
-  withdrawalAmount: z.coerce.number()
-    .positive("Amount must be positive")
-    .min(100, "Minimum withdrawal is $100")
-    .max(10000, "Maximum withdrawal is $10,000"),
-  walletAddress: z.string()
-    .min(10, "Wallet address must be at least 10 characters")
-    .max(255, "Wallet address too long"),
-  cryptoType: z.string().min(1, "Select a cryptocurrency"),
+  withdrawalAmount: z.coerce.number().positive(), // Remove .gte(1)
+  walletAddress: z.string().min(10).max(255),
+  cryptoType: z.string().min(1)
 });
 
 const fetchEligibility = async () => {
