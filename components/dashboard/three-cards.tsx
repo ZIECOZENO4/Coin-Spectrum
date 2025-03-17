@@ -99,7 +99,10 @@ export const InvestmentDashboard: React.FC<{
                 transition={{ delay: 0.4, type: "spring" }}
                 className="text-4xl font-bold text-white"
               >
-                {`$${balance}.00`}
+               `$${Number(balance).toLocaleString('en-US', { 
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2 
+})}
               </motion.div>
             </div>
 

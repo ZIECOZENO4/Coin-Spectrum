@@ -110,41 +110,43 @@ export function WithdrawalInput() {
   //     setIsDialogOpen(false);
   //   }
   // };
-  const handleDialogOpen = async () => {
-    const isValid = await form.trigger();
-    if (!isValid) {
-      setIsDialogOpen(false);
-      return;
-    }
 
-    try {
-      const { isEligible, tradeCount, requirementStatus } = await fetchEligibility();
-      setEligibilityData({ isEligible, tradeCount, requirementStatus });
+  // const handleDialogOpen = async () => {
+  //   const isValid = await form.trigger();
+  //   if (!isValid) {
+  //     setIsDialogOpen(false);
+  //     return;
+  //   }
+
+  //   try {
+  //     const { isEligible, tradeCount, requirementStatus } = await fetchEligibility();
+  //     setEligibilityData({ isEligible, tradeCount, requirementStatus });
       
-      if (!isEligible) {
-        const message = requirementStatus === "unfulfilled" 
-          ? `Requires ${remainingTrades} more trade${remainingTrades !== 1 ? 's' : ''} (${tradeCount}/3)`
-          : "Withdrawal approval pending";
+  //     if (!isEligible) {
+  //       const message = requirementStatus === "unfulfilled" 
+  //         ? `Requires ${remainingTrades} more trade${remainingTrades !== 1 ? 's' : ''} (${tradeCount}/3)`
+  //         : "Withdrawal approval pending";
         
-        toast.error(message, {
-          action: {
-            label: "Refresh",
-            onClick: () => window.location.reload(),
-          },
-        });
-        setIsDialogOpen(false);
-        return;
-      }
+  //       toast.error(message, {
+  //         action: {
+  //           label: "Refresh",
+  //           onClick: () => window.location.reload(),
+  //         },
+  //       });
+  //       setIsDialogOpen(false);
+  //       return;
+  //     }
 
-      toast.success(`Withdrawal placed! Verified trades: ${tradeCount}`);
-      setIsDialogOpen(true);
+  //     toast.success(`Withdrawal initiated! Verified trades: ${tradeCount}`);
+  //     setIsDialogOpen(true);
+  //     onSubmit();
 
-    } catch (error) {
-      toast.error("Withdrawal validation failed");
-      console.error(error);
-      setIsDialogOpen(false);
-    }
-  };
+  //   } catch (error) {
+  //     toast.error("Withdrawal validation failed");
+  //     console.error(error);
+  //     setIsDialogOpen(false);
+  //   }
+  // };
   
   // async function onSubmit(values: z.infer<typeof formSchema>) {
   //   toast.promise(
@@ -163,13 +165,66 @@ export function WithdrawalInput() {
   //     }
   //   );
   // }
-  // const { data: trades, isLoading } = useQuery({
-  //   queryKey: ['trades'],
-  //   queryFn: fetchUserTrades
-  // });
 
-  // const tradesCount = trades?.length || 0;
-  // const canWithdraw = tradesCount >= 3;
+  const handleDialogOpen = async () => {
+    const isValid = await form.trigger();
+    if (!isValid) {
+      setIsDialogOpen(false);
+      return;
+    }
+  
+    try {
+      const { isEligible, tradeCount, requirementStatus } = await fetchEligibility();
+      setEligibilityData({ isEligible, tradeCount, requirementStatus });
+      
+      if (!isEligible) {
+        const message = requirementStatus === "unfulfilled" 
+          ? `Requires ${remainingTrades} more trade${remainingTrades !== 1 ? 's' : ''} (${tradeCount}/3)`
+          : "Withdrawal approval pending";
+        
+        toast.error(message, {
+          action: {
+            label: "Refresh",
+            onClick: () => window.location.reload(),
+          },
+        });
+        setIsDialogOpen(false);
+        return;
+      }
+  
+      // Only open dialog if eligible, actual submission happens after confirmation
+      setIsDialogOpen(true);
+      toast.success(`Verified trades: ${tradeCount}. Confirm withdrawal details.`);
+  
+    } catch (error) {
+      toast.error("Withdrawal validation failed");
+      console.error(error);
+      setIsDialogOpen(false);
+    }
+  };
+  
+  // Separate useEffect to handle confirmed submissions
+  React.useEffect(() => {
+    if (isConfirmed) {
+      const values = form.getValues();
+      toast.promise(
+        processWithdrawal.mutateAsync(values, {
+          onSuccess() {
+            queryClient.invalidateQueries({ 
+              queryKey: ["processInvestments"] 
+            });
+            router.push("/dashboard/withdraw/success");
+          },
+        }),
+        {
+          loading: "Processing withdrawal...",
+          success: "Withdrawal processed successfully!",
+          error: (error) => error?.message || "An error occurred!",
+        }
+      );
+      setIsConfirmed(false); // Reset confirmation state
+    }
+  }, [isConfirmed]);
 
 
   return (

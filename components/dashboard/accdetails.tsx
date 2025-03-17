@@ -47,11 +47,24 @@ const StatsDashboard: React.FC<StatsDashboardProps> = ({ userId }) => {
   const { data: referralData = { referrals: [] } } = useReferralData();
 
   const statsData: StatsData[] = [
-    { label: "Withdrawable Balance", value: `$${balance || 0}.00` },
-    { label: "Total Trades Profits", value: formatCurrency(stats?.totalTrades || 0) },
-    { label: "Total Profits", value: formatCurrency(stats?.totalProfits || 0) },
-    { label: "Total Withdrawals", value: formatCurrency(stats?.totalWithdrawals || 0) }
+    { 
+      label: "Withdrawable Balance", 
+      value: formatCurrency(balance || 0) // Changed from template string
+    },
+    { 
+      label: "Total Trades Profits", 
+      value: formatCurrency(stats?.totalTrades || 0) 
+    },
+    { 
+      label: "Total Profits", 
+      value: formatCurrency(stats?.totalProfits || 0) 
+    },
+    { 
+      label: "Total Withdrawals", 
+      value: formatCurrency(stats?.totalWithdrawals || 0) 
+    }
   ];
+  
 
   const cardData: StatsData[] = [
     { label: "Total Net Profit", value: formatCurrency(stats?.netProfit || 0) },
