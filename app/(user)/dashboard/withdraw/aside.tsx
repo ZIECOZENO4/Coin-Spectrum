@@ -351,6 +351,7 @@ export function WithdrawalInput() {
           isOpen={isDialogOpen}
           setIsOpen={setIsDialogOpen}
           eligibilityData={eligibilityData}
+          formValues={form.getValues()} 
             >
  <Button
     type="button"

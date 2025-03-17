@@ -1,8 +1,7 @@
 
 "use client";
 import React, { useEffect } from "react";
-import DashboardCard from "./card";
-import useProcessInvestments from "@/lib/tenstack-hooks/cachedUseProcessInvestments";
+import { ErrorBoundary } from "react-error-boundary";
 import { formatCurrency } from "@/lib/formatCurrency";
 import AnimatedWelcome from "./username";
 import { motion } from "framer-motion"
@@ -18,6 +17,19 @@ import { useUserBalance } from "@/hook/useUserBalance";
 const chartdata = Array.from({ length: 50 }, (_, i) => ({
   value: Math.random() * 100 + 50
 }))
+
+const KycErrorFallback = ({ error, resetErrorBoundary }: any) => (
+  <span className="text-red-500">
+    Error loading KYC status: {error.message}.{" "}
+    <button 
+      onClick={resetErrorBoundary}
+      className="underline hover:text-red-700"
+    >
+      Retry
+    </button>
+  </span>
+);
+
 
 export const InvestmentDashboard: React.FC<{
   userId: string;
@@ -75,13 +87,25 @@ export const InvestmentDashboard: React.FC<{
           <div className="relative z-10 p-6 space-y-6">
             {/* KYC Status */}
             <motion.div
-              initial={{ y: -20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-gray-400 flex flex-row gap-2 md:gap-4"
-            >
-              Your KYC status is: <span className=""> <KycStatus /></span>
-            </motion.div>
+  initial={{ y: -20, opacity: 0 }}
+  animate={{ y: 0, opacity: 1 }}
+  transition={{ delay: 0.2 }}
+>
+  <ErrorBoundary
+    FallbackComponent={KycErrorFallback}
+    onReset={() => {
+      // Reset the state or reload component
+      window.location.reload();
+    }}
+  >
+    <div className="text-gray-400 flex flex-row gap-2 md:gap-4">
+      Your KYC status is:{" "}
+      <span className="">
+        <KycStatus />
+      </span>
+    </div>
+  </ErrorBoundary>
+</motion.div>
 
             {/* Balance Section */}
             <div className="space-y-2">
@@ -99,7 +123,7 @@ export const InvestmentDashboard: React.FC<{
                 transition={{ delay: 0.4, type: "spring" }}
                 className="text-4xl font-bold text-white"
               >
-                {`formatCurrency(balance || 0.00)`} 
+       {formatCurrency(balance || 0)}
               </motion.div>
             </div>
 

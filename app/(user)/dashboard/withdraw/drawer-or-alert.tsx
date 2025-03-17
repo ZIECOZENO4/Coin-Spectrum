@@ -70,6 +70,11 @@ interface DrawerDialogDemoProps {
       tradeCount: number;
       requirementStatus: string;
     };
+    formValues: {
+      withdrawalAmount: number;
+      walletAddress: string;
+      cryptoType: string;
+    };
     className?: string;
   }>;
   isOpen: boolean;
@@ -80,6 +85,11 @@ interface DrawerDialogDemoProps {
     tradeCount: number;
     requirementStatus: string;
   };
+  formValues: {
+    withdrawalAmount: number;
+    walletAddress: string;
+    cryptoType: string;
+  };
 }
 
 export function DrawerDialogDemo({
@@ -88,39 +98,42 @@ export function DrawerDialogDemo({
   isOpen,
   setIsOpen,
   setIsConfirmed,
-  eligibilityData
+  eligibilityData,
+  formValues // Add formValues prop
 }: DrawerDialogDemoProps) {
   const { width } = useWindowSize();
   const isDesktop = (width ?? 0) >= 768;
 
-  if (isDesktop) {
-    return (
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger asChild>{children}</DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <Component
-            open={isOpen}
-            setIsOpen={setIsOpen}
-            setIsConfirmed={setIsConfirmed}
-            eligibilityData={eligibilityData}
-          />
-        </DialogContent>
-      </Dialog>
-    );
-  }
-
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      <DrawerTrigger asChild>{children}</DrawerTrigger>
-      <DrawerContent>
-        <Component
-          open={isOpen}
-          setIsOpen={setIsOpen}
-          setIsConfirmed={setIsConfirmed}
-          eligibilityData={eligibilityData}
-          className="px-4"
-        />
-      </DrawerContent>
-    </Drawer>
+    <>
+      {isDesktop ? (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>{children}</DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <Component
+              open={isOpen}
+              setIsOpen={setIsOpen}
+              setIsConfirmed={setIsConfirmed}
+              eligibilityData={eligibilityData}
+              formValues={formValues} // Pass formValues
+            />
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <Drawer open={isOpen} onOpenChange={setIsOpen}>
+          <DrawerTrigger asChild>{children}</DrawerTrigger>
+          <DrawerContent>
+            <Component
+              open={isOpen}
+              setIsOpen={setIsOpen}
+              setIsConfirmed={setIsConfirmed}
+              eligibilityData={eligibilityData}
+              formValues={formValues} // Pass formValues
+              className="px-4"
+            />
+          </DrawerContent>
+        </Drawer>
+      )}
+    </>
   );
 }

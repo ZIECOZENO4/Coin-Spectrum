@@ -17,7 +17,14 @@ interface ConfirmWithdrawalProps {
     tradeCount: number;
     requirementStatus: string;
   };
+  formValues: {
+    withdrawalAmount: number;
+    walletAddress: string;
+    cryptoType: string;
+  };
+  className?: string;
 }
+
 
 export function ConfirmWithdrawal({
   open,
