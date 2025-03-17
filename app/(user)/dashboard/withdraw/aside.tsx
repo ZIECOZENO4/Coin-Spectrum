@@ -183,16 +183,13 @@ export function WithdrawalInput() {
           : "Withdrawal approval pending";
         
         toast.error(message, {
-          action: {
-            label: "Refresh",
-            onClick: () => window.location.reload(),
-          },
+          action: { label: "Refresh", onClick: () => window.location.reload() },
         });
         setIsDialogOpen(false);
         return;
       }
   
-      // Only open dialog if eligible, actual submission happens after confirmation
+      // Only open dialog without submitting
       setIsDialogOpen(true);
       toast.success(`Verified trades: ${tradeCount}. Confirm withdrawal details.`);
   
@@ -203,26 +200,36 @@ export function WithdrawalInput() {
     }
   };
   
-  // Separate useEffect to handle confirmed submissions
+  // Fix 2: Update useEffect to include form validation
   React.useEffect(() => {
     if (isConfirmed) {
-      const values = form.getValues();
-      toast.promise(
-        processWithdrawal.mutateAsync(values, {
-          onSuccess() {
-            queryClient.invalidateQueries({ 
-              queryKey: ["processInvestments"] 
-            });
-            router.push("/dashboard/withdraw/success");
-          },
-        }),
-        {
-          loading: "Processing withdrawal...",
-          success: "Withdrawal processed successfully!",
-          error: (error) => error?.message || "An error occurred!",
+      const executeSubmission = async () => {
+        const isValid = await form.trigger();
+        if (!isValid) {
+          setIsConfirmed(false);
+          return;
         }
-      );
-      setIsConfirmed(false); // Reset confirmation state
+  
+        const values = form.getValues();
+        await toast.promise(
+          processWithdrawal.mutateAsync(values, {
+            onSuccess() {
+              queryClient.invalidateQueries({ 
+                queryKey: ["processInvestments"] 
+              });
+              router.push("/dashboard/withdraw/success");
+            },
+          }),
+          {
+            loading: "Processing withdrawal...",
+            success: "Withdrawal processed successfully!",
+            error: (error) => error?.message || "An error occurred!",
+          }
+        );
+        setIsConfirmed(false);
+      };
+  
+      executeSubmission();
     }
   }, [isConfirmed]);
 
@@ -235,7 +242,7 @@ export function WithdrawalInput() {
         </h2>
         
         <Form {...form}>
-          <form noValidate className="space-y-6">
+        <form noValidate className="space-y-6" onSubmit={form.handleSubmit(handleDialogOpen)}>
             <FormField
               control={form.control}
               name="withdrawalAmount"
