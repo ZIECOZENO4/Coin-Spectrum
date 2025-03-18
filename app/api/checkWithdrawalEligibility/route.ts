@@ -133,13 +133,15 @@ export async function GET() {
       });
     }
 
-    return NextResponse.json({
-      success: true,
-      isEligible: newStatus === 'fulfilled',
-      tradeCount,
-      requirementStatus: newStatus,
-      isManualOverride: user.withdrawalRequirement === 'fulfilled' && tradeCount < 3
-    });
+ // In your fetchEligibility response handling
+return NextResponse.json({
+  success: true,
+  isEligible: newStatus === 'fulfilled',
+  tradeCount,
+  requirementStatus: newStatus,
+  isManualOverride: user.withdrawalRequirement === 'fulfilled' && tradeCount < 3 // New flag
+});
+
 
   } catch (error) {
     console.error("Withdrawal check failed:", error);

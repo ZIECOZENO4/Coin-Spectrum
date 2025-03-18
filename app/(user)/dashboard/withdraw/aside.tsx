@@ -63,23 +63,35 @@ export function WithdrawalInput() {
     },
   });
 
-  const [eligibilityData, setEligibilityData] = React.useState({
+  const [eligibilityData, setEligibilityData] = React.useState<{
+    isEligible: boolean;
+    tradeCount: number;
+    requirementStatus: string;
+    isManualOverride?: boolean;  // Add optional flag
+  }>({
     isEligible: false,
     tradeCount: 0,
-    requirementStatus: 'unfulfilled'
+    requirementStatus: 'unfulfilled',
+    isManualOverride: false  // Initialize with default value
   });
-
+  
   React.useEffect(() => {
     const checkInitialEligibility = async () => {
       try {
         const data = await fetchEligibility();
-        setEligibilityData(data);
+        setEligibilityData({
+          isEligible: data.isEligible,
+          tradeCount: data.tradeCount,
+          requirementStatus: data.requirementStatus,
+          isManualOverride: data.isManualOverride || false
+        });
       } catch (error) {
         console.error("Initial eligibility check failed:", error);
       }
     };
     checkInitialEligibility();
   }, []);
+  
 
   const remainingTrades = Math.max(3 - eligibilityData.tradeCount, 0);
 
@@ -252,16 +264,17 @@ export function WithdrawalInput() {
       ? 'bg-green-100 text-green-800' 
       : 'bg-yellow-100 text-yellow-800'}`}>
     {eligibilityData.isEligible ? (
-      eligibilityData.tradeCount >= 3 ? (
-        <>✅ Eligible ({eligibilityData.tradeCount} trades)</>
-      ) : (
+      eligibilityData.isManualOverride ? (
         <>✅ Authorized by Admin</>
+      ) : (
+        <>✅ Eligible ({eligibilityData.tradeCount} trades)</>
       )
     ) : (
       <>⚠️ Requires {remainingTrades} more trade{remainingTrades !== 1 ? 's' : ''}</>
     )}
   </span>
 </div>
+
 
             <div className="flex justify-center">
             <DrawerDialogDemo
@@ -274,14 +287,17 @@ export function WithdrawalInput() {
             >
 <Button
   type="submit"
-  disabled={processWithdrawal.isPending || !eligibilityData.isEligible}
+  disabled={processWithdrawal.isPending || (!eligibilityData.isEligible && !eligibilityData.isManualOverride)}
   className={`w-full max-w-[12rem] py-2 px-8 border border-transparent rounded-md shadow-sm text-sm font-medium text-white 
-    ${eligibilityData.isEligible 
+    ${eligibilityData.isEligible || eligibilityData.isManualOverride
       ? 'bg-yellow-400 hover:bg-yellow-600' 
       : 'bg-gray-400 cursor-not-allowed'}`}
 >
-  {eligibilityData.isEligible ? 'Submit' : `Need ${remainingTrades} Trades`}
+  {eligibilityData.isEligible || eligibilityData.isManualOverride 
+    ? 'Submit' 
+    : `Need ${remainingTrades} Trades`}
 </Button>
+
 
 
             </DrawerDialogDemo>
