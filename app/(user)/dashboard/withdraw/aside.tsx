@@ -247,17 +247,22 @@ export function WithdrawalInput() {
               )}
             </div>
             <div className="w-full text-center mb-4">
-    <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium 
-      ${eligibilityData.isEligible 
-        ? 'bg-green-100 text-green-800' 
-        : 'bg-yellow-100 text-yellow-800'}`}>
-      {eligibilityData.isEligible ? (
+  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium 
+    ${eligibilityData.isEligible 
+      ? 'bg-green-100 text-green-800' 
+      : 'bg-yellow-100 text-yellow-800'}`}>
+    {eligibilityData.isEligible ? (
+      eligibilityData.tradeCount >= 3 ? (
         <>✅ Eligible ({eligibilityData.tradeCount} trades)</>
       ) : (
-        <>⚠️ Requires {remainingTrades} more trade{remainingTrades !== 1 ? 's' : ''}</>
-      )}
-    </span>
-  </div>
+        <>✅ Authorized by Admin</>
+      )
+    ) : (
+      <>⚠️ Requires {remainingTrades} more trade{remainingTrades !== 1 ? 's' : ''}</>
+    )}
+  </span>
+</div>
+
             <div className="flex justify-center">
             <DrawerDialogDemo
           component={ConfirmWithdrawal}
@@ -267,18 +272,17 @@ export function WithdrawalInput() {
           eligibilityData={eligibilityData}
           formValues={form.getValues()} 
             >
- <Button
- type="submit"
-    disabled={processWithdrawal.isPending || !eligibilityData.isEligible}
-    className={`w-full max-w-[12rem] py-2 px-8 border border-transparent rounded-md shadow-sm text-sm font-medium text-white 
-      ${eligibilityData.isEligible 
-        ? 'bg-yellow-400 hover:bg-yellow-600' 
-        : 'bg-gray-400 cursor-not-allowed'} 
-      focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500`}
-    onClick={async () => await handleDialogOpen()}
-  >
-    {eligibilityData.isEligible ? 'Submit' : `Need ${remainingTrades} Trades`}
-  </Button>
+<Button
+  type="submit"
+  disabled={processWithdrawal.isPending || !eligibilityData.isEligible}
+  className={`w-full max-w-[12rem] py-2 px-8 border border-transparent rounded-md shadow-sm text-sm font-medium text-white 
+    ${eligibilityData.isEligible 
+      ? 'bg-yellow-400 hover:bg-yellow-600' 
+      : 'bg-gray-400 cursor-not-allowed'}`}
+>
+  {eligibilityData.isEligible ? 'Submit' : `Need ${remainingTrades} Trades`}
+</Button>
+
 
             </DrawerDialogDemo>
           </div>
