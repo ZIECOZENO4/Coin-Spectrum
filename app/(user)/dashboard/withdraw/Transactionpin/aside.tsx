@@ -194,7 +194,7 @@ function SubmitButton({ hasExistingPin }: { hasExistingPin: boolean }) {
       className="w-full h-12 text-lg font-semibold transition-transform hover:scale-[1.02] active:scale-98"
       disabled={pending}
     >
-      {pending ? <Loader className="h-6 w-6 animate-spin" /> : 
+      {pending ? <Loader className="h-6 w-6" /> : 
       hasExistingPin ? 'Update PIN' : 'Create PIN'}
     </Button>
   )
