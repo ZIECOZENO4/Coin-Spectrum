@@ -45,7 +45,7 @@ export async function updateUserPin(
       }
     }
 
-    // Update database
+    // Update database with the new PIN (not hashed)
     await db.update(users)
       .set({ transactionPin: newPin })
       .where(eq(users.id, session.user.id))
@@ -53,7 +53,7 @@ export async function updateUserPin(
     // Send confirmation email
     if (user.email) {
       await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || 'security@yourdomain.com',
+        from: process.env.RESEND_FROM_EMAIL || 'security@coinspectrum.net',
         to: user.email,
         subject: `Transaction PIN ${hasExistingPin ? 'Updated' : 'Created'}`,
         react: TransactionPinEmail({

@@ -11,7 +11,7 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
   const [pin, setPin] = useState<string[]>(Array(4).fill(''))
   const [confirmPin, setConfirmPin] = useState<string[]>(Array(4).fill(''))
   const [currentPin, setCurrentPin] = useState<string[]>(Array(4).fill(''))
-  const inputsRef = useRef<(HTMLInputElement | null)[]>(Array(4).fill(null))
+  const inputsRef = useRef<(HTMLInputElement | null)[]>(Array(12).fill(null))
   const [state, formAction] = useFormState(updateUserPin.bind(null, hasExistingPin), {
     success: false,
     error: null
@@ -28,16 +28,31 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
     if (state.error) toast.error(state.error)
   }, [state, hasExistingPin])
 
-  const handleInputChange = (value: string, index: number, setter: React.Dispatch<React.SetStateAction<string[]>>) => {
-    if (/^\d$/.test(value)) {
-      setter(prev => {
-        const newPin = [...prev]
-        newPin[index] = value
-        return newPin
-      })
+  const handleInputChange = (
+    value: string,
+    index: number,
+    setter: React.Dispatch<React.SetStateAction<string[]>>,
+    groupIndex: number
+  ) => {
+    if (/^\d+$/.test(value)) {
+      // Handle paste event
+      if (value.length === 4) {
+        const pastedDigits = value.split('').slice(0, 4)
+        setter(pastedDigits)
+        inputsRef.current[groupIndex * 4 + 3]?.focus()
+        return
+      }
 
-      if (index < 3) {
-        setTimeout(() => inputsRef.current[index + 1]?.focus(), 10)
+      if (/^\d$/.test(value)) {
+        setter(prev => {
+          const newPin = [...prev]
+          newPin[index] = value
+          return newPin
+        })
+
+        if (index < 3) {
+          inputsRef.current[groupIndex * 4 + index + 1]?.focus()
+        }
       }
     } else if (value === '') {
       setter(prev => {
@@ -47,7 +62,7 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
       })
 
       if (index > 0) {
-        setTimeout(() => inputsRef.current[index - 1]?.focus(), 10)
+        inputsRef.current[groupIndex * 4 + index - 1]?.focus()
       }
     }
   }
@@ -67,29 +82,29 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
           <PinInputGroup
             label="Current PIN"
             values={currentPin}
-            onChange={(i, v) => handleInputChange(v, i, setCurrentPin)}
+            onChange={(i, v) => handleInputChange(v, i, setCurrentPin, 0)}
             name="currentPin"
             inputsRef={inputsRef}
-            startIndex={0}
+            groupIndex={0}
           />
         )}
 
         <PinInputGroup
           label={hasExistingPin ? 'New PIN' : 'Create PIN'}
           values={pin}
-          onChange={(i, v) => handleInputChange(v, i, setPin)}
+          onChange={(i, v) => handleInputChange(v, i, setPin, 1)}
           name="pin"
           inputsRef={inputsRef}
-          startIndex={hasExistingPin ? 4 : 0}
+          groupIndex={1}
         />
 
         <PinInputGroup
           label="Confirm PIN"
           values={confirmPin}
-          onChange={(i, v) => handleInputChange(v, i, setConfirmPin)}
+          onChange={(i, v) => handleInputChange(v, i, setConfirmPin, 2)}
           name="confirmPin"
           inputsRef={inputsRef}
-          startIndex={hasExistingPin ? 8 : 4}
+          groupIndex={2}
         />
 
         <SubmitButton hasExistingPin={hasExistingPin} />
@@ -114,14 +129,14 @@ function PinInputGroup({
   onChange,
   name,
   inputsRef,
-  startIndex
+  groupIndex
 }: {
   label: string
   values: string[]
   onChange: (index: number, value: string) => void
   name: string
   inputsRef: React.MutableRefObject<(HTMLInputElement | null)[]>
-  startIndex: number
+  groupIndex: number
 }) {
   return (
     <motion.div
@@ -134,19 +149,38 @@ function PinInputGroup({
         {values.map((digit, i) => (
           <input
             key={i}
-            ref={el => inputsRef.current[startIndex + i] = el}
+            ref={el => inputsRef.current[groupIndex * 4 + i] = el}
             type="password"
             inputMode="numeric"
+            pattern="[0-9]*"
             maxLength={1}
-            name={name}
             value={digit}
-            onChange={(e) => onChange(i, e.target.value)}
-            className="w-12 h-12 text-center border-2 rounded-lg focus:ring-2 focus:ring-primary"
+            onChange={(e) => {
+              const value = e.target.value
+              if (value === '' || /^[0-9]$/.test(value)) {
+                onChange(i, value)
+              }
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Backspace' && digit === '') {
+                onChange(i, '')
+                if (i > 0) {
+                  inputsRef.current[groupIndex * 4 + i - 1]?.focus()
+                }
+              }
+            }}
+            className="w-12 h-12 text-center border-2 rounded-lg focus:ring-2 focus:ring-primary transition-all duration-150 ease-in-out"
             autoComplete="one-time-code"
+            aria-label={`${label} digit ${i + 1}`}
           />
         ))}
       </div>
-      <input type="hidden" name={name} value={values.join('')} />
+      <input 
+        type="hidden" 
+        name={name}
+        value={values.join('')}
+        aria-hidden="true"
+      />
     </motion.div>
   )
 }
@@ -157,7 +191,7 @@ function SubmitButton({ hasExistingPin }: { hasExistingPin: boolean }) {
   return (
     <Button
       type="submit"
-      className="w-full h-12 text-lg font-semibold"
+      className="w-full h-12 text-lg font-semibold transition-transform hover:scale-[1.02] active:scale-98"
       disabled={pending}
     >
       {pending ? <Loader className="h-6 w-6 animate-spin" /> : 
