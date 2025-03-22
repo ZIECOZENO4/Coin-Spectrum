@@ -6,6 +6,8 @@ import { useFormState, useFormStatus } from 'react-dom'
 import { updateUserPin } from '@/app/_action/pin-actions'
 import Loader from '@/components/loader'
 import { toast } from 'sonner'
+import { requestPinRetrieval } from '@/app/_action/pin-retrieval'
+import { Textarea } from '@/components/ui/textarea'
 
 export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
   const [pin, setPin] = useState<string[]>(Array(4).fill(''))
@@ -16,6 +18,30 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
     success: false,
     error: null
   })
+
+  const [showRetrievalForm, setShowRetrievalForm] = useState(false)
+  const [retrievalState, retrievalAction] = useFormState(requestPinRetrieval, {
+    success: false,
+    error: null
+  })
+
+  useEffect(() => {
+    if (state.success || retrievalState.success) {
+      if (state.success) {
+        toast.success(`PIN ${hasExistingPin ? 'updated' : 'created'} successfully!`)
+        setPin(Array(4).fill(''))
+        setConfirmPin(Array(4).fill(''))
+        if (hasExistingPin) setCurrentPin(Array(4).fill(''))
+        inputsRef.current[0]?.focus()
+      }
+      if (retrievalState.success) {
+        toast.success('PIN retrieval request sent to admin!')
+        setShowRetrievalForm(false)
+      }
+    }
+    if (state.error) toast.error(state.error)
+    if (retrievalState.error) toast.error(retrievalState.error)
+  }, [state, retrievalState, hasExistingPin])
 
   useEffect(() => {
     if (state.success) {
@@ -108,7 +134,45 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
         />
 
         <SubmitButton hasExistingPin={hasExistingPin} />
-        
+        {hasExistingPin && (
+        <div className="mt-12 border-t pt-6">
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={() => setShowRetrievalForm(!showRetrievalForm)}
+              className="text-sm text-primary hover:underline font-medium"
+            >
+              Forgot PIN? Request Retrieval
+            </button>
+          </div>
+
+          {showRetrievalForm && (
+            <motion.form
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              action={retrievalAction}
+              className="mt-4 space-y-4"
+            >
+              <Textarea
+                name="message"
+                required
+                placeholder="Explain why you need to retrieve your PIN..."
+                className="min-h-[100px]"
+                aria-label="Retrieval reason"
+              />
+              
+              <Button 
+                type="submit" 
+                className="w-full"
+                variant="outline"
+              >
+                Submit Retrieval Request
+              </Button>
+            </motion.form>
+          )}
+        </div>
+      )}
+
         {state.error && (
           <motion.div
             initial={{ opacity: 0 }}
