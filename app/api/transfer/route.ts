@@ -93,13 +93,13 @@ export async function POST(req: NextRequest) {
     try {
       await Promise.all([
         resend.emails.send({
-          from: process.env.NOREPLY_EMAIL!,
+          from:  process.env.ADMIN_EMAIL || 'admin@coinspectrum.net',
           to: sender.email!,
           subject: 'Transfer Successful',
           text: `You've successfully transferred $${amount} to ${recipient.email}`
         }),
         resend.emails.send({
-          from: process.env.NOREPLY_EMAIL!,
+          from:  process.env.ADMIN_EMAIL || 'admin@coinspectrum.net',
           to: recipient.email!,
           subject: 'Funds Received',
           text: `You've received $${amount} from ${sender.email}`

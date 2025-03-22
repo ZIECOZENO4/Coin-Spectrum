@@ -52,7 +52,7 @@ export async function requestPinRetrieval(
 
     // Send confirmation email to user
     await resend.emails.send({
-      from: process.env.NOREPLY_EMAIL || 'noreply@coinspectrum.net',
+      from: process.env.RESEND_FROM_EMAIL || 'noreply@coinspectrum.net',
       to: user.email,
       subject: 'PIN Retrieval Request Received',
       text: `
