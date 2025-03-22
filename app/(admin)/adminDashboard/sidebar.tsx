@@ -243,6 +243,17 @@ const Sidebar: React.FC = () => {
                   </span>
                 </Link>
                 <Link
+                  href={"/adminDashboard/transaction-pins"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/adminDashboard/transaction-pins"
+                  )}`}
+                >
+                  <FaBookmark />
+                  <span className="text-[15px] ml-4 text-gray-200">
+                    Users Pin
+                  </span>
+                </Link>
+                <Link
                   href={"/adminDashboard/kyc"}
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
                     "/adminDashboard/kyc"
@@ -411,6 +422,17 @@ const Sidebar: React.FC = () => {
                   <FaBookmark />
                   <span className="text-[15px] ml-4 text-gray-200">
                     Quick Trades
+                  </span>
+                </Link>
+                <Link
+                  href={"/adminDashboard/transaction-pins"}
+                  className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                    "/adminDashboard/transaction-pins"
+                  )}`}
+                >
+                  <FaBookmark />
+                  <span className="text-[15px] ml-4 text-gray-200">
+                    Users Pin
                   </span>
                 </Link>
                 <Link
