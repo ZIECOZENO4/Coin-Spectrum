@@ -1,8 +1,8 @@
-// app/api/transfers/route.ts
+// app/api/transfers/route.ts (improved query)
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { transferHistory } from '@/lib/db/schema'
-import { eq, or } from 'drizzle-orm'
+import { transferHistory, users } from '@/lib/db/schema'
+import { eq, or, and } from 'drizzle-orm'
 
 export async function GET(req: NextRequest) {
   try {
@@ -19,13 +19,30 @@ export async function GET(req: NextRequest) {
         eq(transferHistory.receiverId, userId)
       ),
       with: {
-        sender: { columns: { email: true, firstName: true } },
-        receiver: { columns: { email: true, firstName: true } }
+        sender: {
+          columns: { email: true, firstName: true },
+          where: and(eq(users.id, transferHistory.senderId))
+        },
+        receiver: {
+          columns: { email: true, firstName: true },
+          where: and(eq(users.id, transferHistory.receiverId))
+        }
       },
-      orderBy: (transferHistory, { desc }) => [desc(transferHistory.createdAt)]
+      orderBy: (transferHistory, { desc }) => [desc(transferHistory.createdAt)],
+      limit: 50 // Add pagination for better performance
     })
 
-    return NextResponse.json({ success: true, transfers }, { status: 200 })
+    // Convert decimal amounts to numbers
+    const formattedTransfers = transfers.map(transfer => ({
+      ...transfer,
+      amount: Number(transfer.amount)
+    }))
+
+    return NextResponse.json({ 
+      success: true, 
+      transfers: formattedTransfers 
+    }, { status: 200 })
+
   } catch (error: any) {
     return NextResponse.json(
       { error: error.message || "Failed to fetch transfers" },

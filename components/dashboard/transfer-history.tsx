@@ -36,7 +36,7 @@ export function TransferHistoryTable({ data }: { data: TransferHistory[] }) {
   }
 
   return (
-    <div className="rounded-lg border shadow-sm">
+    <div className="rounded-lg border text-black w-auto shadow-sm">
       <Table>
         <TableHeader className="bg-yellow-600">
           <TableRow>
