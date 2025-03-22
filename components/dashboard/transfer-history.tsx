@@ -38,7 +38,7 @@ export function TransferHistoryTable({ data }: { data: TransferHistory[] }) {
   return (
     <div className="rounded-lg border shadow-sm">
       <Table>
-        <TableHeader className="bg-gray-50">
+        <TableHeader className="bg-yellow-600">
           <TableRow>
             <TableHead>Date</TableHead>
             <TableHead>Sender</TableHead>
@@ -50,7 +50,7 @@ export function TransferHistoryTable({ data }: { data: TransferHistory[] }) {
         </TableHeader>
         <TableBody>
           {data.map((transfer) => (
-            <TableRow key={transfer.id} className="hover:bg-gray-50 transition-colors">
+            <TableRow key={transfer.id} className="hover:bg-yellow-300 transition-colors">
               <TableCell>
                 {new Date(transfer.createdAt).toLocaleDateString()}
               </TableCell>

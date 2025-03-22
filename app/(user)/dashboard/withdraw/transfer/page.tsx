@@ -141,9 +141,9 @@ export default function TransferPage() {
       </div>
 
       <div>
-          <h2 className="text-xl font-bold mb-4">Your Transfer History</h2>
+          <h2 className="text-xl font-bold my-8 text-center">Your Transfer History</h2>
           {historyLoading ? (
-            <div>Loading history...</div>
+            <div className='text-center text-yellow-400'>Loading history...</div>
           ) : (
             <TransferHistoryTable data={transferHistory} />
           )}
