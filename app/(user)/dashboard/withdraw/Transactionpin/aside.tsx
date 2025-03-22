@@ -134,44 +134,7 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
         />
 
         <SubmitButton hasExistingPin={hasExistingPin} />
-        {hasExistingPin && (
-        <div className="mt-12 border-t pt-6">
-          <div className="text-center">
-            <button
-              type="button"
-              onClick={() => setShowRetrievalForm(!showRetrievalForm)}
-              className="text-sm text-primary hover:underline font-medium"
-            >
-              Forgot PIN? Request Retrieval
-            </button>
-          </div>
-
-          {showRetrievalForm && (
-            <motion.form
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              action={retrievalAction}
-              className="mt-4 space-y-4"
-            >
-              <Textarea
-                name="message"
-                required
-                placeholder="Explain why you need to retrieve your PIN..."
-                className="min-h-[100px]"
-                aria-label="Retrieval reason"
-              />
-              
-              <Button 
-                type="submit" 
-                className="w-full"
-                variant="outline"
-              >
-                Submit Retrieval Request
-              </Button>
-            </motion.form>
-          )}
-        </div>
-      )}
+     
 
         {state.error && (
           <motion.div
@@ -182,6 +145,50 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
             {state.error}
           </motion.div>
         )}
+      {hasExistingPin && (
+  <div className="mt-12 border-t pt-6">
+    <div className="text-center">
+      <button
+        type="button"
+        onClick={() => setShowRetrievalForm(!showRetrievalForm)}
+        className="text-sm text-primary hover:underline font-medium"
+      >
+        Forgot PIN? Request Retrieval
+      </button>
+    </div>
+
+    {showRetrievalForm && (
+      <motion.form
+        initial={{ opacity: 0, height: 0 }}
+        animate={{ opacity: 1, height: 'auto' }}
+        className="mt-4 space-y-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const formData = new FormData(e.currentTarget);
+          retrievalAction(formData);
+        }}
+      >
+        <Textarea
+          name="message"
+          required
+          placeholder="Explain why you need to retrieve your PIN..."
+          className="min-h-[100px]"
+          aria-label="Retrieval reason"
+        />
+        
+        <Button 
+          type="submit"
+          className="w-full"
+          variant="outline"
+        >
+          Submit Retrieval Request
+        </Button>
+      </motion.form>
+    )}
+  </div>
+)}
+
       </form>
     </motion.div>
   )
