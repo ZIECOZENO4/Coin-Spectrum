@@ -127,6 +127,13 @@
       "when": 1742137068352,
       "tag": "0017_cynical_banshee",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1742634198270,
+      "tag": "0018_familiar_tusk",
+      "breakpoints": true
     }
   ]
 }

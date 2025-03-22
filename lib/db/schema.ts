@@ -135,6 +135,18 @@ export const transactionHistory = pgTable("transaction_history", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+// Add to schema.ts
+export const transferHistory = pgTable("transfer_history", {
+  id: text("id").primaryKey(),
+  senderId: text("sender_id").notNull().references(() => users.id),
+  receiverId: text("receiver_id").notNull().references(() => users.id),
+  amount: doublePrecision("amount").notNull(),
+  status: text("status").notNull().default("pending"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+})
+
+
 export const pendingDeposits = pgTable("pending_deposits", {
   id: text("id").primaryKey(),
   userId: text("user_id").notNull().references(() => users.id),
