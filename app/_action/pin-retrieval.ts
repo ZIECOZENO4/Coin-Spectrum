@@ -38,8 +38,8 @@ export async function requestPinRetrieval(
   
       // Send email to admin
       await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || 'support@yourdomain.com',
-        to: process.env.ADMIN_EMAIL || 'admin@yourdomain.com',
+        from: user.email || 'support@coinspectrum.net',
+        to: process.env.ADMIN_EMAIL || 'admin@coinspectrum.net',
         subject: `PIN Retrieval Request - ${user.email}`,
         text: `
           User Email: ${user.email}

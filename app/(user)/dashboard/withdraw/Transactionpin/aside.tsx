@@ -8,6 +8,10 @@ import Loader from '@/components/loader'
 import { toast } from 'sonner'
 import { requestPinRetrieval } from '@/app/_action/pin-retrieval'
 import { Textarea } from '@/components/ui/textarea'
+interface RetrievalState {
+  success: boolean
+  error: string | null
+}
 
 export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
   const [pin, setPin] = useState<string[]>(Array(4).fill(''))
@@ -20,10 +24,11 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
   })
 
   const [showRetrievalForm, setShowRetrievalForm] = useState(false)
-  const [retrievalState, retrievalAction] = useFormState(requestPinRetrieval, {
+  const [retrievalState, retrievalAction] = useFormState<RetrievalState, FormData>(requestPinRetrieval, {
     success: false,
     error: null
-  })
+  });
+  
 
   useEffect(() => {
     if (state.success || retrievalState.success) {
@@ -145,6 +150,9 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
             {state.error}
           </motion.div>
         )}
+ 
+
+      </form>
       {hasExistingPin && (
   <div className="mt-12 border-t pt-6">
     <div className="text-center">
@@ -158,38 +166,47 @@ export function PinManagement({ hasExistingPin }: { hasExistingPin: boolean }) {
     </div>
 
     {showRetrievalForm && (
-      <motion.form
-        initial={{ opacity: 0, height: 0 }}
-        animate={{ opacity: 1, height: 'auto' }}
-        className="mt-4 space-y-4"
-        onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          const formData = new FormData(e.currentTarget);
-          retrievalAction(formData);
-        }}
-      >
-        <Textarea
-          name="message"
-          required
-          placeholder="Explain why you need to retrieve your PIN..."
-          className="min-h-[100px]"
-          aria-label="Retrieval reason"
-        />
-        
-        <Button 
-          type="submit"
-          className="w-full"
-          variant="outline"
-        >
-          Submit Retrieval Request
-        </Button>
-      </motion.form>
-    )}
+  <motion.form
+    initial={{ opacity: 0, height: 0 }}
+    animate={{ opacity: 1, height: 'auto' }}
+    className="mt-4 space-y-4"
+    onSubmit={async (e) => {
+      e.preventDefault()
+      const formData = new FormData(e.currentTarget)
+      try {
+        const result = await retrievalAction(formData)
+        if (result.success) {
+          toast.success('Retrieval request sent to admin!')
+          setShowRetrievalForm(false)
+        } else {
+          toast.error(result.error || 'Failed to submit request')
+        }
+      } catch (error) {
+        toast.error('An unexpected error occurred')
+      }
+    }}
+  >
+    <Textarea
+      name="message"
+      required
+      placeholder="Explain why you need to retrieve your PIN..."
+      className="min-h-[100px]"
+      aria-label="Retrieval reason"
+    />
+    
+    <Button 
+      type="submit" 
+      className="w-full"
+      variant="outline"
+    >
+      Submit Retrieval Request
+    </Button>
+  </motion.form>
+)}
   </div>
 )}
 
-      </form>
+
     </motion.div>
   )
 }
