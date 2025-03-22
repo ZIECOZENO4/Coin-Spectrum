@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { User } from '@/lib/db/schema'
+import { TransferHistoryTable } from '@/components/dashboard/transfer-history'
+import { getUserAuth } from '@/lib/auth/utils'
 
 export default function TransferPage() {
   const [recipientEmail, setRecipientEmail] = useState('')
@@ -14,6 +16,8 @@ export default function TransferPage() {
   const [recipient, setRecipient] = useState<User | null>(null)
   const [showPinModal, setShowPinModal] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [transferHistory, setTransferHistory] = useState([])
+  const [historyLoading, setHistoryLoading] = useState(true)
 
   const handleSearchRecipient = async () => {
     if (!recipientEmail.includes('@')) return
@@ -33,6 +37,28 @@ export default function TransferPage() {
       toast.error('Error searching user')
     }
   }
+
+  useEffect(() => {
+    const fetchTransferHistory = async () => {
+      try {
+        const { session } = await getUserAuth()
+        if (!session?.user?.id) return
+
+        const response = await fetch(`/api/transfersHistory?userId=${session.user.id}`)
+        const data = await response.json()
+        
+        if (data.success) {
+          setTransferHistory(data.transfers)
+        }
+      } catch (error) {
+        toast.error('Failed to load transfer history')
+      } finally {
+        setHistoryLoading(false)
+      }
+    }
+    
+    fetchTransferHistory()
+  }, [])
 
   const handleTransfer = async () => {
     if (!recipient || !amount) return
@@ -114,6 +140,15 @@ export default function TransferPage() {
         </Button>
       </div>
 
+      <div>
+          <h2 className="text-xl font-bold mb-4">Your Transfer History</h2>
+          {historyLoading ? (
+            <div>Loading history...</div>
+          ) : (
+            <TransferHistoryTable data={transferHistory} />
+          )}
+        </div>
+
       <Dialog open={showPinModal} onOpenChange={setShowPinModal}>
         <DialogContent>
           <DialogHeader>
@@ -149,6 +184,7 @@ export default function TransferPage() {
           </Button>
         </DialogContent>
       </Dialog>
+  
     </div>
   )
 }

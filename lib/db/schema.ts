@@ -141,7 +141,8 @@ export const transferHistory = pgTable("transfer_history", {
   senderId: text("sender_id").notNull().references(() => users.id),
   receiverId: text("receiver_id").notNull().references(() => users.id),
   amount: doublePrecision("amount").notNull(),
-  status: text("status").notNull().default("pending"),
+  status: text("status").notNull().default("pending")
+  .$type<"pending" | "completed" | "failed">(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
