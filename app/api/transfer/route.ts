@@ -131,19 +131,13 @@
 //   }
 // }
 
-
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { users, transferHistory } from '@/lib/db/schema'
 import { eq, sql } from 'drizzle-orm'
 import { getUserAuth } from '@/lib/auth/utils'
-import { Resend } from 'resend'
 import { v4 as uuidv4 } from 'uuid'
-import React from 'react'
-import ReactDOMServer from 'react-dom/server'
-import { TransferReceived } from '@/emails/transfer-received'
-import { TransferSent } from '@/emails/transfer-sent'
-const resend = new Resend(process.env.RESEND_API_KEY)
+import { sendTransferEmails } from '@/app/_action/transfer-actions'
 
 export async function POST(req: NextRequest) {
   try {
@@ -154,7 +148,7 @@ export async function POST(req: NextRequest) {
 
     const { recipientEmail, amount, pin } = await req.json()
     
-    // Validate input
+    // Validation remains the same
     if (!recipientEmail || !amount || !pin) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
@@ -163,7 +157,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid PIN format" }, { status: 400 })
     }
 
-    // Get sender and recipient with proper locking
+    // Database queries remain the same
     const [sender, recipient] = await Promise.all([
       db.query.users.findFirst({
         where: eq(users.id, session.user.id),
@@ -175,7 +169,7 @@ export async function POST(req: NextRequest) {
       })
     ])
 
-    // Validate transaction
+    // Validation checks remain the same
     if (!sender || !recipient) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
@@ -192,7 +186,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Insufficient balance" }, { status: 400 })
     }
 
-    // Perform transfer with proper transaction handling
+    // Transaction handling
     const transferId = uuidv4()
     const transferDate = new Date().toLocaleString('en-US', {
       year: 'numeric',
@@ -231,55 +225,21 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const senderEmailHtml = ReactDOMServer.renderToString(
-      <TransferSent
-        recipientName={recipient.email!}
-        senderName={sender.email!}
-        amount={amount}
-        transferId={transferId}
-        transferDate={transferDate}
-      />
-    )
-    
-    const recipientEmailHtml = ReactDOMServer.renderToString(
-      <TransferReceived
-        recipientName={recipient.email!}
-        senderName={sender.email!}
-        amount={amount}
-        transferId={transferId}
-        transferDate={transferDate}
-      />
+    // Use server action for email notifications
+    const emailResult = await sendTransferEmails(
+      sender.email!,
+      recipient.email!,
+      amount,
+      transferId,
+      transferDate
     )
 
-    // Send email notifications with proper error handling
-    const emailPromises = [
-      resend.emails.send({
-        from: process.env.ADMIN_EMAIL || 'notifications@coinspectrum.net',
-        to: sender.email!,
-        subject: 'Transfer Successful',
-        html: senderEmailHtml
-      }),
-      resend.emails.send({
-        from: process.env.ADMIN_EMAIL || 'notifications@coinspectrum.net',
-        to: recipient.email!,
-        subject: 'Funds Received',
-        html: recipientEmailHtml
-      }),
-      // Admin notification
-      resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || 'noreply@coinspectrum.net',
-        to: process.env.ADMIN_EMAIL || 'admin@coinspectrum.net',
-        subject: `New Transfer - ${transferId}`,
-        text: `New transfer of $${amount} between ${sender.email} and ${recipient.email}`
-      })
-    ]
-
-    const emailResults = await Promise.allSettled(emailPromises)
-    const failedEmails = emailResults.filter(result => result.status === 'rejected')
-    
-    if (failedEmails.length > 0) {
-      console.error("Email delivery failed:", failedEmails)
-      throw new Error(`Failed to send ${failedEmails.length}/3 emails`)
+    if (!emailResult.success) {
+      console.error("Email delivery failed:", emailResult.error)
+      return NextResponse.json(
+        { error: "Transfer completed but email notifications failed" },
+        { status: 200 }
+      )
     }
 
     return NextResponse.json({ 
