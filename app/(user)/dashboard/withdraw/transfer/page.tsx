@@ -143,16 +143,7 @@ export default function TransferPage() {
     
 
       <div className='text-black  my-8 gap-4 w-auto container'>
-        <h2 className="text-xl font-bold mb-4">Your Transfer History</h2>
-        {historyLoading ? (
-          <div className="p-4 text-center text-gray-500">Loading history...</div>
-        ) : transferHistory.length > 0 ? (
-          <TransferHistoryTable />
-        ) : (
-          <div className="p-4 text-center text-gray-500">
-            No transfer history found. Transactions will appear here after you make transfers.
-          </div>
-        )}
+      <TransferHistoryTable />
       </div>
  
 
