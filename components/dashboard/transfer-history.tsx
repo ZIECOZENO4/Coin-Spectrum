@@ -95,7 +95,7 @@
 //   )
 // }
 
-
+// components/transfer-history.tsx
 'use client'
 import { useState, useEffect } from 'react'
 import {
@@ -112,11 +112,18 @@ import { transferHistory } from '@/lib/db/schema'
 import { toast } from 'sonner'
 import { User } from '@/lib/db/schema'
 import { sendTransferEmail } from '@/app/_action/email-actions'
+import { motion } from 'framer-motion'
+import { Skeleton } from '@/components/ui/skeleton'
 
 type TransferHistory = typeof transferHistory.$inferSelect & {
   sender: User
   receiver: User
   status: 'pending' | 'completed' | 'failed'
+}
+
+const rowVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
 }
 
 export function TransferHistoryTable() {
@@ -126,11 +133,25 @@ export function TransferHistoryTable() {
 
   const fetchTransferHistory = async () => {
     try {
+      console.log('[TRANSFER-UI] Starting data fetch...');
+      const startTime = performance.now();
+      
       const response = await fetch('/api/transfer-history')
-      if (!response.ok) throw new Error('Failed to fetch transfers')
-      const data = await response.json()
-      setTransfers(data)
+      const endTime = performance.now();
+      console.log(`[TRANSFER-UI] Fetch took ${(endTime - startTime).toFixed(2)}ms`);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('[TRANSFER-UI] API error response:', errorData);
+        throw new Error(errorData.message || 'Failed to fetch transfers');
+      }
+
+      const data = await response.json();
+      console.log('[TRANSFER-UI] Received data:', data);
+      setTransfers(data);
+
     } catch (err) {
+      console.error('[TRANSFER-UI] Fetch error:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch transfers')
       toast.error('Failed to load transfer history')
     } finally {
@@ -144,72 +165,116 @@ export function TransferHistoryTable() {
 
   const handleSendEmail = async (transfer: TransferHistory, type: 'sender' | 'receiver') => {
     try {
+      console.log(`[TRANSFER-UI] Sending email to ${type}:`, transfer);
       await sendTransferEmail(transfer, type)
       toast.success(`Email sent to ${type === 'sender' ? 'sender' : 'receiver'}`)
     } catch (error) {
+      console.error('[TRANSFER-UI] Email error:', error);
       toast.error('Failed to send email')
     }
   }
 
-  if (loading) return <div>Loading transfer history...</div>
-  if (error) return <div>Error: {error}</div>
+  if (loading) return (
+    <div className="rounded-lg border shadow-sm space-y-4 p-4">
+      {Array(5).fill(0).map((_, i) => (
+        <Skeleton key={i} className="h-12 w-full bg-gray-200/50 animate-pulse" />
+      ))}
+    </div>
+  )
+
+  if (error) return (
+    <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
+      <p>Error loading transfers: {error}</p>
+      <Button 
+        variant="outline" 
+        className="mt-2 text-red-600 hover:bg-red-100"
+        onClick={fetchTransferHistory}
+      >
+        Retry
+      </Button>
+    </div>
+  )
 
   return (
-    <div className="rounded-lg border text-black w-auto shadow-sm">
-      <Table>
-        <TableHeader className="bg-yellow-600">
-          <TableRow>
-            <TableHead>Date</TableHead>
-            <TableHead>Sender</TableHead>
-            <TableHead>Receiver</TableHead>
-            <TableHead>Amount</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="rounded-lg border border-gray-200 shadow-lg overflow-hidden"
+    >
+      <Table className="border-collapse w-full">
+        <TableHeader className="bg-gradient-to-r from-yellow-500 to-yellow-600">
+          <TableRow className="hover:bg-transparent">
+            <TableHead className="text-white font-semibold py-4">Date</TableHead>
+            <TableHead className="text-white font-semibold">Sender</TableHead>
+            <TableHead className="text-white font-semibold">Receiver</TableHead>
+            <TableHead className="text-white font-semibold">Amount</TableHead>
+            <TableHead className="text-white font-semibold">Status</TableHead>
+            <TableHead className="text-white font-semibold">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {transfers.map((transfer) => (
-            <TableRow key={transfer.id} className="hover:bg-yellow-300 transition-colors">
-              <TableCell>
-                {new Date(transfer.createdAt).toLocaleDateString()}
+          {transfers.map((transfer, index) => (
+            <motion.tr
+              key={transfer.id}
+              variants={rowVariants}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: index * 0.05 }}
+              className="group even:bg-gray-50 hover:bg-yellow-50 transition-colors duration-200"
+            >
+              <TableCell className="py-3 px-4 border-b border-gray-100">
+                {new Date(transfer.createdAt).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                })}
               </TableCell>
-              <TableCell className="font-medium">
-                {transfer.sender.email} ({transfer.senderId})
+              <TableCell className="font-medium py-3 px-4 border-b border-gray-100">
+                <span className="text-gray-700">{transfer.sender.email}</span>
+                <span className="block text-sm text-gray-500">({transfer.senderId})</span>
               </TableCell>
-              <TableCell>
-                {transfer.receiver.email} ({transfer.receiverId})
+              <TableCell className="py-3 px-4 border-b border-gray-100">
+                <span className="text-gray-700">{transfer.receiver.email}</span>
+                <span className="block text-sm text-gray-500">({transfer.receiverId})</span>
               </TableCell>
-              <TableCell>${transfer.amount.toFixed(2)}</TableCell>
-              <TableCell>
-                <Badge variant={
-                  transfer.status === 'completed' ? 'default' : 
-                  transfer.status === 'pending' ? 'secondary' : 'destructive'
-                }>
+              <TableCell className="py-3 px-4 border-b border-gray-100 font-semibold text-green-700">
+                ${transfer.amount.toFixed(2)}
+              </TableCell>
+              <TableCell className="py-3 px-4 border-b border-gray-100">
+                <Badge 
+                  variant={
+                    transfer.status === 'completed' ? 'default' : 
+                    transfer.status === 'pending' ? 'secondary' : 'destructive'
+                  }
+                  className="animate-pulse"
+                >
                   {transfer.status}
                 </Badge>
               </TableCell>
-              <TableCell>
+              <TableCell className="py-3 px-4 border-b border-gray-100">
                 <div className="flex gap-2">
                   <Button
                     size="sm"
-                    variant="ghost"
+                    variant="outline"
+                    className="hover:bg-yellow-100 hover:text-yellow-800 transition-colors"
                     onClick={() => handleSendEmail(transfer, 'sender')}
                   >
-                    Email Sender
+                    📧 Sender
                   </Button>
                   <Button
                     size="sm"
-                    variant="ghost"
+                    variant="outline"
+                    className="hover:bg-yellow-100 hover:text-yellow-800 transition-colors"
                     onClick={() => handleSendEmail(transfer, 'receiver')}
                   >
-                    Email Receiver
+                    📧 Receiver
                   </Button>
                 </div>
               </TableCell>
-            </TableRow>
+            </motion.tr>
           ))}
         </TableBody>
       </Table>
-    </div>
+    </motion.div>
   )
 }

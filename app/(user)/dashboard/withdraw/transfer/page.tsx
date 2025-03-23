@@ -38,28 +38,6 @@ export default function TransferPage() {
     }
   }
 
-  useEffect(() => {
-    const fetchTransferHistory = async () => {
-      try {
-        const { session } = await getUserAuth()
-        if (!session?.user?.id) return
-
-        const response = await fetch(`/api/transfersHistory?userId=${session.user.id}`)
-        const data = await response.json()
-        
-        if (data.success) {
-          setTransferHistory(data.transfers)
-        }
-      } catch (error) {
-        toast.error('Failed to load transfer history')
-      } finally {
-        setHistoryLoading(false)
-      }
-    }
-    
-    fetchTransferHistory()
-  }, [])
-
   const handleTransfer = async () => {
     if (!recipient || !amount) return
     if (Number(amount) <= 0) {

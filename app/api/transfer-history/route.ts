@@ -8,10 +8,15 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const { userId } = auth();
+    console.log('[TRANSFER-API] Authentication userId:', userId);
+
     if (!userId) {
+      console.error('[TRANSFER-API] Unauthorized access attempt');
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    console.log('[TRANSFER-API] Fetching transfers for user:', userId);
+    
     const transfers = await db
       .select({
         transfer: transferHistory,
@@ -19,13 +24,15 @@ export async function GET() {
         receiver: users,
       })
       .from(transferHistory)
-      .leftJoin(users, eq(transferHistory.senderId, users.id))
-      .leftJoin(users, eq(transferHistory.receiverId, users.id))
+      .innerJoin(users, eq(transferHistory.senderId, users.id))
+      .innerJoin(users, eq(transferHistory.receiverId, users.id))
       .where(or(
         eq(transferHistory.senderId, userId),
         eq(transferHistory.receiverId, userId)
       ))
       .orderBy(transferHistory.createdAt);
+
+    console.log('[TRANSFER-API] Raw database response:', transfers);
 
     const formattedTransfers = transfers.map(t => ({
       ...t.transfer,
@@ -33,9 +40,14 @@ export async function GET() {
       receiver: t.receiver
     }));
 
+    console.log('[TRANSFER-API] Formatted transfers:', formattedTransfers);
     return NextResponse.json(formattedTransfers);
+
   } catch (error) {
-    console.error("Error fetching transfer history:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error("[TRANSFER-API] Error details:", error);
+    return new NextResponse(JSON.stringify({
+      message: "Internal Server Error",
+      error: error instanceof Error ? error.message : "Unknown error"
+    }), { status: 500 });
   }
 }
