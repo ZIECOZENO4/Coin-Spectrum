@@ -131,33 +131,33 @@ export function TransferHistoryTable() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchTransferHistory = async () => {
-    try {
-      console.log('[TRANSFER-UI] Starting data fetch...');
-      const startTime = performance.now();
-      
-      const response = await fetch('/api/transfer-history')
-      const endTime = performance.now();
-      console.log(`[TRANSFER-UI] Fetch took ${(endTime - startTime).toFixed(2)}ms`);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('[TRANSFER-UI] API error response:', errorData);
-        throw new Error(errorData.message || 'Failed to fetch transfers');
-      }
-
-      const data = await response.json();
-      console.log('[TRANSFER-UI] Received data:', data);
-      setTransfers(data);
-
-    } catch (err) {
-      console.error('[TRANSFER-UI] Fetch error:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch transfers')
-      toast.error('Failed to load transfer history')
-    } finally {
-      setLoading(false)
+// components/transfer-history.tsx
+const fetchTransferHistory = async () => {
+  try {
+    const response = await fetch('/api/transfer-history');
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('[TRANSFER-UI] API error:', errorData);
+      throw new Error(errorData.error || 'Failed to fetch transfers');
     }
+
+    const data = await response.json();
+    if (!data || !Array.isArray(data)) {
+      throw new Error('Invalid response format');
+    }
+
+    setTransfers(data);
+
+  } catch (err) {
+    console.error('[TRANSFER-UI] Fetch error:', err);
+    setError(err instanceof Error ? err.message : 'Failed to fetch transfers');
+    toast.error('Failed to load transfer history');
+  } finally {
+    setLoading(false);
   }
+}
+
 
   useEffect(() => {
     fetchTransferHistory()
@@ -183,7 +183,7 @@ export function TransferHistoryTable() {
   )
 
   if (error) return (
-    <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
+    <div className="p-2 bg-red-50 border border-red-200 rounded-lg text-red-600">
       <p>Error loading transfers: {error}</p>
       <Button 
         variant="outline" 

@@ -120,7 +120,7 @@ export default function TransferPage() {
 
     
 
-      <div className='text-black  my-8 gap-4 w-auto container'>
+      <div className='my-8'>
       <TransferHistoryTable />
       </div>
  
