@@ -81,7 +81,6 @@ export default function TransferPage() {
   return (
     <div className="max-w-md mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Transfer Funds</h1>
-      
       <div className="space-y-4">
         <div>
           <label className="block mb-2">Recipient Email</label>
