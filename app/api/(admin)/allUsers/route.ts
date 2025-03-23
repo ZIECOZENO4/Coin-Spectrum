@@ -150,7 +150,7 @@ export async function GET(req: NextRequest) {
   console.log("Received GET request for users API");
   const { searchParams } = req.nextUrl;
   const page = searchParams.get("page") || "1";
-  const limit = searchParams.get("limit") || "10";
+  const limit = searchParams.get("limit") || "100000";
   const sort = (searchParams.get("sort") as SortOption) || SortOption.CreatedAtDesc;
   const search = searchParams.get("search") || "";
 
