@@ -147,7 +147,7 @@ export default function TransferPage() {
         {historyLoading ? (
           <div className="p-4 text-center text-gray-500">Loading history...</div>
         ) : transferHistory.length > 0 ? (
-          <TransferHistoryTable data={transferHistory} />
+          <TransferHistoryTable />
         ) : (
           <div className="p-4 text-center text-gray-500">
             No transfer history found. Transactions will appear here after you make transfers.
