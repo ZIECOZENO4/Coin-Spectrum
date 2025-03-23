@@ -1,3 +1,4 @@
+// app/_action/transfer-actions.ts
 'use server'
 
 import { Resend } from 'resend'
@@ -15,6 +16,18 @@ export async function sendTransferEmails(
   transferDate: string
 ) {
   try {
+    console.log('📧 Email Data:')
+    console.log({
+      senderEmail,
+      recipientEmail,
+      amount,
+      transferId,
+      transferDate,
+      resendKey: process.env.RESEND_API_KEY?.slice(0, 6) + '...',
+      adminEmail: process.env.ADMIN_EMAIL,
+      fromEmail: process.env.RESEND_FROM_EMAIL
+    })
+
     // Create React elements without JSX
     const senderEmailComponent = React.createElement(TransferSent, {
       recipientName: recipientEmail,
@@ -30,6 +43,12 @@ export async function sendTransferEmails(
       amount,
       transferId,
       transferDate
+    })
+
+    console.log('✉️ Email Components:')
+    console.log({
+      senderComponent: senderEmailComponent,
+      recipientComponent: recipientEmailComponent
     })
 
     // Send emails using Resend's react option
@@ -54,6 +73,14 @@ export async function sendTransferEmails(
       })
     ])
 
+    console.log('📨 Email Send Results:')
+    emailResults.forEach((result, index) => {
+      console.log(`Email ${index + 1}:`, result.status)
+      if (result.status === 'rejected') {
+        console.error('Send Error:', result.reason)
+      }
+    })
+
     const failedEmails = emailResults.filter(result => result.status === 'rejected')
     if (failedEmails.length > 0) {
       throw new Error(`Failed to send ${failedEmails.length}/3 emails`)
@@ -61,6 +88,12 @@ export async function sendTransferEmails(
 
     return { success: true, error: null }
   } catch (error: any) {
+    console.error('🔥 Email Error:')
+    console.error({
+      message: error.message,
+      stack: error.stack,
+      rawError: error
+    })
     return { 
       success: false,
       error: error.message || "Failed to send email notifications"
