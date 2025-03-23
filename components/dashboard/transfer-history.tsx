@@ -318,7 +318,7 @@ export function TransferHistoryTable() {
                 className="group even:bg-gray-50 hover:bg-yellow-200 transition-colors duration-200"
               >
 
-             <TableCell className="py-3 px-4 border-b border-gray-100">
+             <TableCell className="py-3 px-4 border-b text-yellow-300 border-gray-100">
                {new Date(transfer.createdAt).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'short',
