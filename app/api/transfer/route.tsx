@@ -141,8 +141,8 @@ import { Resend } from 'resend'
 import { v4 as uuidv4 } from 'uuid'
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import { TransferEmail } from '@/emails/transfer-email'
-
+import { TransferReceived } from '@/emails/transfer-received'
+import { TransferSent } from '@/emails/transfer-sent'
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(req: NextRequest) {
@@ -231,29 +231,25 @@ export async function POST(req: NextRequest) {
       )
     }
 
- // In your API route file (ensure it's named route.tsx)
-// Render email templates with proper JSX handling
-const senderEmailHtml = ReactDOMServer.renderToString(
-  <TransferEmail
-    recipientName={sender.email!}
-    senderName={recipient.email!}
-    amount={amount}
-    transferType="sent"
-    transferId={transferId}
-    transferDate={transferDate}
-  />
-)
-
-const recipientEmailHtml = ReactDOMServer.renderToString(
-  <TransferEmail
-    recipientName={recipient.email!}
-    senderName={sender.email!}
-    amount={amount}
-    transferType="received"
-    transferId={transferId}
-    transferDate={transferDate}
-  />
-)
+    const senderEmailHtml = ReactDOMServer.renderToString(
+      <TransferSent
+        recipientName={recipient.email!}
+        senderName={sender.email!}
+        amount={amount}
+        transferId={transferId}
+        transferDate={transferDate}
+      />
+    )
+    
+    const recipientEmailHtml = ReactDOMServer.renderToString(
+      <TransferReceived
+        recipientName={recipient.email!}
+        senderName={sender.email!}
+        amount={amount}
+        transferId={transferId}
+        transferDate={transferDate}
+      />
+    )
 
     // Send email notifications with proper error handling
     const emailPromises = [
