@@ -89,7 +89,7 @@ async function processExpiredTrades() {
           status: "completed",
           updatedAt: new Date(),
           profit: sql`${trades.amount} * ${trades.leverage}`,
-          closePrice: sql`${trades.openPrice}` // Assuming price remains same for simplicity
+          closePrice: sql`${trades.openPrice}`
         })
         .where(
           and(
