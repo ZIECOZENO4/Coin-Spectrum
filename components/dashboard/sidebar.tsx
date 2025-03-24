@@ -239,6 +239,14 @@ const Sidebar: React.FC = () => {
                     >
                     Purchase Signals
                     </Link>
+                    <Link
+                      href={"/dashboard/trade/news"}
+                      className={`cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1 ${isActive(
+                        "/dashboard/trade/news"
+                      )}`}
+                    >
+                    Trade News
+                    </Link>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -518,6 +526,14 @@ const Sidebar: React.FC = () => {
                       )}`}
                     >
                     Purchase Signals
+                    </Link>
+                    <Link
+                      href={"/dashboard/trade/news"}
+                      className={`cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1 ${isActive(
+                        "/dashboard/trade/news"
+                      )}`}
+                    >
+                    Trade News
                     </Link>
                   </motion.div>
                 )}
