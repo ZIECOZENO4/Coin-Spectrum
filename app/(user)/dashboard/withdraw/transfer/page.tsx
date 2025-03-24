@@ -9,7 +9,13 @@ import { User } from '@/lib/db/schema'
 import { TransferHistoryTable } from '@/components/dashboard/transfer-history'
 import { getUserAuth } from '@/lib/auth/utils'
 import { sendTransferEmails } from '@/app/_action/transfer-actions'
-
+interface Transfer {
+  id: string;
+  amount: number;
+  recipient: string;
+  date: string;
+  status: 'Completed' | 'Pending' | 'Failed';
+}
 export default function TransferPage() {
   const [recipientEmail, setRecipientEmail] = useState('')
   const [amount, setAmount] = useState('')
@@ -17,7 +23,7 @@ export default function TransferPage() {
   const [recipient, setRecipient] = useState<User | null>(null)
   const [showPinModal, setShowPinModal] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [transferHistory, setTransferHistory] = useState([])
+  const [transferHistory, setTransferHistory] = useState<Transfer[]>([]);
   const [historyLoading, setHistoryLoading] = useState(true)
 
   const handleSearchRecipient = async () => {
