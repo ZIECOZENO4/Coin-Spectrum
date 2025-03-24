@@ -94,8 +94,8 @@
 //   );
 // }
 
-
 "use client";
+import { useQuery } from "@tanstack/react-query";
 import {
   Table,
   TableBody,
@@ -105,11 +105,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatDistance } from "date-fns";
-import { Loader2, ChevronDown } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
-import { useQuery, keepPreviousData } from "@tanstack/react-query"; 
-
 
 interface Trade {
   id: string;
@@ -138,22 +135,17 @@ const containerVariants = {
 const rowVariants = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -20 },
 };
 
 export function TradesHistory() {
-  const [page, setPage] = useState(1);
-  const { data, isLoading, isFetching } = useQuery({
-    queryKey: ["trades", page],
+  const { data: trades, isLoading } = useQuery({
+    queryKey: ["trades"],
     queryFn: async () => {
-      const response = await fetch(`/api/tradeshistory?page=${page}`);
+      const response = await fetch("/api/tradeshistory");
       if (!response.ok) throw new Error("Failed to fetch trades");
-      return response.json() as Promise<{ trades: Trade[]; hasMore: boolean }>;
+      return response.json() as Promise<Trade[]>;
     },
-    placeholderData: keepPreviousData, // Replace keepPreviousData: true
   });
-
-  const loadMore = () => setPage(prev => prev + 1);
 
   return (
     <motion.div
@@ -173,7 +165,7 @@ export function TradesHistory() {
         </TableHeader>
 
         <TableBody>
-          <AnimatePresence mode="wait">
+          <AnimatePresence>
             {isLoading ? (
               <motion.tr
                 key="loading"
@@ -192,7 +184,7 @@ export function TradesHistory() {
                 animate="show"
                 className="contents"
               >
-                {data?.trades?.map((trade) => (
+                {trades?.map((trade) => (
                   <motion.tr
                     key={trade.id}
                     variants={rowVariants}
@@ -206,13 +198,16 @@ export function TradesHistory() {
                   >
                     <TableCell className="font-medium">{trade.symbol}</TableCell>
                     <TableCell>
-                      <span className={`inline-block px-2 py-1 rounded-md ${
-                        trade.type === "BUY" 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
-                      }`}>
+                      <motion.span
+                        className={`inline-block px-2 py-1 rounded-md ${
+                          trade.type === "BUY" 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-red-100 text-red-800'
+                        }`}
+                        whileHover={{ scale: 1.05 }}
+                      >
                         {trade.type}
-                      </span>
+                      </motion.span>
                     </TableCell>
                     <TableCell>${trade.amount.toFixed(2)}</TableCell>
                     <TableCell>
@@ -225,7 +220,7 @@ export function TradesHistory() {
                     <TableCell className={`font-semibold ${
                       (trade.profit ?? 0) >= 0 ? 'text-green-600' : 'text-red-600'
                     }`}>
-                      ${(trade.profit?.toFixed(2) || 0).toLocaleString()}
+                      ${trade.profit?.toFixed(2) || "0.00"}
                     </TableCell>
                     <TableCell>
                       <motion.span
@@ -255,31 +250,6 @@ export function TradesHistory() {
           </AnimatePresence>
         </TableBody>
       </Table>
-
-      {data?.hasMore && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex justify-center p-4 border-t"
-        >
-          <motion.button
-            onClick={loadMore}
-            disabled={isFetching}
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 px-6 py-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            {isFetching ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <>
-                <span>Load More</span>
-                <ChevronDown className="h-4 w-4" />
-              </>
-            )}
-          </motion.button>
-        </motion.div>
-      )}
     </motion.div>
   );
 }

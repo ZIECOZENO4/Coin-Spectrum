@@ -51,7 +51,7 @@ export const TransferReceived = ({
                 Dear {recipientName},
               </Text>
               <Text>
-              You have received $${amount.toFixed(2)} from ${senderName}.
+              You have received ${amount.toFixed(2)} from ${senderName}.
               </Text>
             </Section>
 

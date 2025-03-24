@@ -52,11 +52,11 @@ const StatsDashboard: React.FC<StatsDashboardProps> = ({ userId }) => {
       value: formatCurrency(balance || 0) // Changed from template string
     },
     { 
-      label: "Total Trades Profits", 
+      label: "Total Trades Profit", 
       value: formatCurrency(stats?.totalTrades || 0) 
     },
     { 
-      label: "Total Profits", 
+      label: "Investment Profits", 
       value: formatCurrency(stats?.totalProfits || 0) 
     },
     { 

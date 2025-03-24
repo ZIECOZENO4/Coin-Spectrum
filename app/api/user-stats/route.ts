@@ -72,24 +72,36 @@ export async function GET() {
 
       // Get trades count
       db
-        .select({ count: count(trades.id) })
-        .from(trades)
-        .where(eq(trades.userId, userId))
-        .execute(),
+      .select({ 
+        total: sum(trades.profit) 
+      })
+      .from(trades)
+      .where(
+        and(
+          eq(trades.userId, userId),
+          eq(trades.status, 'completed') // Only count settled trades
+        )
+      )
+      .execute(),
 
-      // Calculate profits from investments
-    // Calculate profits from user investments
+
+
+
+// Calculate profits from user investments
 db
 .select({
-  total: sql`SUM((${userInvestments.amount} * ${investments.profitPercent}) / 100)`
+total: sql`SUM((${userInvestments.amount} * ${investments.profitPercent}) / 100)`
 })
 .from(userInvestments)
 .innerJoin(
-  investments,
-  eq(userInvestments.investmentId, investments.id)
+investments,
+eq(userInvestments.investmentId, investments.id)
 )
 .where(eq(userInvestments.userId, userId))
 .execute(),
+
+
+
 
       // Get pending deposits
       db
@@ -119,7 +131,7 @@ db
     const totalDeposits = toNumber(deposits[0]?.total);
     const totalWithdrawals = toNumber(withdrawals[0]?.total);
     const totalProfits = toNumber(investmentProfits[0]?.total);
-    const totalTrades = toNumber(tradesData[0]?.count);
+    const totalTrades = toNumber(tradesData[0]?.total);
     const pendingDepositsTotal = toNumber(pendingDepositsData[0]?.total);
     const pendingWithdrawalsTotal = toNumber(pendingWithdrawalsData[0]?.total);
     
