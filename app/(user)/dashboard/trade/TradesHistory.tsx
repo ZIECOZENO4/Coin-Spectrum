@@ -154,10 +154,10 @@ export function TradesHistory() {
       className="rounded-xl border bg-card shadow-lg max-w-screen-lg md:w-full overflow-hidden"
     >
       <Table className="relative">
-        <TableHeader className="sticky top-0 bg-background z-10 shadow-sm bg-yellow-500 text-black">
+        <TableHeader className="sticky top-0 bg-background z-10 shadow-sm bg-yellow-300 text-black">
           <TableRow>
             {["Symbol", "Type", "Amount", "Leverage", "Open", "Close", "P/L", "Status", "Date"].map((header) => (
-              <TableHead key={header} className="font-semibold py-4">
+              <TableHead key={header} className="font-semibold text-black py-4">
                 {header}
               </TableHead>
             ))}
@@ -189,9 +189,9 @@ export function TradesHistory() {
                     key={trade.id}
                     variants={rowVariants}
                     className={`${
-                      trade.status === 'win' 
+                      trade.status === 'completed' 
                         ? 'bg-green-500 hover:bg-green-300 text-black' 
-                        : trade.status === 'loss' 
+                        : trade.status === 'rejected' 
                           ? 'bg-red-500 hover:bg-red-300 text-black' 
                           : 'hover:bg-muted/50'
                     } transition-colors`}
@@ -227,13 +227,14 @@ export function TradesHistory() {
                         className={`inline-block px-3 py-1 rounded-full text-sm ${
                           trade.status === 'completed' 
                             ? 'bg-green-100 text-green-800' 
-                            : trade.status === 'loss' 
+                            : trade.status === 'rejected' 
                               ? 'bg-red-100 text-red-800' 
                               : 'bg-gray-100 text-gray-800'
                         }`}
                         whileHover={{ scale: 1.05 }}
                       >
-                        {trade.status}
+                        {trade.status === 'completed' ? 'WON' : 
+                         trade.status === 'rejected' ? 'LOST' : trade.status}
                       </motion.span>
                     </TableCell>
                     <TableCell>
