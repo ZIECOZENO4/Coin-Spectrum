@@ -154,7 +154,7 @@ export function TradesHistory() {
       className="rounded-xl border bg-card shadow-lg max-w-screen-lg md:w-full overflow-hidden"
     >
       <Table className="relative">
-        <TableHeader className="sticky top-0 bg-background z-10 shadow-sm">
+        <TableHeader className="sticky top-0 bg-background z-10 shadow-sm bg-yellow-500 text-black">
           <TableRow>
             {["Symbol", "Type", "Amount", "Leverage", "Open", "Close", "P/L", "Status", "Date"].map((header) => (
               <TableHead key={header} className="font-semibold py-4">
@@ -189,10 +189,10 @@ export function TradesHistory() {
                     key={trade.id}
                     variants={rowVariants}
                     className={`${
-                      trade.status === 'completed' 
-                        ? 'bg-green-50 hover:bg-green-100' 
+                      trade.status === 'win' 
+                        ? 'bg-green-500 hover:bg-green-300 text-black' 
                         : trade.status === 'loss' 
-                          ? 'bg-red-50 hover:bg-red-100' 
+                          ? 'bg-red-500 hover:bg-red-300 text-black' 
                           : 'hover:bg-muted/50'
                     } transition-colors`}
                   >
@@ -201,8 +201,8 @@ export function TradesHistory() {
                       <motion.span
                         className={`inline-block px-2 py-1 rounded-md ${
                           trade.type === "BUY" 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-red-100 text-red-800'
+                            ? 'text-black shadow-2xl bg-green-800' 
+                            : 'text-white shadow-2xl bg-red-800'
                         }`}
                         whileHover={{ scale: 1.05 }}
                       >
@@ -215,8 +215,8 @@ export function TradesHistory() {
                         {trade.leverage}x
                       </span>
                     </TableCell>
-                    <TableCell>${trade.openPrice?.toFixed(2) || "—"}</TableCell>
-                    <TableCell>${trade.closePrice?.toFixed(2) || "—"}</TableCell>
+                    <TableCell>${trade.openPrice?.toFixed(2) || "***"}</TableCell>
+                    <TableCell>${trade.closePrice?.toFixed(2) || "***"}</TableCell>
                     <TableCell className={`font-semibold ${
                       (trade.profit ?? 0) >= 0 ? 'text-green-600' : 'text-red-600'
                     }`}>

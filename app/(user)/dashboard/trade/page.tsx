@@ -23,7 +23,7 @@ const TradePage = () => {
             onSymbolChange={setSelectedSymbol} 
           />
           <div className="container w-screen md:w-auto py-10">
-      <h1 className="md:text-2xl text-xl text-center font-bold mb-6">Trading History</h1>
+      <h1 className="md:text-2xl text-xl text-left text-yellow-500 font-bold mb-4 ">Trading History</h1>
       <TradesHistory />
     </div>
           <div className="">
