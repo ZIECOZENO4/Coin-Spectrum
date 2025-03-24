@@ -107,9 +107,9 @@ export function TransferHistoryTable() {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="rounded-lg border border-gray-200 shadow-lg overflow-hidden"
+      className="rounded-lg border border-gray-200 w-screen md:w-auto shadow-lg overflow-hidden"
     >
-      <Table className="border-collapse w-full">
+      <Table className="border-collapse w-full ">
         <TableHeader className="bg-gradient-to-r from-yellow-500 to-yellow-600">
           <TableRow className="hover:bg-transparent">
             <TableHead className="text-white font-semibold py-4">Date</TableHead>

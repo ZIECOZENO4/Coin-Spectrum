@@ -23,7 +23,7 @@ export default function TransferPage() {
   const [recipient, setRecipient] = useState<User | null>(null)
   const [showPinModal, setShowPinModal] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [transferHistory, setTransferHistory] = useState<Transfer[]>([]);
+ const [transferHistory, setTransferHistory] = useState<Transfer[]>([]);
   const [historyLoading, setHistoryLoading] = useState(true)
 
   const handleSearchRecipient = async () => {
@@ -104,7 +104,7 @@ export default function TransferPage() {
         setRecipientEmail('')
         setAmount('')
       } else {
-        toast.error(data.error || 'Transfer failed')
+        toast.warning(data.error || 'Transfer in review')
       }
     } catch (error) {
       toast.error('Transfer failed')
