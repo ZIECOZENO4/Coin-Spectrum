@@ -154,7 +154,7 @@ export function TradesHistory() {
       className="rounded-xl border bg-card shadow-lg max-w-screen-lg md:w-full overflow-hidden"
     >
       <Table className="relative">
-        <TableHeader className="sticky top-0 bg-background z-10 shadow-sm bg-yellow-300 text-black">
+        <TableHeader className="sticky top-0 bg-background z-10 shadow-sm bg-yellow-300 text-white">
           <TableRow>
             {["Symbol", "Type", "Amount", "Leverage", "Open", "Close", "P/L", "Status", "Date"].map((header) => (
               <TableHead key={header} className="font-semibold text-black py-4">
@@ -190,9 +190,9 @@ export function TradesHistory() {
                     variants={rowVariants}
                     className={`${
                       trade.status === 'completed' 
-                        ? 'bg-green-500 hover:bg-green-300 text-black' 
+                        ? 'bg-green-300 hover:bg-green-100 text-white' 
                         : trade.status === 'rejected' 
-                          ? 'bg-red-500 hover:bg-red-300 text-black' 
+                          ? 'bg-red-300 hover:bg-red-100 text-white' 
                           : 'hover:bg-muted/50'
                     } transition-colors`}
                   >
@@ -201,7 +201,7 @@ export function TradesHistory() {
                       <motion.span
                         className={`inline-block px-2 py-1 rounded-md ${
                           trade.type === "BUY" 
-                            ? 'text-black shadow-2xl bg-green-800' 
+                            ? 'text-white shadow-2xl bg-green-800' 
                             : 'text-white shadow-2xl bg-red-800'
                         }`}
                         whileHover={{ scale: 1.05 }}
