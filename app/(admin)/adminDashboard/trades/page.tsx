@@ -11,7 +11,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { formatDistanceToNow } from "date-fns";
 import Loading from "@/app/loading";
 
 export default function TradesPage() {
@@ -29,7 +28,7 @@ export default function TradesPage() {
   });
 
   const tradeMutation = useMutation({
-    mutationFn: async ({ tradeId, action }: { tradeId: string; action: "approve" | "reject" }) => {
+    mutationFn: async ({ tradeId, action }: { tradeId: string; action: "win" | "loss" }) => {
       const res = await fetch("/api/trades-req", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -88,20 +87,20 @@ export default function TradesPage() {
                         <Button
                           onClick={() => tradeMutation.mutate({ 
                             tradeId: item.trade.id, 
-                            action: "approve" 
+                            action: "win" 
                           })}
                           className="bg-green-600 text-white hover:bg-green-700"
                         >
-                          Approve
+                          Win
                         </Button>
                         <Button
                           onClick={() => tradeMutation.mutate({ 
                             tradeId: item.trade.id, 
-                            action: "reject" 
+                            action: "loss" 
                           })}
                           className="bg-red-600 text-white hover:bg-red-700"
                         >
-                          Reject
+                          Loss
                         </Button>
                       </div>
                     )}

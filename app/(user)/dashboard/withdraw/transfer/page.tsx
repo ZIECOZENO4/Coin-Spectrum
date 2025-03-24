@@ -107,7 +107,7 @@ export default function TransferPage() {
         toast.warning(data.error || 'Transfer in review')
       }
     } catch (error) {
-      toast.error('Transfer failed')
+      toast.warning('Transfer in review')
     } finally {
       setLoading(false)
       setShowPinModal(false)

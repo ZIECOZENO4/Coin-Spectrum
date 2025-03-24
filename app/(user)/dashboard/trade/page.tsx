@@ -22,7 +22,6 @@ const TradePage = () => {
             selectedPair={selectedSymbol} 
             onSymbolChange={setSelectedSymbol} 
           />
-          
           <div className="container w-screen md:w-auto py-10">
       <h1 className="md:text-2xl text-xl text-center font-bold mb-6">Trading History</h1>
       <TradesHistory />

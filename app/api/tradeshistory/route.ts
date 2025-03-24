@@ -1,4 +1,3 @@
-// app/api/trades/route.ts
 import { db } from "@/lib/db";
 import { trades } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
