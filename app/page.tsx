@@ -12,6 +12,7 @@ import React from "react";
 import GetInTouch from "./getintouch";
 import { toast } from "sonner";
 import AboutHero from "@/components/abouthero";
+import Trustpilot from "./Trustpilot";
 
 const HomePage = () => {
   React.useEffect(() => {
@@ -51,6 +52,7 @@ const HomePage = () => {
       </div>
       <div className="div">
         <GetInTouch />
+        <Trustpilot  />
       </div>
       <div className="div">
         <Footer />
