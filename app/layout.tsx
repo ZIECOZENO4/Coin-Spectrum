@@ -84,6 +84,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
+        <meta name="trustpilot-one-time-domain-verification-id" content="4c3d47dd-da7d-480f-9a66-0630f0eb338c"/>
       </head>
 <SmartSuppScript />
       <ClerkProvider
