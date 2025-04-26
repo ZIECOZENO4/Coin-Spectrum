@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import { BarChart } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function TradingOptions() {
   const container = {
@@ -78,13 +79,16 @@ export default function TradingOptions() {
           </motion.div>
 
           <motion.div variants={item}>
+            <Link href='/dashboard/trade'>
             <motion.button 
-              className="bg-yellow-400 hover:bg-yellow-500 text-black px-8 py-6 text-lg font-semibold"
+           className="bg-yellow-400 hover:bg-yellow-500  text-black font-semibold hover:underline px-8 py-4 text-md"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               START TRADING
             </motion.button>
+            </Link>
+            
           </motion.div>
         </motion.div>
 

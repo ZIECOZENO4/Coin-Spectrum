@@ -3,7 +3,7 @@ import React from 'react'
 const PageContent = () => {
   return (
     <div>
-<div className="bg-balck relative   flex items-center  n justify-center overflow-hidden ">
+<div className="bg-balck relative   flex items-center justify-center overflow-hidden ">
      
     <div className="relative mx-auto h-full px-4  pb-20   md:pb-10 sm:max-w-xl md:max-w-full md:px-24 lg:max-w-screen-xl lg:px-8">
         <div className="flex flex-col items-center justify-between lg:flex-row py-16">
@@ -22,9 +22,9 @@ const PageContent = () => {
                     </h2>
                     <p className="text-base text-gray-500">Coin Spectrum your best trading and investmnet platform with over 100 million active users.</p>
                     <div className="mt-10 flex flex-col items-center md:flex-row">
-                        <a href="/" className="mb-3 inline-flex h-12 w-full items-center justify-center rounded bg-green-600 px-6 font-medium tracking-wide text-white shadow-md transition hover:bg-blue-800 focus:outline-none md:mr-4 md:mb-0 md:w-auto">
+                        <a href="/about" className="mb-3 inline-flex h-12 w-full items-center justify-center rounded bg-yellow-400 px-6 font-medium tracking-wide hover:text-white text-black shadow-md transition hover:bg-yellow-700 focus:outline-none md:mr-4 md:mb-0 md:w-auto">
                             Learn More</a>
-                        <a href="/" aria-label="" className="group inline-flex items-center font-semibold text-g1">Connect with our team
+                        <a href="/dashboard/support" aria-label="" className="group inline-flex items-center font-semibold text-g1">Connect with our team
                             <svg xmlns="http://www.w3.org/2000/svg" className="ml-4 h-6 w-6 transition-transform group-hover:translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                             </svg>

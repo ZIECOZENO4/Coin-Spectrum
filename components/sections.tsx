@@ -39,8 +39,8 @@ const HeroSection: React.FC<SectionProps> = ({
         <h2 className="text-2xl font-bold mb-4">{title}</h2>
         <p className="mb-6">{description}</p>
         <div className="flex gap-4">
-          <a href={link1} className="btn">{buttonText1}</a>
-          <a href={link2} className="btn">{buttonText2}</a>
+          <a href={link1} className="bg-neutral-500 text-white font-bold py-2 px-4 md:px-8 hover:bg-neutral-600 md:py-4 rounded-md">{buttonText1}</a>
+          <a href={link2} className="bg-yellow-500 text-black font-bold py-2 px-4 md:px-8 hover:bg-yellow-600 md:py-4 rounded-md">{buttonText2}</a>
         </div>
       </div>
       <div className="flex-1">

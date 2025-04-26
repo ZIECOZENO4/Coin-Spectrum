@@ -20,7 +20,7 @@ const cardData = [
     description: "Your no 1 broker platform, completing around 2000 trades per day.",
     imageSrc: "/cs4.jpg",
     linkText: "Learn More →",
-    linkHref: "/dashboard/investment",
+    linkHref: "/dashboard/deposit",
     buttonText: "Inest Now"
   },
   {
@@ -28,7 +28,7 @@ const cardData = [
     description: "Coin Spectrum is one of the biggest real estate company in the world.",
     imageSrc: "/cs1.jpg",
     linkText: "Start exploring →",
-    linkHref: "/dashboard/investment",
+    linkHref: "/dashboard/deposit",
     buttonText: "Start Investing"
   },
   {
@@ -36,7 +36,7 @@ const cardData = [
     description: "Invest on the stocks of Coin Spectrum as it high market value",
     imageSrc: "/cs2.jpg",
     linkText: "View Charts →",
-    linkHref: "/dashboard/investment",
+    linkHref: "/dashboard/deposit",
     buttonText: "Invest now"
   },
   {
@@ -44,7 +44,7 @@ const cardData = [
     description: "Coin Specturm is the world top pioneer for market in Cannabis",
     imageSrc: "/cs.jpg",
     linkText: "Learn More →",
-    linkHref: "/dashboard/investment",
+    linkHref: "/dashboard/deposit",
     buttonText: "Start investing"
   }
 ];

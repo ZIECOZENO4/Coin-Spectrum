@@ -72,7 +72,7 @@ export default function FeaturesHero() {
               {features[activeFeature].description}
             </p>
             <div className="mt-6">
-              <Link href="/signup" className="block px-3 py-2 font-semibold text-center text-black transition-colors duration-200 transform bg-yellow-400 rounded-md md:inline hover:bg-yellow-600">
+              <Link href="/dashboard/deposit" className="block px-3 py-2 font-semibold text-center text-black transition-colors duration-200 transform bg-yellow-400 rounded-md md:inline hover:bg-yellow-600">
                 Get Started
               </Link>
             </div>

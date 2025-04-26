@@ -22,7 +22,7 @@ const sectionsData = [
     buttonText2: "Start Investing",
     imageUrl: "/uou.jpg",
     reverse: false,
-    link1: "/invest",
+    link1: "/dashboard/deposit",
     link2: "/dashboard",
   },
   {
@@ -33,7 +33,7 @@ const sectionsData = [
     buttonText2: "Start Trading",
     imageUrl: "/tr1.jpg",
     reverse: true,
-    link1: "/trades",
+    link1: "/dashboard/trade",
     link2: "/dashboard",
   },
   {
@@ -44,7 +44,7 @@ const sectionsData = [
     buttonText2: "Get Started",
     imageUrl: "/cd.jpg",
     reverse: false,
-    link1: "/invest",
+    link1: "/dashboard/invest",
     link2: "/dashboard",
   }
 

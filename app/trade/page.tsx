@@ -10,6 +10,7 @@ import TradingStats from './stats'
 import TradingViewWidget from './Chart'
 import Blog1 from '@/components/blog1'
 import TradingViewScreenerWidget from './market'
+import Link from 'next/link'
 const TradePage = () => {
   return (
     <div>
@@ -20,9 +21,11 @@ const TradePage = () => {
     <div className="absolute inset-y-0 left-0 w-full md:w-1/3 bg-black bg-opacity-70 flex flex-col justify-center items-start p-8">
       <h2 className="text-3xl font-bold text-white mb-4">COIN SPECTRUM TRADES</h2>
       <p className="text-white mb-6">Stay updated with real-time forex cross rates for major currency pairs, and place all crypto and froex trades on Coin Spectrum.</p>
+      <Link href='/dashboard/trade'>
       <button className="bg-[#FFD700] text-black font-bold py-2 px-4 rounded hover:bg-yellow-600 transition duration-300">
         TRADE NOW 
       </button>
+      </Link>
     </div>
   </div>
   <TradingStats />

@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ChevronRight } from 'lucide-react'
 import { useRef, useState } from "react"
+import Link from "next/link"
 
 export default function PlatformSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -95,13 +96,15 @@ export default function PlatformSection() {
             </motion.div>
 
             <motion.div variants={item}>
+            <Link href='/about'>
               <motion.button 
-                className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-8 py-6 text-lg"
+                className="bg-yellow-400 hover:bg-yellow-500  text-black font-semibold hover:underline px-8 py-4 text-md"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 LEARN MORE
               </motion.button>
+              </Link>
             </motion.div>
           </motion.div>
 
