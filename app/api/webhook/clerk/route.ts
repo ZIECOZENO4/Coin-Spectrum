@@ -17,7 +17,6 @@ async function sendWelcomeEmail(firstName: string, email: string) {
         <p>We're excited to have you on board.</p>
       `
     });
-    console.log('Welcome email sent successfully to:', email);
   } catch (error) {
     console.error('Error sending welcome email:', error);
     throw error;
@@ -47,7 +46,6 @@ async function sendSignInAlert(data: {
         </ul>
       `
     });
-    console.log('Sign-in alert sent successfully to:', data.email);
   } catch (error) {
     console.error('Error sending sign-in alert:', error);
     throw error;
@@ -55,7 +53,6 @@ async function sendSignInAlert(data: {
 }
 
 export async function POST(req: Request) {
-  console.log('Webhook received');
   
   // Get the headers
   const headerPayload = headers();
@@ -96,7 +93,6 @@ export async function POST(req: Request) {
 
   // Handle user creation (sign up)
   if (evt.type === 'user.created') {
-    console.log('Processing user.created event');
     const { first_name, email_addresses } = evt.data;
     const primaryEmail = email_addresses[0]?.email_address;
 
@@ -112,7 +108,6 @@ export async function POST(req: Request) {
 
   // Handle session creation (sign in)
   if (evt.type === 'session.created') {
-    console.log('Processing session.created event');
     const { user_id } = evt.data;
     
     try {

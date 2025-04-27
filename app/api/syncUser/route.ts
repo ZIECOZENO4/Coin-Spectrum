@@ -14,7 +14,6 @@ export async function POST(
   request: NextRequest,
   res: NextResponse
 ): Promise<NextResponse> {
-  console.log("POST function started");
   const { session } = await getUserAuth();
   const { searchParams } = new URL(request.url);
   const ref = searchParams.get("ref");
@@ -22,28 +21,18 @@ export async function POST(
   if (!ref) {
     return NextResponse.json({ error: "No Ref Found" }, { status: 404 });
   }
-  console.log(`Ref: ${ref}`);
 
   try {
-    console.log("Attempting to authenticate user");
-    console.log(`Authenticated user ID: ${session}`);
     if (!session) {
-      console.log("No user ID found, redirecting to sign-in");
       throw new Error("No user ID found, redirecting to sign-in page.");
     }
-
-    console.log("Fetching user from database");
     const user = await db.query.users.findFirst({
       where: eq(users.id, session.user.id),
     });
-    console.log(`User fetched from database: ${user}}`);
 
     if (user) {
-      console.log("User found, redirecting to user-dashboard");
       return NextResponse.json(user, { status: 200 });
     }
-
-    console.log("Creating user through webhook");
     const fromSyncingUser = await createUser(ref);
     
     // Send welcome email to new user
@@ -57,21 +46,15 @@ export async function POST(
           userEmail: fromSyncingUser.email
         })
       });
-      
-      console.log("Welcome email sent successfully");
     } catch (emailError) {
       console.error("Failed to send welcome email:", emailError);
       // Delete the created user if email fails
       await db.delete(users).where(eq(users.id, fromSyncingUser.id));
       throw new Error("Failed to send welcome email. User creation rolled back.");
     }
-
-    console.log(`User created: ${JSON.stringify(fromSyncingUser)}`);
     return NextResponse.json(fromSyncingUser, { status: 200 });
   } catch (error: unknown) {
-    console.log("An error occurred", error);
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.log(`Error message: ${errorMessage}`);
 
     return NextResponse.json(
       {

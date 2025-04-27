@@ -9,7 +9,6 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
     try {
-      console.log("Starting deposit process...");
       
       const body = await req.json();
       const { userName, userEmail, amount, transactionId, imageData, selectedCrypto } = body;

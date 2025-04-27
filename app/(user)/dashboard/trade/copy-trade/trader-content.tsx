@@ -20,13 +20,11 @@ const useTraders = () => {
   return useQuery<Trader[]>({
     queryKey: ['traders'],
     queryFn: async () => {
-      console.log("Fetching traders...");
+    
       const response = await fetch('/api/traders');
       if (!response.ok) {
         throw new Error('Failed to fetch traders');
       }
-      const data = await response.json();
-      console.log("Traders fetched successfully:", data);
       return data.traders;
     }
   });

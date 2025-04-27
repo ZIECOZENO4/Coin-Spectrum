@@ -126,7 +126,6 @@ export async function POST(request: NextRequest, response: NextResponse) {
   const investmentId = searchParams.get("id");
 
   if (!investmentId) {
-    console.log("Investment ID is missing");
     return NextResponse.json(
       { error: "Investment ID is required" },
       { status: 400 }
@@ -136,7 +135,6 @@ export async function POST(request: NextRequest, response: NextResponse) {
   const { status } = await request.json();
 
   try {
-    console.log(`Updating investment status for investment ${investmentId}`);
 
     // Retrieve the existing investment
     const existingInvestment = await db.query.investments.findFirst({
@@ -144,7 +142,6 @@ export async function POST(request: NextRequest, response: NextResponse) {
     });
 
     if (!existingInvestment) {
-      console.log(`Investment with ID ${investmentId} not found`);
       return NextResponse.json(
         { error: "Investment not found" },
         { status: 404 }
@@ -155,26 +152,20 @@ export async function POST(request: NextRequest, response: NextResponse) {
     let dateToStartIncrease = existingInvestment.dateToStartIncrease;
 
     if (status === InvestmentStatusEnum.CONFIRMED) {
-      console.log("Investment status is confirmed");
 
       if (!existingInvestment.startIncrease) {
-        console.log(
-          "Setting startIncrease to true and dateToStartIncrease to current date"
-        );
+     
         startIncrease = true;
         dateToStartIncrease = new Date();
       }
 
-      console.log("Creating user tracker");
       await createUserTracker(existingInvestment.userId);
 
-      console.log("Creating investment tracker");
       await createInvestmentTracker(investmentId);
     } else if (
       status === InvestmentStatusEnum.SOLD ||
       status !== InvestmentStatusEnum.CONFIRMED
     ) {
-      console.log("Investment status is not confirmed or is sold");
       startIncrease = false;
     }
 
@@ -205,8 +196,6 @@ export async function POST(request: NextRequest, response: NextResponse) {
       userId: existingInvestment.userId,
       investmentId: existingInvestment.id,
     });
-
-    console.log("Investment status updated successfully");
     return NextResponse.json(
       { message: "Investment status updated successfully" },
       { status: 200 }

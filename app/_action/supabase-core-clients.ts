@@ -381,7 +381,7 @@ export async function createUserTracker(userId: string) {
     }
 
     if (!userTracker) {
-      console.log(`Creating userTracker for user ${userId}`);
+      (`Creating userTracker for user ${userId}`);
       const { error: insertError } = await supabase.from("UserTracker").insert({
         id: generateUuid(),
         userId,

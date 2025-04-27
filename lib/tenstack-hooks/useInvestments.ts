@@ -32,11 +32,9 @@ const fetchInvestments = async ({
   const [_key, page, sort, order, search, statusFilter, planFilter] = queryKey;
   const url = `/api/allInvestment?page=${page}&sort=${sort}&order=${order}&search=${search}&statusFilter=${statusFilter}&planFilter=${planFilter}`;
 
-  console.log("this is the url", url);
   const response = await fetch(url);
   if (!response.ok) {
     const dataError = await response.json();
-    console.log("this is the error in the use investments", dataError);
     throw new Error(dataError.error);
   }
   const data: InvestmentsResponse = await response.json();

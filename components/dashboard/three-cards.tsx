@@ -38,15 +38,6 @@ export const InvestmentDashboard: React.FC<{
   const router = useRouter()
   const { data: balance, isLoading, error } = useUserBalance();
 
-  console.log('Balance:', balance);
-  
-  // Detailed logging with all states
-  console.log({
-    balance,
-    isLoading,
-    error,
-    type: typeof balance
-  });
 
   const buttonVariants = {
     hover: {
@@ -62,11 +53,9 @@ export const InvestmentDashboard: React.FC<{
 
   useEffect(() => {
     if (isLoading) {
-      console.log('00');
     } else if (error) {
       console.error('Error fetching balance:', error);
     } else {
-      console.log('Balance loaded:', balance);
     }
   }, [balance, isLoading, error]);
 

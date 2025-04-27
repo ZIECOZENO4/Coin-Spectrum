@@ -20,11 +20,9 @@ const ContactForm: React.FC = () => {
         'YOUR_PUBLIC_KEY'
       )
         .then((result) => {
-          console.log(result.text);
           setSubmitMessage('Message sent successfully!');
           if (form.current) form.current.reset();
         }, (error) => {
-          console.log(error.text);
           setSubmitMessage('Failed to send message. Please try again.');
         })
         .finally(() => {

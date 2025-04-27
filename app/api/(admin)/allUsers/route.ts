@@ -147,7 +147,6 @@ enum SortOption {
 }
 
 export async function GET(req: NextRequest) {
-  console.log("Received GET request for users API");
   const { searchParams } = req.nextUrl;
   const page = searchParams.get("page") || "1";
   const limit = searchParams.get("limit") || "100000";
@@ -159,7 +158,6 @@ export async function GET(req: NextRequest) {
     const pageSize = parseInt(limit);
     const skip = (pageNumber - 1) * pageSize;
 
-    console.log(`Calculated pagination: pageNumber=${pageNumber}, pageSize=${pageSize}, skip=${skip}`);
 
     let orderByClause;
     switch (sort) {
@@ -173,7 +171,6 @@ export async function GET(req: NextRequest) {
         orderByClause = desc(users.createdAt);
     }
 
-    console.log("Fetching users and their investments from database...");
     const fetchedUsers = await db
       .select({
         user: users,
@@ -194,10 +191,6 @@ export async function GET(req: NextRequest) {
       .orderBy(orderByClause)
       .limit(pageSize)
       .offset(skip);
-
-    console.log("Users fetched:", fetchedUsers);
-
-    console.log("Counting total users for pagination...");
     const totalUsersResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(users)
@@ -249,7 +242,6 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error("Error occurred while fetching users:", error);
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.log("Sending error response...");
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

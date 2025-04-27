@@ -22,12 +22,6 @@ export async function GET() {
       .leftJoin(traders, eq(userCopyTrades.traderId, traders.id))
       .where(eq(userCopyTrades.userId, userId));
 
-    console.log("User copy trades fetched:", {
-      userId,
-      tradesCount: copyTrades.length,
-      trades: copyTrades
-    });
-
     return NextResponse.json(copyTrades);
   } catch (error) {
     console.error("Error fetching copy trades:", error);

@@ -21,13 +21,11 @@ const useSignals = () => {
   return useQuery<Signal[], Error>({
     queryKey: ['signals'],
     queryFn: async () => {
-      console.log("Fetching trading signals...");
       const response = await fetch('/api/signals/purchase');
       if (!response.ok) {
         throw new Error('Failed to fetch signals');
       }
       const data = await response.json();
-      console.log("Signals fetched successfully:", data);
       return data.signals;
     }
   });

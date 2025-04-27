@@ -6,7 +6,7 @@ import Loader from "@/components/loader";
 
 function InvestmentPage({ searchParams }: { searchParams: { id: string } }) {
   const { id } = searchParams;
-  console.log("Investment plan ID:", id);
+
 
   return (
     <div className="flex flex-col justify-center items-center mx-auto min-h-screen">

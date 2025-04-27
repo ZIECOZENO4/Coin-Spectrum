@@ -135,7 +135,7 @@ const InvestmentPlanCard: React.FC<InvestmentPlanCardProps> = ({ id }) => {
           },
           {
             onSuccess: (data) => {
-              console.log("Investment created successfully:", data);
+             
               router.push("/await-confirmation");
             },
             onError: (error) => {

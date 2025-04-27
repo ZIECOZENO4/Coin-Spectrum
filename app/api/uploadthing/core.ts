@@ -21,9 +21,7 @@ export const ourFileRouter = {
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.userId);
-
-      console.log("file url", file.url);
+      console.log("null");
     }),
   // Takes a 4 2mb images and/or 1 256mb video
   mediaPost: f({
@@ -35,7 +33,6 @@ export const ourFileRouter = {
   uploadChatImage: f({ image: { maxFileSize: "16MB", maxFileCount: 1 } })
     // Set permissions and file types for this FileRoute
     .middleware(async ({ req }) => {
-      console.log("I AM UPloading ooooo");
 
       // This code runs on your server before upload
 
@@ -43,10 +40,7 @@ export const ourFileRouter = {
       return { userId: "userId" };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.userId);
-
-      console.log("file url", file.url);
+      console.log("null");
     }),
 } satisfies FileRouter;
 

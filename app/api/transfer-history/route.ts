@@ -10,7 +10,6 @@ import { alias } from 'drizzle-orm/pg-core';
 export async function GET() {
   try {
     const { userId } = auth();
-    console.log('[TRANSFER-API] Authentication userId:', userId);
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });

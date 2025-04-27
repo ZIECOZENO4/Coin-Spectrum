@@ -10,7 +10,6 @@ const fetchProcessInvestments = async ({
   queryKey: [string, string, boolean | undefined];
 }) => {
   const [, userId, runUntimed] = queryKey;
-  console.log("fetchProcessInvestments called with:", { userId, runUntimed });
 
   const state = useCachedDataStore.getState();
   const { cachedData, setCachedData, clearCachedData } = state;
@@ -20,19 +19,14 @@ const fetchProcessInvestments = async ({
     const cacheAge = currentTime - cachedData.timestamp;
 
     if (cacheAge < cachedData.cacheDuration) {
-      // If cached data is within the cache duration, use it
-      console.log("Using cached data");
       return cachedData.data;
     } else {
-      // If cached data is older than the cache duration, clear the cache
-      console.log("Clearing outdated cache");
       clearCachedData();
     }
   }
 
   try {
     const result = await processInvestments(userId, runUntimed);
-    console.log("processInvestments result:", result);
 
     // Determine cache duration based on data
     const isAnyNonZero =
@@ -41,11 +35,9 @@ const fetchProcessInvestments = async ({
       result.totalProfit !== 0 ||
       result.totalWithdrawal !== 0;
     const cacheDuration = isAnyNonZero ? 5 * 60 * 1000 : 30 * 1000;
-    console.log("Cache duration set to:", cacheDuration);
 
     // Store data in Zustand cache with the determined duration
     setCachedData(result, cacheDuration);
-    console.log("Data cached with duration:", { result, cacheDuration });
 
     return result;
   } catch (error: any) {
@@ -64,18 +56,15 @@ import { useRouter } from "next/navigation";
 // Adjust the import path as necessary
 
 const useProcessInvestments = (userId: string, runUntimed?: boolean) => {
-  console.log("useProcessInvestments called with:", { userId, runUntimed });
 
   const state = useCachedDataStore.getState();
   const { cachedData, updateRedirectTime } = state;
   const router = useRouter();
-  console.log("Initial cachedData:", cachedData);
 
   const queryResult = useSuspenseQuery({
     queryKey: ["processInvestments-query", userId, runUntimed],
     queryFn: fetchProcessInvestments,
   });
-  console.log("Query result:", queryResult);
 
   // Check profit and redirect if conditions are met
   const currentTime = new Date().getTime();

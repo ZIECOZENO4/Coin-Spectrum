@@ -70,7 +70,6 @@ import { investments, investmentPlans, investmentStatuses } from "@/lib/db/schem
 import { eq, sql } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
-  console.log("Received GET request for investments API");
   const { searchParams } = req.nextUrl;
   const userId = getUserId();
   const page = searchParams.get("page") ?? "1";

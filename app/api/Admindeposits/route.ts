@@ -37,9 +37,6 @@ export async function GET(req: Request) {
       .offset(offset)
       .orderBy(sql`${pendingDeposits.createdAt} desc`);
 
-    // Add console.log to debug the response
-    console.log('Deposits with user data:', JSON.stringify(deposits, null, 2));
-
     const totalCount = await db
       .select({ count: sql<number>`count(*)` })
       .from(pendingDeposits);

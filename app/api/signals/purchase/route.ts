@@ -11,8 +11,6 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function GET() {
   try {
-    console.log("Fetching trading signals...");
-    
     const allSignals = await db
       .select()
       .from(tradingSignals)
@@ -31,7 +29,6 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    console.log("Processing signal purchase...");
     
     const { signalId } = await req.json();
     const { session } = await getUserAuth();

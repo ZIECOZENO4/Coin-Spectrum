@@ -18,13 +18,11 @@ export const useTraders = () => {
   return useQuery({
     queryKey: ["traders"],
     queryFn: async (): Promise<Trader[]> => {
-      console.log("Fetching traders...");
       const response = await fetch("/api/traders");
       if (!response.ok) {
         throw new Error("Failed to fetch traders");
       }
       const data = await response.json();
-      console.log("Traders fetched successfully:", data);
       return data.traders;
     }
   });

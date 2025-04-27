@@ -12,7 +12,6 @@ const fetchInvestmentPlan = async ({
   queryKey: [string, string];
 }): Promise<InvestmentPlan> => {
   const [, id] = queryKey;
-  console.log("Fetching investment plan with id:", id);
 
   const response = await fetch(`/api/getAnInvestmentPlan?id=${id}`);
   const data = await response.json();
@@ -21,8 +20,6 @@ const fetchInvestmentPlan = async ({
     console.error("Error response from server:", data);
     throw new Error(data.error || "An error occurred");
   }
-
-  console.log("Fetched investment plan:", data);
   
   return data as InvestmentPlan;
 };

@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 
 function InvestmentPage({ params }: { params: { id: string } }) {
   const { id } = params;
-  console.log("Investment plan ID:", id);
+ 
 
   if (!id) {
     return <NoInvestmentPlanCard />;

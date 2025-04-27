@@ -10,7 +10,6 @@ interface CopyTradeData {
 export const useCopyTrader = () => {
   return useMutation({
     mutationFn: async (data: CopyTradeData) => {
-      console.log("Starting copy trade process...", data);
       
       const response = await fetch("/api/copy-trades", {
         method: "POST",
@@ -24,7 +23,6 @@ export const useCopyTrader = () => {
       }
 
       const result = await response.json();
-      console.log("Copy trade successful:", result);
       return result;
     },
     onSuccess: () => {

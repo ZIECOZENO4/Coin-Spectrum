@@ -11,7 +11,6 @@ const fetchInvestments = async () => {
     throw new Error(errorData.error || "Failed to fetch investments");
   }
   const data: InvestmentPlan[] = await response.json();
-  console.log("Fetched data:", data);
   return data;
 };
 

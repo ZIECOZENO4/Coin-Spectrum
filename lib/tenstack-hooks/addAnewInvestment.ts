@@ -16,9 +16,6 @@ interface CreateInvestmentData {
 }
 
 const createInvestment: MutationFunction<Investment, CreateInvestmentData> = async (data) => {
-  console.log("Starting investment creation...");
-  console.log("Sending data to API:", data);
-
   try {
     const response = await fetch("/api/addAnInvestment", {
       method: "POST",

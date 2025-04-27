@@ -224,25 +224,19 @@ const generateNotifications = () => {
     switch (type) {
       case InvestmentType.Investment:
         icon = <FaDollarSign />;
-        console.log("the investment tpye is ", InvestmentType.Investment);
         colorClass = "!bg-green-500";
         break;
       case InvestmentType.Profit:
         icon = <FaChartLine />;
-        console.log("the investment tpye is ", InvestmentType.Investment);
 
         colorClass = "!bg-yellow-500";
         break;
       case InvestmentType.Withdrawal:
         icon = <FaHandHoldingUsd />;
-        console.log("the investment tpye is ", InvestmentType.Investment);
 
         colorClass = "!bg-red-500";
         break;
     }
-
-    console.log(`Notification ${i}: type=${type}, colorClass=${colorClass}`);
-    console.log("the investment tpye is ", InvestmentType.Investment);
 
     notifications.push({
       name,

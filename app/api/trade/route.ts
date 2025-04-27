@@ -222,7 +222,6 @@ async function getMarketPrice(symbol: string): Promise<number> {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    console.log("Received request body:", body);
 
     const { symbol, type, amount, leverage, expiry } = body as TradeRequest;
 

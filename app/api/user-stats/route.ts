@@ -138,26 +138,7 @@ eq(userInvestments.investmentId, investments.id)
     // Calculate net profit (deposits - withdrawals)
     const netProfit = totalDeposits - totalWithdrawals;
 
-    // Log all the data for debugging
-    console.log('User Stats Data:', {
-      raw: {
-        deposits: deposits[0],
-        withdrawals: withdrawals[0],
-        trades: tradesData[0],
-        investmentProfits: investmentProfits[0],
-        pendingDeposits: pendingDepositsData[0],
-        pendingWithdrawals: pendingWithdrawalsData[0]
-      },
-      calculated: {
-        totalDeposits,
-        totalWithdrawals,
-        totalProfits,
-        totalTrades,
-        netProfit,
-        pendingDepositsTotal,
-        pendingWithdrawalsTotal
-      }
-    });
+  
 
     const response: StatsResponse = {
       totalDeposits,

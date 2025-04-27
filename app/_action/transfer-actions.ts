@@ -129,14 +129,6 @@ export async function sendTransferEmails(
     // Use verified domain for FROM address
     const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'
 
-    console.log('📧 Email Data:', JSON.stringify({
-      senderEmail,
-      recipientEmail,
-      amount,
-      transferId,
-      fromEmail: FROM_EMAIL,
-      hasAdminEmail: !!process.env.ADMIN_EMAIL
-    }))
 
     // Create email components first to validate early
     const emailProps = {

@@ -71,13 +71,6 @@ const InvestmentPlanCard: React.FC<InvestmentPlanCardProps> = ({ id }) => {
       profitPercent: investmentPlan.roi
     };
 
-    console.log('Investment Creation Data:', {
-      'Investment ID': investmentData.id,
-      'Investment Amount': investmentData.amount,
-      'Plan Name': investmentData.name,
-      'Duration (hours)': investmentData.duration,
-      'Profit Percentage': investmentData.profitPercent
-    });
 
     try {
       await createInvestmentMutation.mutateAsync(investmentData);

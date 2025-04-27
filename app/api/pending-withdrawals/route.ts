@@ -6,7 +6,6 @@ import { getUserAuth } from "@/lib/auth/utils";
 
 export async function GET(req: NextRequest) {
   try {
-    console.log("Fetching pending withdrawals...");
     
     const { session } = await getUserAuth();
     if (!session?.user?.id) {
@@ -27,8 +26,6 @@ export async function GET(req: NextRequest) {
         )
       )
       .orderBy(desc(withdrawals.createdAt));
-
-    console.log("Pending withdrawals fetched:", pendingWithdrawals);
 
     return NextResponse.json({
       success: true,

@@ -28,7 +28,7 @@ export default function Home() {
   useEffect(() => {
     const ref = localStorage.getItem('referralId');
 
-    console.log('Checking for referral:', ref);
+
     if (ref) {
       toast.info('Checking referral status...');
       processReferral(ref);
@@ -36,7 +36,7 @@ export default function Home() {
   }, []);
   
   const processReferral = async (ref: string) => {
-    console.log('Processing referral:', ref);
+#
     try {
       const response = await fetch('/api/referrals', {
         method: 'POST',
@@ -47,7 +47,7 @@ export default function Home() {
       });
 
       const data = await response.json();
-      console.log('Referral API response:', data);
+  
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to process referral');

@@ -22,11 +22,8 @@ interface InvestmentRequest {
 
 export async function POST(req: NextRequest) {
   try {
-    console.log("Starting investment creation...");
     
     const body = await req.json() as InvestmentRequest;
-    console.log("Request body:", body);
-
     // Validate input
     if (!body.id || typeof body.amount !== 'number' || body.amount <= 0) {
       return NextResponse.json(

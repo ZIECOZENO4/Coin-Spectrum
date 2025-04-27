@@ -41,11 +41,9 @@ const fetchUsers = async ({
   const response = await fetch(url);
   if (!response.ok) {
     const dataError = await response.json();
-    console.log("this is the error in the use investments", dataError);
     throw new Error(dataError.error);
   }
   const data: UsersResponse = await response.json();
-  console.log("this is the data that is returned by the useInvestments", data);
   return data;
 };
 

@@ -155,7 +155,6 @@ function getPrimaryEmail(
 ): string | undefined {
   const primaryEmail = emails.find((email) => email.id === primaryId);
   if (!primaryEmail) {
-    console.log("there is no primary email here ");
     return emails[0].emailAddress;
   }
   return primaryEmail.emailAddress;

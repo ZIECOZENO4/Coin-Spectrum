@@ -23,11 +23,9 @@ const fetchWithdrawals = async ({
   const [_key, page, sort, order, search, statusFilter] = queryKey;
   const url = `/api/allWithdrawals?page=${page}&sort=${sort}&order=${order}&search=${search}&statusFilter=${statusFilter}`;
 
-  console.log("this is the url", url);
   const response = await fetch(url);
   if (!response.ok) {
     const dataError = await response.json();
-    console.log("this is the error in the use withdrawals", dataError);
     throw new Error(dataError.error);
   }
   const data: WithdrawalsResponse = await response.json();

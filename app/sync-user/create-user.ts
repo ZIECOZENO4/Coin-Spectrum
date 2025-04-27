@@ -13,14 +13,10 @@ import { WelcomeEmail } from "@/emails/WelcomeEmail";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function createUser(ref: string) {
-  console.log("Starting createUser with referral:", ref);
   const { session } = await getUserAuth();
   if (!session?.user?.email) {
-    console.log("No session or email found, redirecting to sign-in");
     redirect("/sign-in");
   }
-
-  console.log("Checking for existing user:", session.user.id);
   const existingUser = await db
     .select()
     .from(users)
@@ -28,11 +24,9 @@ export async function createUser(ref: string) {
     .limit(1);
 
   if (existingUser.length > 0) {
-    console.log("Existing user found, returning");
     return existingUser[0];
   }
 
-  console.log("Creating new user");
   const newUser = await db.insert(users)
     .values({
       id: session.user.id,
@@ -45,8 +39,6 @@ export async function createUser(ref: string) {
     })
     .returning();
   
-  console.log("New user created:", newUser[0].id);
-
   try {
     await Promise.all([
       resend.emails.send({
@@ -73,13 +65,11 @@ export async function createUser(ref: string) {
         `
       })
     ]);
-    console.log("Welcome and admin notification emails sent successfully");
   } catch (error) {
     console.error('Error sending welcome emails:', error);
   }
 
   if (ref && ref !== "noRef") {
-    console.log("Processing referral for:", ref);
     const referrer = await db
       .select()
       .from(users)
@@ -87,7 +77,6 @@ export async function createUser(ref: string) {
       .limit(1);
 
     if (referrer.length > 0) {
-      console.log("Referrer found:", referrer[0].id);
       
       try {
         const referralRecord = await db.insert(userReferrals)
@@ -97,9 +86,6 @@ export async function createUser(ref: string) {
             referredUserId: newUser[0].id,
           })
           .returning();
-        console.log("Referral record created:", referralRecord[0].id);
-
-        console.log("Sending referral emails");
         await Promise.all([
           resend.emails.send({
             from: process.env.RESEND_FROM_EMAIL!,
@@ -122,20 +108,17 @@ export async function createUser(ref: string) {
             }),
           })
         ]);
-        console.log("Referral emails sent successfully");
       } catch (error) {
         console.error("Error processing referral:", error);
       }
     } else {
-      console.log("Referrer not found for ID:", ref);
+      console.log("Referrer not found for ID:");
     }
   } else {
     console.log("No referral to process");
   }
 
-  console.log("Creating user tracker");
   await createUserTracker(session.user.id);
-  console.log("User creation process completed");
   return newUser[0];
 }
 

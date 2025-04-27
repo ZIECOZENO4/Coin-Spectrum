@@ -9,14 +9,11 @@ enum SortOption {
 }
 
 export async function GET(req: NextRequest) {
-  console.log("Received GET request for investments API");
   const { searchParams } = req.nextUrl;
   const page = searchParams.get("page") || "1";
   const limit = searchParams.get("limit") || "10";
   const sort = (searchParams.get("sort") as SortOption) || SortOption.CreatedAtDesc;
   const search = searchParams.get("search") || "";
-
-  console.log("Query parameters:", { page, limit, sort, search });
 
   try {
     const pageNumber = parseInt(page);

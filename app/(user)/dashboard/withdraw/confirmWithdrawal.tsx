@@ -35,17 +35,12 @@ export function ConfirmWithdrawal({
   const remainingTrades = Math.max(3 - eligibilityData.tradeCount, 0);
 
   const handleYes = () => {
-    console.log('Confirming withdrawal:', {
-      tradeCount: eligibilityData.tradeCount,
-      isEligible: eligibilityData.isEligible,
-      status: eligibilityData.requirementStatus
-    });
+   
     setIsOpen(false);
     setIsConfirmed(true);
   };
 
   const handleCheck = () => {
-    console.log('Checking withdrawal requirements');
     setIsOpen(false);
   };
 

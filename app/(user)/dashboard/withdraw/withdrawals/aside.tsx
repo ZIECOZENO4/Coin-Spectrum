@@ -21,7 +21,6 @@ const InfiniteScrollWithdrawals = () => {
       fetchNextPage();
     }
   }, [inView, fetchNextPage, hasNextPage]);
-  console.log("this is the data that is returned", data);
   const withdrawalsExist = data?.pages.some(
     (page) => page.withdrawals.length > 0
   );

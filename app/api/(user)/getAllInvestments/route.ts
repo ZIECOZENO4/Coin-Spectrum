@@ -32,18 +32,12 @@ import { sql } from "drizzle-orm";
 
 export async function GET() {
   try {
-    console.log("Attempting to fetch investments...");
     
     const countResult = await db.select({ count: sql<number>`count(*)` }).from(investmentPlans);
     const count = countResult[0].count;
-    console.log("Number of investment plans:", count);
 
     const investments = await db.select().from(investmentPlans);
-    console.log("Investments fetched:", investments);
-    
-    if (investments.length === 0) {
-      console.log("Warning: No investment plans found in the database.");
-    }
+
 
     return NextResponse.json(investments);
   } catch (error: any) {
