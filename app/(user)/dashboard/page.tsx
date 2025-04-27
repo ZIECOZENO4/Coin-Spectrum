@@ -36,7 +36,7 @@ export default function Home() {
   }, []);
   
   const processReferral = async (ref: string) => {
-#
+
     try {
       const response = await fetch('/api/referrals', {
         method: 'POST',
