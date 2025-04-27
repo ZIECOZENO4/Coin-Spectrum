@@ -13,11 +13,7 @@ interface ProcessWithdrawalResult {
 }
 
 const processWithdrawal = async (variables: z.infer<typeof formSchema>) => {
-  console.log(
-    `Calling process-withdrawal API with variables: ${JSON.stringify(
-      variables
-    )}`
-  );
+ 
   const url = "/api/processWithdrawal";
   const response = await fetch(url, {
     method: "POST",
@@ -29,12 +25,10 @@ const processWithdrawal = async (variables: z.infer<typeof formSchema>) => {
 
   if (!response.ok) {
     const errorData = await response.json();
-    console.log("thsi is the error data to be logged", errorData);
     throw new Error(errorData.error || "Failed to process withdrawal");
   }
 
   const data: ProcessWithdrawalResult = await response.json();
-  console.log(`Process-withdrawal API response: ${JSON.stringify(data)}`);
   return data;
 };
 
