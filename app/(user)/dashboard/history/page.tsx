@@ -2,7 +2,7 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { Separator } from "@/components/ui/separator";
-import TransactionCard from "./aside";
+import TransactionCard from "./historycard";
 import Loading from "@/app/loading";
 
 export default function TransactionHistory() {
