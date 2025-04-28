@@ -12,6 +12,7 @@ import { FaMoneyBillTransfer, FaMoneyBillTrendUp } from "react-icons/fa6"
 import KycStatus from "./kyc-status";
 import TradingViewWidget2 from "@/app/(user)/dashboard/TradingViewWidget2";
 import { useUserBalance } from "@/hook/useUserBalance";
+import Link from "next/link";
 
 
 const chartdata = Array.from({ length: 50 }, (_, i) => ({
@@ -87,12 +88,14 @@ export const InvestmentDashboard: React.FC<{
       window.location.reload();
     }}
   >
+    <Link href="/dashboard/kyc">
     <div className="text-gray-400 flex flex-row gap-2 md:gap-4">
       Your KYC status is:{" "}
       <span className="">
         <KycStatus />
       </span>
     </div>
+    </Link>
   </ErrorBoundary>
 </motion.div>
 

@@ -98,7 +98,7 @@ export default function ReceiptPage() {
   let displayDescription = description;
   let amountClass = "text-red-600";
 
-  if (type === "trade" && description?.toLowerCase() === "completed") {
+  if ((type === "SELL" || type === "BUY") && description?.toLowerCase() === "completed") {
     displayDescription = "WON";
     amountClass = "text-green-600";
   } else if (description?.toLowerCase().includes("win")) {
@@ -128,7 +128,7 @@ export default function ReceiptPage() {
               <span>{type}</span>
             </div>
             <div className="flex justify-between items-center py-1 border-b border-gray-100">
-              <span className="font-medium">Description:</span>
+              <span className="font-medium uppercase">Description:</span>
               <span>{displayDescription}</span>
             </div>
             <div className="flex justify-between items-center py-1 border-b border-gray-100">

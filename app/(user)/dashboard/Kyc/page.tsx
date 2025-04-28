@@ -31,12 +31,13 @@ export default function KycPage() {
     );
   }
 
-  if (kycStatus?.status === 'approved') {
-    return <KYCApproved />;
-  }
-
+  
   if (kycStatus?.status === 'pending' && kycStatus?.submissionDate) {
     return <KYCPending submissionDate={kycStatus.submissionDate} />;
+  }
+
+  if (kycStatus?.status === 'approved') {
+    return <KYCApproved />;
   }
 
   return <KYCForm />;
