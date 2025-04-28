@@ -123,7 +123,7 @@ const ReceiptPage = () => {
         <div className="text-center mb-6">
           <h2 className="text-xl font-bold">COIN SPECTRUM.</h2>
           <p className="text-sm text-gray-500">1234 Main Street, City, Country</p>
-          <p className="text-sm text-gray-500">support@digitalfortress.com | +123 456 7890</p>
+          <p className="text-sm text-gray-500">support@coinspectrum.net | +123 456 7890</p>
         </div>
         {/* Receipt Details */}
         <div className="mb-6">

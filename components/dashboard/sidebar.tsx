@@ -317,9 +317,9 @@ const Sidebar: React.FC = () => {
                 </AnimatePresence>
 
                 <Link
-                  href={"/dashboard/referral"}
+                  href={"/dashboard/myreferrals"}
                   className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
-                    "/dashboard/referral"
+                    "/dashboard/myreferrals"
                   )}`}
                 >
                   <FaBookmark />
@@ -605,9 +605,9 @@ const Sidebar: React.FC = () => {
               </AnimatePresence>
 
               <Link
-                href={"/dashboard/referral"}
+                href={"/dashboard/myreferrals"}
                 className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
-                  "/dashboard/referral"
+                  "/dashboard/myreferrals"
                 )}`}
               >
                 <FaBookmark />

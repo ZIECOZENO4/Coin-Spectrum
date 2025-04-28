@@ -95,6 +95,16 @@ export default function ReceiptPage() {
     );
   }
 
+  let displayDescription = description;
+  let amountClass = "text-red-600";
+
+  if (type === "trade" && description?.toLowerCase() === "completed") {
+    displayDescription = "WON";
+    amountClass = "text-green-600";
+  } else if (description?.toLowerCase().includes("win")) {
+    amountClass = "text-green-600";
+  }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen  py-8">
       <div ref={receiptRef} className="bg-black p-8 rounded-lg shadow-lg max-w-lg w-full border border-slate-800 relative text-white">
@@ -104,7 +114,7 @@ export default function ReceiptPage() {
         <div className="text-center mb-6">
           <h2 className="text-xl font-bold">COIN SPECTRUM.</h2>
           <p className="text-sm text-gray-500">14331 SW 120TH ST MIAMI, FL 33186</p>
-          <p className="text-sm text-gray-500">support@digitalfortress.com | +140 935 8533</p>
+          <p className="text-sm text-gray-500">support@coinspectrum.net | +140 935 8533</p>
         </div>
         <div className="mb-6">
           <h3 className="text-lg font-semibold mb-2">Transaction Receipt</h3>
@@ -119,11 +129,11 @@ export default function ReceiptPage() {
             </div>
             <div className="flex justify-between items-center py-1 border-b border-gray-100">
               <span className="font-medium">Description:</span>
-              <span>{description}</span>
+              <span>{displayDescription}</span>
             </div>
             <div className="flex justify-between items-center py-1 border-b border-gray-100">
               <span className="font-medium">Amount:</span>
-              <span className={description?.includes("win") ? "text-green-600" : "text-red-600"}>
+              <span className={amountClass}>
                 {formatCurrency(Number(amount))}
               </span>
             </div>
