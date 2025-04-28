@@ -64,7 +64,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
           bgColor: "bg-green-400/10",
           borderColor: "border-green-400",
           label: "Investment",
-          prefix: "-"
+          prefix: ""
         };
       default:
         return {

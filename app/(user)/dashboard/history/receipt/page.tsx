@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { toast } from "sonner";
@@ -8,6 +8,7 @@ import confetti from "canvas-confetti";
 import { useUser } from "@clerk/nextjs";
 import { formatCurrency } from "@/lib/formatCurrency";
 import { useSearchParams } from "next/navigation";
+import html2pdf from "html2pdf.js";
 
 export default function ReceiptPage() {
   const searchParams = useSearchParams();
@@ -17,6 +18,7 @@ export default function ReceiptPage() {
   const description = searchParams.get("description");
   const date = searchParams.get("date");
   const { user } = useUser();
+  const receiptRef = useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     // Show success toast and confetti for deposits and successful trades
@@ -39,10 +41,17 @@ export default function ReceiptPage() {
   }, [type, amount, description]);
 
   const handleDownload = () => {
-    window.print();
-    toast.success("Download Started", {
-      description: "Your receipt is being downloaded"
-    });
+    if (receiptRef.current) {
+      html2pdf()
+        .set({
+          margin: 0,
+          filename: `receipt-${id}.pdf`,
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "in", format: "letter", orientation: "portrait" }
+        })
+        .from(receiptRef.current)
+        .save();
+    }
   };
 
   const handleShare = async () => {
@@ -82,14 +91,14 @@ export default function ReceiptPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen  py-8">
-      <div className="bg-black p-8 rounded-lg shadow-lg max-w-lg w-full border border-slate-800 relative text-white">
+      <div ref={receiptRef} className="bg-black p-8 rounded-lg shadow-lg max-w-lg w-full border border-slate-800 relative text-white">
         <div className="flex justify-center mb-4">
           <Image src="/images/cs.png" alt="Company Logo" width={80} height={80} />
         </div>
         <div className="text-center mb-6">
           <h2 className="text-xl font-bold">Digital Fortress Ltd.</h2>
-          <p className="text-sm text-gray-500">1234 Main Street, City, Country</p>
-          <p className="text-sm text-gray-500">support@digitalfortress.com | +123 456 7890</p>
+          <p className="text-sm text-gray-500">14331 SW 120TH ST MIAMI, FL 33186</p>
+          <p className="text-sm text-gray-500">support@digitalfortress.com | +140 935 8533</p>
         </div>
         <div className="mb-6">
           <h3 className="text-lg font-semibold mb-2">Transaction Receipt</h3>
@@ -137,7 +146,7 @@ export default function ReceiptPage() {
           </Button>
         </div>
         <div className="absolute bottom-4 right-4 opacity-30">
-          <Image src="/images/stamp.png" alt="Official Stamp" width={80} height={80} />
+          <Image src="/images/stamp.png" alt="Official Stamp" width={80} height={80} className="rounded-full" />
         </div>
       </div>
     </div>
