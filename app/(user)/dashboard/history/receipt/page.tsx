@@ -81,10 +81,10 @@ export default function ReceiptPage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 py-8">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full border border-gray-200 relative">
+    <div className="flex flex-col items-center justify-center min-h-screen  py-8">
+      <div className="bg-black p-8 rounded-lg shadow-lg max-w-lg w-full border border-slate-800 relative text-white">
         <div className="flex justify-center mb-4">
-          <Image src="/company-logo.png" alt="Company Logo" width={80} height={80} />
+          <Image src="/images/cs.png" alt="Company Logo" width={80} height={80} />
         </div>
         <div className="text-center mb-6">
           <h2 className="text-xl font-bold">Digital Fortress Ltd.</h2>
@@ -137,7 +137,7 @@ export default function ReceiptPage() {
           </Button>
         </div>
         <div className="absolute bottom-4 right-4 opacity-30">
-          <Image src="/official-stamp.png" alt="Official Stamp" width={80} height={80} />
+          <Image src="/images/stamp.png" alt="Official Stamp" width={80} height={80} />
         </div>
       </div>
     </div>
