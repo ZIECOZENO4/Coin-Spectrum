@@ -102,7 +102,7 @@ export default function ReceiptPage({ params }: PageProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-slate-900"></div>
       </div>
     );
   }
@@ -112,53 +112,53 @@ export default function ReceiptPage({ params }: PageProps) {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-2">Transaction Not Found</h2>
-          <p className="text-gray-600">The requested transaction could not be found.</p>
+          <p className="text-slate-600">The requested transaction could not be found.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 py-8">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full border border-gray-200 relative">
+    <div className="flex flex-col items-center justify-center min-h-screen  py-8">
+      <div className="bg-black p-8 rounded-lg shadow-lg max-w-lg w-full border border-slate-800 relative text-white">
         {/* Company Logo */}
         <div className="flex justify-center mb-4">
-          <Image src="/company-logo.png" alt="Company Logo" width={80} height={80} />
+          <Image src="/images/cs.png" alt="Company Logo" width={80} height={80} />
         </div>
         {/* Company Details */}
         <div className="text-center mb-6">
           <h2 className="text-xl font-bold">Digital Fortress Ltd.</h2>
-          <p className="text-sm text-gray-500">1234 Main Street, City, Country</p>
-          <p className="text-sm text-gray-500">support@digitalfortress.com | +123 456 7890</p>
+          <p className="text-sm text-slate-500">1234 Main Street, City, Country</p>
+          <p className="text-sm text-slate-500">support@digitalfortress.com | +123 456 7890</p>
         </div>
         {/* Receipt Details */}
         <div className="mb-6">
           <h3 className="text-lg font-semibold mb-2">Transaction Receipt</h3>
           <div className="text-sm space-y-2">
-            <div className="flex justify-between items-center py-1 border-b border-gray-100">
+            <div className="flex justify-between items-center py-1 border-b border-slate-100">
               <span className="font-medium">Transaction ID:</span>
               <span className="font-mono">{transaction.id}</span>
             </div>
-            <div className="flex justify-between items-center py-1 border-b border-gray-100">
+            <div className="flex justify-between items-center py-1 border-b border-slate-100">
               <span className="font-medium">Type:</span>
               <span>{transaction.type}</span>
             </div>
-            <div className="flex justify-between items-center py-1 border-b border-gray-100">
+            <div className="flex justify-between items-center py-1 border-b border-slate-100">
               <span className="font-medium">Description:</span>
               <span>{transaction.description}</span>
             </div>
-            <div className="flex justify-between items-center py-1 border-b border-gray-100">
+            <div className="flex justify-between items-center py-1 border-b border-slate-100">
               <span className="font-medium">Amount:</span>
               <span className={transaction.direction === "IN" ? "text-green-600" : "text-red-600"}>
                 {transaction.direction === "IN" ? "+" : "-"}
                 {formatCurrency(transaction.amount)}
               </span>
             </div>
-            <div className="flex justify-between items-center py-1 border-b border-gray-100">
+            <div className="flex justify-between items-center py-1 border-b border-slate-100">
               <span className="font-medium">Date:</span>
               <span>{new Date(transaction.createdAt).toLocaleString()}</span>
             </div>
-            <div className="flex justify-between items-center py-1 border-b border-gray-100">
+            <div className="flex justify-between items-center py-1 border-b border-slate-100">
               <span className="font-medium">Status:</span>
               <span className="text-green-600">Completed</span>
             </div>
@@ -181,7 +181,7 @@ export default function ReceiptPage({ params }: PageProps) {
         </div>
         {/* Official Stamp */}
         <div className="absolute bottom-4 right-4 opacity-30">
-          <Image src="/official-stamp.png" alt="Official Stamp" width={80} height={80} />
+          <Image src="/images/stamp.png" alt="Official Stamp" width={80} height={80} />
         </div>
       </div>
     </div>
