@@ -8,7 +8,8 @@ import confetti from "canvas-confetti";
 import { useUser } from "@clerk/nextjs";
 import { formatCurrency } from "@/lib/formatCurrency";
 import { useSearchParams } from "next/navigation";
-import html2pdf from "html2pdf.js";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 export default function ReceiptPage() {
   const searchParams = useSearchParams();
@@ -40,17 +41,22 @@ export default function ReceiptPage() {
     }
   }, [type, amount, description]);
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (receiptRef.current) {
-      html2pdf()
-        .set({
-          margin: 0,
-          filename: `receipt-${id}.pdf`,
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: "in", format: "letter", orientation: "portrait" }
-        })
-        .from(receiptRef.current)
-        .save();
+      const canvas = await html2canvas(receiptRef.current, { scale: 2 });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "pt",
+        format: "a4",
+      });
+
+      // Calculate width/height to fit A4
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`receipt-${id}.pdf`);
     }
   };
 
