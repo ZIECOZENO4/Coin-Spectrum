@@ -34,7 +34,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
         bgColor: isWin ? "bg-green-400/10" : "bg-red-500/10",
         borderColor: isWin ? "border-green-400" : "border-red-500",
         label: "Trade",
-        prefix: isWin ? "+" : "-"
+        prefix: ""
       };
     }
 
@@ -84,7 +84,14 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
   const formattedDate = format(date, "MMMM d, yyyy h:mm a");
 
   const handleClick = () => {
-    router.push(`/dashboard/history/receipt?id=${id}`);
+    const params = new URLSearchParams({
+      id,
+      type,
+      amount: amount.toString(),
+      description: description || "",
+      date: new Date().toISOString(),
+    });
+    router.push(`/dashboard/history/receipt?${params.toString()}`);
   };
 
   return (
@@ -108,8 +115,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
               </div>
               <div className="text-right">
                 <p className={`font-semibold ${details.iconColor}`}>
-                  {details.prefix}
-                  {formatCurrency(amount)}
+                  {type === "trade" ? formatCurrency(amount) : `${details.prefix}${formatCurrency(amount)}`}
                 </p>
                 <div className="flex flex-col">
                   <span className="text-xs text-gray-400">{timeAgo}</span>
