@@ -119,17 +119,27 @@ export default function ReceiptPage() {
         <div className="mb-6">
           <h3 className="text-lg font-semibold mb-2">Transaction Receipt</h3>
           <div className="text-sm space-y-2">
-            <div className="flex justify-between items-center py-1 border-b border-gray-100">
+            <div className="flex justify-between items-start py-1 border-b border-gray-100">
               <span className="font-medium">Transaction ID:</span>
-              <span className="font-mono">{id}</span>
+              <span className="font-mono text-right break-all max-w-[200px]">
+                {id.length > 20 
+                  ? id.match(/.{1,20}/g)?.join('\n')
+                  : id
+                }
+              </span>
             </div>
-            <div className="flex justify-between items-center py-1 border-b border-gray-100">
+            <div className="flex justify-between items-start py-1 border-b border-gray-100">
               <span className="font-medium">Type:</span>
               <span>{type}</span>
             </div>
-            <div className="flex justify-between items-center py-1 border-b border-gray-100">
-              <span className="font-medium uppercase">Description:</span>
-              <span>{displayDescription}</span>
+            <div className="flex justify-between items-start py-1 border-b border-gray-100">
+              <span className="font-medium">Description:</span>
+              <span className="uppercase text-right break-words max-w-[200px]">
+                {displayDescription.length > 20 
+                  ? displayDescription.match(/.{1,20}/g)?.join('\n')
+                  : displayDescription
+                }
+              </span>
             </div>
             <div className="flex justify-between items-center py-1 border-b border-gray-100">
               <span className="font-medium">Amount:</span>

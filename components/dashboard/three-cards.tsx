@@ -88,7 +88,7 @@ export const InvestmentDashboard: React.FC<{
       window.location.reload();
     }}
   >
-    <Link href="/dashboard/kyc">
+    <Link href="/dashboard/Kyc">
     <div className="text-gray-400 flex flex-row gap-2 md:gap-4">
       Your KYC status is:{" "}
       <span className="">
