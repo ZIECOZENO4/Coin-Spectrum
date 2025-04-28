@@ -102,7 +102,7 @@ export default function ReceiptPage() {
           <Image src="/images/cs.png" alt="Company Logo" width={80} height={80} />
         </div>
         <div className="text-center mb-6">
-          <h2 className="text-xl font-bold">Digital Fortress Ltd.</h2>
+          <h2 className="text-xl font-bold">COIN SPECTRUM.</h2>
           <p className="text-sm text-gray-500">14331 SW 120TH ST MIAMI, FL 33186</p>
           <p className="text-sm text-gray-500">support@digitalfortress.com | +140 935 8533</p>
         </div>
