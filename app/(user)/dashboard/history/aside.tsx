@@ -32,8 +32,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
         iconColor: direction === "IN" ? "text-green-400" : "text-red-500",
         bgColor: direction === "IN" ? "bg-green-400/10" : "bg-red-500/10",
         borderColor: direction === "IN" ? "border-green-400" : "border-red-500",
-        label: "Trade",
-        prefix: direction === "IN" ? "+" : "-"
+        label: "Trade"
       };
     }
 
@@ -54,7 +53,6 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
           bgColor: "bg-red-500/10",
           borderColor: "border-red-500",
           label: "Withdrawal",
-          prefix: "-"
         };
       case "investment":
         return {
@@ -83,7 +81,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
   const formattedDate = format(date, "MMMM d, yyyy h:mm a");
 
   const handleClick = () => {
-    router.push(`/dashboard/history/receipt?id=${id}`);
+    router.push(`/dashboard/receipt?id=${id}`);
   };
 
   return (
