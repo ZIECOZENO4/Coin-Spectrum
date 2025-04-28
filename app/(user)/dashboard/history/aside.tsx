@@ -27,13 +27,14 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
 
   const getTransactionDetails = () => {
     if (type === "trade") {
+      const isWin = description.includes("win");
       return {
-        icon: direction === "IN" ? FaArrowDown : FaArrowUp,
-        iconColor: direction === "IN" ? "text-green-400" : "text-red-500",
-        bgColor: direction === "IN" ? "bg-green-400/10" : "bg-red-500/10",
-        borderColor: direction === "IN" ? "border-green-400" : "border-red-500",
+        icon: isWin ? FaArrowDown : FaArrowUp,
+        iconColor: isWin ? "text-green-400" : "text-red-500",
+        bgColor: isWin ? "bg-green-400/10" : "bg-red-500/10",
+        borderColor: isWin ? "border-green-400" : "border-red-500",
         label: "Trade",
-        prefix: direction === "IN" ? "+" : "-"
+        prefix: isWin ? "+" : "-"
       };
     }
 

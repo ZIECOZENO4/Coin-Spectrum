@@ -6,9 +6,6 @@ export async function getTransactionById(id: string) {
   try {
     const transaction = await db.query.transactionHistory.findFirst({
       where: eq(transactionHistory.id, id),
-      with: {
-        user: true,
-      },
     });
 
     if (!transaction) {

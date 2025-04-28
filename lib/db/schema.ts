@@ -23,6 +23,7 @@ export enum TransactionTypeEnum {
   Deposit = "deposit",
   Withdrawal = "withdrawal",
   Investment = "investment",
+  Trade = "trade",
 }
 
 export enum InvestmentNameEnum {
@@ -39,6 +40,7 @@ export const TransactionType = pgEnum("transaction_type", [
   "deposit",
   "withdrawal",
   "investment",
+  "trade",
 ]);
 
 export const KycStatus = pgEnum("kyc_status", ["pending", "approved", "rejected"]);
