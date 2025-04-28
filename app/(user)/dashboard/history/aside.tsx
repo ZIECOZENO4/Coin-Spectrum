@@ -3,22 +3,40 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/formatCurrency";
 import { format, formatDistanceToNow } from "date-fns";
-import { FaArrowDown, FaArrowUp, FaMoneyBillWave } from "react-icons/fa";
+import { FaArrowDown, FaArrowUp, FaMoneyBillWave, FaCircle } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 interface TransactionCardProps {
-  type: "deposit" | "withdrawal" | "investment";
+  id: string;
+  type: "deposit" | "withdrawal" | "investment" | "trade";
   amount: number;
   date: Date;
   description: string;
+  direction?: "IN" | "OUT";
 }
 
 const TransactionCard: React.FC<TransactionCardProps> = ({
+  id,
   type,
   amount,
   date,
   description,
+  direction,
 }) => {
+  const router = useRouter();
+
   const getTransactionDetails = () => {
+    if (type === "trade") {
+      return {
+        icon: direction === "IN" ? FaArrowDown : FaArrowUp,
+        iconColor: direction === "IN" ? "text-green-400" : "text-red-500",
+        bgColor: direction === "IN" ? "bg-green-400/10" : "bg-red-500/10",
+        borderColor: direction === "IN" ? "border-green-400" : "border-red-500",
+        label: "Trade",
+        prefix: direction === "IN" ? "+" : "-"
+      };
+    }
+
     switch (type) {
       case "deposit":
         return {
@@ -26,7 +44,8 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
           iconColor: "text-yellow-400",
           bgColor: "bg-yellow-400/10",
           borderColor: "border-yellow-400",
-          label: "Deposit"
+          label: "Deposit",
+          prefix: "+"
         };
       case "withdrawal":
         return {
@@ -34,7 +53,8 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
           iconColor: "text-red-500",
           bgColor: "bg-red-500/10",
           borderColor: "border-red-500",
-          label: "Withdrawal"
+          label: "Withdrawal",
+          prefix: "-"
         };
       case "investment":
         return {
@@ -42,7 +62,17 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
           iconColor: "text-green-400",
           bgColor: "bg-green-400/10",
           borderColor: "border-green-400",
-          label: "Investment"
+          label: "Investment",
+          prefix: "-"
+        };
+      default:
+        return {
+          icon: FaCircle,
+          iconColor: "text-gray-400",
+          bgColor: "bg-gray-400/10",
+          borderColor: "border-gray-400",
+          label: "Transaction",
+          prefix: ""
         };
     }
   };
@@ -52,8 +82,15 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
   const timeAgo = formatDistanceToNow(date, { addSuffix: true });
   const formattedDate = format(date, "MMMM d, yyyy h:mm a");
 
+  const handleClick = () => {
+    router.push(`/dashboard/history/receipt?id=${id}`);
+  };
+
   return (
-    <Card className="bg-black border-[1px] border-yellow-400/20 hover:border-yellow-400/40 transition-all duration-300">
+    <Card 
+      className="bg-black border-[1px] border-yellow-400/20 hover:border-yellow-400/40 transition-all duration-300 cursor-pointer"
+      onClick={handleClick}
+    >
       <CardContent className="p-4">
         <div className="flex items-center gap-4">
           <div className={`p-3 rounded-full ${details.bgColor}`}>
@@ -70,7 +107,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
               </div>
               <div className="text-right">
                 <p className={`font-semibold ${details.iconColor}`}>
-                  {type === "withdrawal" ? "-" : "+"}
+                  {details.prefix}
                   {formatCurrency(amount)}
                 </p>
                 <div className="flex flex-col">
