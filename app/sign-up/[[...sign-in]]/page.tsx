@@ -242,7 +242,7 @@ export default function SignupFormDemo() {
             name="cryptoWalletAddress"
             placeholder={`Enter ${cryptoOptions.find(c => c.value === selectedCrypto)?.label} Wallet Address`}
             type="text"
-            value={formData.cryptoAccounts[selectedCrypto] || 'Crypto Address'}
+            value={formData.cryptoAccounts[selectedCrypto] || ''}
             onChange={handleCryptoAccountChange}
           />
         </LabelInputContainer>
@@ -281,7 +281,7 @@ export default function SignupFormDemo() {
           <Input
             id="password"
             name="password"
-            placeholder="••••••••"
+            placeholder="Password@2025"
             type="password"
             onChange={handleInputChange}
             required
@@ -292,7 +292,7 @@ export default function SignupFormDemo() {
           <Input
             id="confirmPassword"
             name="confirmPassword"
-            placeholder="••••••••"
+            placeholder="Password@2025"
             type="password"
             onChange={handleInputChange}
             required
