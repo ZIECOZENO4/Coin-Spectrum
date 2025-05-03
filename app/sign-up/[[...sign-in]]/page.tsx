@@ -236,13 +236,13 @@ export default function SignupFormDemo() {
 
       {selectedCrypto && (
         <LabelInputContainer className="mb-4">
-          <Label htmlFor="cryptoAccountId">{cryptoOptions.find(c => c.value === selectedCrypto)?.label} Account ID</Label>
+          <Label htmlFor="cryptoWalletAddress">{cryptoOptions.find(c => c.value === selectedCrypto)?.label} Wallet Address</Label>
           <Input
-            id="cryptoAccountId"
-            name="cryptoAccountId"
-            placeholder={`Enter ${cryptoOptions.find(c => c.value === selectedCrypto)?.label} Account ID`}
+            id="cryptoWalletAddress"
+            name="cryptoWalletAddress"
+            placeholder={`Enter ${cryptoOptions.find(c => c.value === selectedCrypto)?.label} Wallet Address`}
             type="text"
-            value={formData.cryptoAccounts[selectedCrypto] || ''}
+            value={formData.cryptoAccounts[selectedCrypto] || 'Crypto Address'}
             onChange={handleCryptoAccountChange}
           />
         </LabelInputContainer>
