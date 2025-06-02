@@ -169,7 +169,7 @@ export function DataTable() {
       ),
     },
     {
-      id: "actions",
+      accessorKey: "actions",
       header: () => <span className="md:text-md text-xs font-semibold">Actions</span>,
       cell: ({ row }) => {
         const userInvestmentId = row.original.id;
