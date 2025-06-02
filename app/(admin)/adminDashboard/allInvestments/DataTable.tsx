@@ -169,7 +169,7 @@ export function DataTable() {
       ),
     },
     {
-      accessorKey: "actions",
+      id: "actions",
       header: () => <span className="md:text-md text-xs font-semibold">Actions</span>,
       cell: ({ row }) => {
         const userInvestmentId = row.original.id;
@@ -182,7 +182,7 @@ export function DataTable() {
               variant="default"
               size="sm"
               onClick={() => handleAddProfit(userInvestmentId)}
-              disabled={isPayoutPending || isPayoutCompleted} // Disable if pending or completed
+              disabled={isPayoutPending || isPayoutCompleted}
             >
               {isPayoutPending ? "Sending..." : isPayoutCompleted ? "Profit Sent" : "Send Profit"}
             </Button>
