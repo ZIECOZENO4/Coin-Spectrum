@@ -170,7 +170,17 @@ export function DataTable() {
     },
     {
       id: "actions",
-      header: () => <span className="md:text-md text-xs font-semibold">Actions</span>,
+      header: ({ column }) => (
+        flexRender(
+          column.columnDef.header,
+          {
+            columndef: column.columnDef,
+            column: column,
+            header: column.columnDef.header as any,
+            table: tableInstance
+          }
+        )
+      ),
       cell: ({ row }) => {
         const userInvestmentId = row.original.id;
         const isPayoutPending = pendingPayouts.has(userInvestmentId);
