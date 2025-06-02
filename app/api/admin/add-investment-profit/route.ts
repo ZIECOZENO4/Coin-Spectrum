@@ -14,18 +14,27 @@ export async function POST(req: Request) {
   try {
     const { userId, orgId, has } = auth();
 
-    const { userInvestmentId } = await req.json();
+    // Ensure admin privileges if necessary
+    // if (!has || !has({ permission: "org:admin" })) { // Example check
+    //   return new Response("Unauthorized", { status: 401 });
+    // }
+
+    const { userInvestmentId, amount } = await req.json(); // Destructure amount from request
 
     if (!userInvestmentId) {
       return new Response("Missing userInvestmentId", { status: 400 });
     }
 
-    // Fetch the user investment details and the associated investment plan
+    if (typeof amount !== 'number' || amount <= 0) { // Validate amount
+      return new Response("Invalid or missing profit amount", { status: 400 });
+    }
+
+    // Fetch the user investment details
     const userInvestment = await db.query.userInvestments.findFirst({
       where: eq(userInvestments.id, userInvestmentId),
       with: {
-        investment: true,
-        user: true,
+        investment: true, // Keep if needed for description or other logic
+        user: true,       // To get the userIdToUpdate
       },
     });
 
@@ -33,13 +42,9 @@ export async function POST(req: Request) {
       return new Response("User investment not found", { status: 404 });
     }
 
-    const investmentAmount = userInvestment.amount;
-    const profitPercent = userInvestment.investment.profitPercent;
     const userIdToUpdate = userInvestment.userId;
-    const investmentName = userInvestment.investment.name;
-
-    // Calculate the profit amount
-    const profitAmount = (investmentAmount * profitPercent) / 100;
+    const investmentName = userInvestment.investment.name; // For description
+    const profitAmount = amount; // Use the amount from the request directly
 
     // Use a transaction to ensure both balance update and payout record are successful
     await db.transaction(async (tx) => {
@@ -57,7 +62,7 @@ export async function POST(req: Request) {
         id: crypto.randomUUID(), // Generate a unique ID
         userId: userIdToUpdate,
         userInvestmentId: userInvestmentId,
-        amount: profitAmount,
+        amount: profitAmount, // Use the profitAmount from the request
         payoutDate: new Date(),
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -69,7 +74,7 @@ export async function POST(req: Request) {
         userId: userIdToUpdate,
         investmentId: userInvestment.investmentId,
         type: TransactionTypeEnum.InvestmentProfit,
-        amount: profitAmount,
+        amount: profitAmount, // Use the profitAmount from the request
         description: `Profit payout for ${investmentName} investment (ID: ${userInvestmentId})`,
         createdAt: new Date(),
         updatedAt: new Date(),

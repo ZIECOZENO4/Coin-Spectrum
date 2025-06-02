@@ -10,7 +10,6 @@ import { useReferralData } from "@/lib/tenstack-hooks/useRefferals"
 import { useUserBalance } from "@/hook/useUserBalance";
 import { useEffect } from "react"
 import { useUserStats } from "@/hook/useUserStats"
-import { useUserInvestmentProfit } from "@/lib/tenstack-hooks/useUserInvestmentProfit"; // Added import
 
 
 interface StatsData {
@@ -46,24 +45,23 @@ const StatsDashboard: React.FC<StatsDashboardProps> = ({ userId }) => {
   const { data: stats, isLoading: statsLoading } = useUserStats();
   const { data: balance } = useUserBalance();
   const { data: referralData = { referrals: [] } } = useReferralData();
-  const { data: investmentProfitData, isLoading: investmentProfitLoading } = useUserInvestmentProfit(); // Call the new hook
 
   const statsData: StatsData[] = [
-    {
-      label: "Withdrawable Balance",
+    { 
+      label: "Withdrawable Balance", 
       value: formatCurrency(balance || 0) // Changed from template string
     },
-    {
-      label: "Total Trades Profit",
-      value: formatCurrency(stats?.totalTrades || 0)
+    { 
+      label: "Total Trades Profit", 
+      value: formatCurrency(stats?.totalTrades || 0) 
     },
-    {
-      label: "Investment Profits",
-      value: formatCurrency(investmentProfitData?.totalProfit || 0) // Use data from the new hook
+    { 
+      label: "Investment Profits", 
+      value: formatCurrency(stats?.totalProfits || 0) 
     },
-    {
-      label: "Total Withdrawals",
-      value: formatCurrency(stats?.totalWithdrawals || 0)
+    { 
+      label: "Total Withdrawals", 
+      value: formatCurrency(stats?.totalWithdrawals || 0) 
     }
   ];
   
