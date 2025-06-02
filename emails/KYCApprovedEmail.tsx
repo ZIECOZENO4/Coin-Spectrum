@@ -46,7 +46,7 @@ import {
                 : 'Your KYC verification has been successfully approved. You now have full access to all platform features.'}
             </Text>
             <Section style={buttonContainer}>
-              <Button style={button} href="https://omnicom.com.im/account">
+              <Button style={button}  href={`${baseUrl}/dashboard`} >
                 {isAdminCopy ? 'View Admin Dashboard' : 'Go to Dashboard'}
               </Button>
             </Section>
