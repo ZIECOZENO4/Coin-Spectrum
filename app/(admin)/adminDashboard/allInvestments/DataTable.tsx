@@ -101,36 +101,36 @@ export function DataTable() {
     }
   };
 
-  const handleAddProfit = async (userInvestmentId: string) => {
-    setPendingPayouts(prev => new Set(prev).add(userInvestmentId));
-    try {
-      await addProfitMutation.mutateAsync(userInvestmentId, {
-        onSuccess: () => {
-          setPendingPayouts(prev => {
-            const newState = new Set(prev);
-            newState.delete(userInvestmentId);
-            return newState;
-          });
-          setCompletedPayouts(prev => new Set(prev).add(userInvestmentId));
-          // Optionally close modal or update its content
-        },
-        onError: () => {
-           setPendingPayouts(prev => {
-            const newState = new Set(prev);
-            newState.delete(userInvestmentId);
-            return newState;
-          });
-        }
-      });
-    } catch (error) {
-      console.error("Error initiating add profit mutation:", error);
-       setPendingPayouts(prev => {
-        const newState = new Set(prev);
-        newState.delete(userInvestmentId);
-        return newState;
-      });
-    }
-  };
+  // const handleAddProfit = async (userInvestmentId: string) => {
+  //   setPendingPayouts(prev => new Set(prev).add(userInvestmentId));
+  //   try {
+  //     await addProfitMutation.mutateAsync(userInvestmentId, {
+  //       onSuccess: () => {
+  //         setPendingPayouts(prev => {
+  //           const newState = new Set(prev);
+  //           newState.delete(userInvestmentId);
+  //           return newState;
+  //         });
+  //         setCompletedPayouts(prev => new Set(prev).add(userInvestmentId));
+  //         // Optionally close modal or update its content
+  //       },
+  //       onError: () => {
+  //          setPendingPayouts(prev => {
+  //           const newState = new Set(prev);
+  //           newState.delete(userInvestmentId);
+  //           return newState;
+  //         });
+  //       }
+  //     });
+  //   } catch (error) {
+  //     console.error("Error initiating add profit mutation:", error);
+  //      setPendingPayouts(prev => {
+  //       const newState = new Set(prev);
+  //       newState.delete(userInvestmentId);
+  //       return newState;
+  //     });
+  //   }
+  // };
 
   const handleRowClick = (rowData: UserInvestmentData) => {
     setSelectedInvestment(rowData);
@@ -323,7 +323,7 @@ export function DataTable() {
             <DialogFooter className="px-6 pb-6 sm:justify-start space-x-2">
               <Button
                 variant="default"
-                onClick={() => handleAddProfit(selectedInvestment.id)}
+           
                 disabled={pendingPayouts.has(selectedInvestment.id) || completedPayouts.has(selectedInvestment.id)}
                 className="transition-all duration-150 ease-in-out hover:scale-105 active:scale-95"
               >

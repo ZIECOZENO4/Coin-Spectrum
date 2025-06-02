@@ -155,51 +155,7 @@ export function UserInvestmentsTable({ search }: UserInvestmentsTableProps) {
     setProfitAmount(""); // Reset profit amount when opening modal
     setIsModalOpen(true);
   };
-
-  const handleDelete = async (id: string) => {
-    // Consider adding a confirmation dialog here before deleting
-    try {
-      await deleteInvestmentMutation.mutateAsync(id);
-      // Optionally, refetch data or update UI
-    } catch (error) {
-      console.error("Error deleting investment:", error);
-      // Handle error display to user
-    }
-  };
-
-  const handleAddProfit = async (userInvestmentId: string) => {
-    setPendingPayouts(prev => new Set(prev).add(userInvestmentId));
-    try {
-      await addProfitMutation.mutateAsync(userInvestmentId, {
-        onSuccess: () => {
-          setPendingPayouts(prev => {
-            const newState = new Set(prev);
-            newState.delete(userInvestmentId);
-            return newState;
-          });
-          setCompletedPayouts(prev => new Set(prev).add(userInvestmentId));
-          // Optionally, refetch data or update UI
-        },
-        onError: (error) => {
-          console.error("Error adding profit:", error);
-          setPendingPayouts(prev => {
-            const newState = new Set(prev);
-            newState.delete(userInvestmentId);
-            return newState;
-          });
-          // Handle error display to user
-        }
-      });
-    } catch (error) {
-      console.error("Error initiating add profit mutation:", error);
-      setPendingPayouts(prev => {
-        const newState = new Set(prev);
-        newState.delete(userInvestmentId);
-        return newState;
-      });
-    }
-  };
-
+  
   if (isLoading) return <div className="text-white"><Loading /></div>;
   // Handle case where data might be undefined or data.investments is not an array
   if (!data || !Array.isArray(data.investments)) {
