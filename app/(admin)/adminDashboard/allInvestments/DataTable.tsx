@@ -20,6 +20,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogTrigger, // Assuming DialogTrigger might be useful, or we'll trigger programmatically
+} from "@/components/ui/dialog"; // Added Dialog components
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
@@ -55,6 +64,10 @@ export function DataTable() {
   const { width } = useWindowSize();
   const isSmallScreen = (width ?? 0) < 768;
   
+  // State for modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedInvestment, setSelectedInvestment] = useState<UserInvestmentData | null>(null);
+  
   const {
     search,
     page,
@@ -81,45 +94,47 @@ export function DataTable() {
   const handleDelete = async (id: string) => {
     try {
       await deleteInvestmentMutation.mutateAsync(id);
+      setIsModalOpen(false); // Close modal on success
+      setSelectedInvestment(null);
     } catch (error) {
       console.error("Error deleting investment:", error);
     }
   };
 
   const handleAddProfit = async (userInvestmentId: string) => {
-    // Add the ID to pending state
     setPendingPayouts(prev => new Set(prev).add(userInvestmentId));
     try {
       await addProfitMutation.mutateAsync(userInvestmentId, {
         onSuccess: () => {
-          // On success, move from pending to completed
           setPendingPayouts(prev => {
             const newState = new Set(prev);
             newState.delete(userInvestmentId);
             return newState;
           });
           setCompletedPayouts(prev => new Set(prev).add(userInvestmentId));
+          // Optionally close modal or update its content
         },
         onError: () => {
-          // On error, remove from pending
            setPendingPayouts(prev => {
             const newState = new Set(prev);
             newState.delete(userInvestmentId);
             return newState;
           });
-           // The mutation hook's onError already shows an alert
         }
       });
     } catch (error) {
       console.error("Error initiating add profit mutation:", error);
-      // This catch block will primarily catch errors *before* the mutation function runs.
-      // Errors from the API call itself are handled by the onError in mutateAsync options.
        setPendingPayouts(prev => {
         const newState = new Set(prev);
         newState.delete(userInvestmentId);
         return newState;
       });
     }
+  };
+
+  const handleRowClick = (rowData: UserInvestmentData) => {
+    setSelectedInvestment(rowData);
+    setIsModalOpen(true);
   };
 
   const columns: ColumnDef<UserInvestmentData>[] = [
@@ -168,46 +183,24 @@ export function DataTable() {
         </span>
       ),
     },
+    // The actions column is no longer needed here as actions will be in the modal
+    // You can remove the entire 'actions' column definition or comment it out.
+    // For example, if you want to keep it for a different purpose later:
+    /*
     {
       id: "actions",
-      header: ({ column }) => (
-        flexRender(
-          column.columnDef.header,
-          {
-            columndef: column.columnDef,
-            column: column,
-            header: column.columnDef.header as any,
-            table: tableInstance
-          }
-        )
-      ),
+      header: () => <span className="md:text-md text-xs font-semibold">Actions</span>,
       cell: ({ row }) => {
-        const userInvestmentId = row.original.id;
-        const isPayoutPending = pendingPayouts.has(userInvestmentId);
-        const isPayoutCompleted = completedPayouts.has(userInvestmentId);
-
+        // This cell could have a 'View Details' button if direct row click isn't preferred
+        // For now, we assume row click handles opening the modal
         return (
-          <div className="flex space-x-2">
-            <Button
-              variant="default"
-              size="sm"
-              onClick={() => handleAddProfit(userInvestmentId)}
-              disabled={isPayoutPending || isPayoutCompleted}
-            >
-              {isPayoutPending ? "Sending..." : isPayoutCompleted ? "Profit Sent" : "Send Profit"}
+            <Button variant="outline" size="sm" onClick={() => handleRowClick(row.original)}>
+                View
             </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => handleDelete(row.original.id)}
-              disabled={deleteInvestmentMutation.isPending}
-            >
-              Delete
-            </Button>
-          </div>
         );
       },
     },
+    */
   ];
 
   const tableInstance = useReactTable<UserInvestmentData>({
@@ -224,7 +217,7 @@ export function DataTable() {
 
   if (isLoading) return <div><Loading /></div>;
   if (isError) return <div>Error: {error?.message}</div>;
-  if (!data?.investments.length) return <NoData />;
+  if (!data?.investments.length) return <NoData />; 
   
   return (
     <div>
@@ -250,7 +243,12 @@ export function DataTable() {
               </TableHeader>
               <TableBody>
                 {tableInstance.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                  <TableRow 
+                    key={row.id} 
+                    data-state={row.getIsSelected() && "selected"}
+                    onClick={() => handleRowClick(row.original)} // Make row clickable
+                    className="cursor-pointer hover:bg-muted/50 transition-colors"
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
                         {flexRender(
@@ -289,6 +287,65 @@ export function DataTable() {
           </div>
         </div>
       </div>
+
+      {selectedInvestment && (
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogContent className="sm:max-w-[525px] bg-background dark:bg-neutral-900 shadow-2xl rounded-lg">
+            <DialogHeader className="pt-6 px-6">
+              <DialogTitle className="text-2xl font-semibold dark:text-white">Investment Details</DialogTitle>
+              <DialogDescription className="dark:text-neutral-400">
+                Details for {selectedInvestment.user.fullName}'s investment.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="p-6 space-y-4">
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground dark:text-neutral-500">User</h3>
+                <p className="text-lg font-semibold dark:text-white">{selectedInvestment.user.fullName}</p>
+                <p className="text-sm text-muted-foreground dark:text-neutral-400">{selectedInvestment.user.email}</p>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground dark:text-neutral-500">Investment Plan</h3>
+                <p className="text-lg dark:text-white">{selectedInvestment.investment.name}</p>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground dark:text-neutral-500">Amount Invested</h3>
+                <p className="text-lg dark:text-white">${selectedInvestment.amount.toLocaleString()}</p>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground dark:text-neutral-500">Profit Percentage</h3>
+                <p className="text-lg dark:text-white">{selectedInvestment.investment.profitPercent}%</p>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground dark:text-neutral-500">Invested On</h3>
+                <p className="text-lg dark:text-white">{formatDistanceToNow(new Date(selectedInvestment.createdAt))} ago</p>
+              </div>
+            </div>
+            <DialogFooter className="px-6 pb-6 sm:justify-start space-x-2">
+              <Button
+                variant="default"
+                onClick={() => handleAddProfit(selectedInvestment.id)}
+                disabled={pendingPayouts.has(selectedInvestment.id) || completedPayouts.has(selectedInvestment.id)}
+                className="transition-all duration-150 ease-in-out hover:scale-105 active:scale-95"
+              >
+                {pendingPayouts.has(selectedInvestment.id)
+                  ? "Sending Profit..."
+                  : completedPayouts.has(selectedInvestment.id)
+                  ? "Profit Sent"
+                  : "Send Profit"}
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => handleDelete(selectedInvestment.id)}
+                disabled={deleteInvestmentMutation.isPending}
+                className="transition-all duration-150 ease-in-out hover:scale-105 active:scale-95"
+              >
+                {deleteInvestmentMutation.isPending ? "Deleting..." : "Delete Investment"}
+              </Button>
+              <Button variant="outline" onClick={() => setIsModalOpen(false)}  className="transition-all duration-150 ease-in-out hover:scale-105 active:scale-95">Close</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
