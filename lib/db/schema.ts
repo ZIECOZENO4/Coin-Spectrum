@@ -24,6 +24,7 @@ export enum TransactionTypeEnum {
   Withdrawal = "withdrawal",
   Investment = "investment",
   Trade = "trade",
+  InvestmentProfit = "investment_profit",
 }
 
 export enum InvestmentNameEnum {
@@ -41,6 +42,7 @@ export const TransactionType = pgEnum("transaction_type", [
   "withdrawal",
   "investment",
   "trade",
+  "investment_profit",
 ]);
 
 export const KycStatus = pgEnum("kyc_status", ["pending", "approved", "rejected"]);
@@ -125,6 +127,17 @@ export const userInvestments = pgTable("user_investment", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const userInvestmentsRelations = relations(userInvestments, ({ one }) => ({
+  user: one(users, {
+    fields: [userInvestments.userId],
+    references: [users.id],
+  }),
+  investment: one(investments, {
+    fields: [userInvestments.investmentId],
+    references: [investments.id],
+  }),
+}));
 
 export const transactionHistory = pgTable("transaction_history", {
   id: text("id").primaryKey(),
@@ -331,6 +344,17 @@ export const trades = pgTable("trades", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+// New schema for investment profit payouts
+export const investmentProfitPayouts = pgTable("investment_profit_payouts", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  userInvestmentId: text("user_investment_id").notNull().references(() => userInvestments.id),
+  amount: doublePrecision("amount").notNull(),
+  payoutDate: timestamp("payout_date").notNull().defaultNow(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 export type Trade = typeof trades.$inferSelect;
 
 export type Trader = typeof traders.$inferSelect;
@@ -344,3 +368,4 @@ export type Investment = InferSelectModel<typeof investments>;
 export type UserInvestment = InferSelectModel<typeof userInvestments>;
 export type TransactionHistory = InferSelectModel<typeof transactionHistory>;
 export type UserReferral = InferSelectModel<typeof userReferrals>;
+export type InvestmentProfitPayout = InferSelectModel<typeof investmentProfitPayouts>;

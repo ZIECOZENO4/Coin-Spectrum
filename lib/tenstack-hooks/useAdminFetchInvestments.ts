@@ -1,24 +1,9 @@
-// lib/tenstack-hooks/useInvestments.ts
+// lib/tenstack-hooks/useAdminFetchInvestments.ts
 import { useQuery } from "@tanstack/react-query";
+import { UserInvestmentData } from "@/app/(admin)/adminDashboard/allInvestments/DataTable";
 
-type Investment = {
-  id: string;
-  name: string;
-  price: number;
-  profitPercent: number;
-  rating: number;
-  principalReturn: boolean;
-  principalWithdraw: boolean;
-  creditAmount: number;
-  depositFee: string;
-  debitAmount: number;
-  durationDays: number;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type InvestmentResponse = {
-  investments: Investment[];
+type AdminInvestmentResponse = {
+  investments: UserInvestmentData[];
   totalPages: number;
   currentPage: number;
 };
@@ -31,8 +16,8 @@ export const useInvestments = (
   statusFilter?: string,
   planFilter?: string
 ) => {
-  return useQuery<InvestmentResponse>({
-    queryKey: ['investments', page, sort, order, search, statusFilter, planFilter],
+  return useQuery<AdminInvestmentResponse>({
+    queryKey: ['adminInvestments', page, sort, order, search, statusFilter, planFilter],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: page.toString(),

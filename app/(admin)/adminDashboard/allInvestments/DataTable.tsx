@@ -29,8 +29,9 @@ import { useDeleteUserInvestment } from "@/lib/tenstack-hooks/useAdminInvestment
 import { useInvestments } from "@/lib/tenstack-hooks/useAdminFetchInvestments";
 import { InvestmentNameEnum } from "@/lib/db/schema";
 import Loading from "@/app/loading";
+import { useAddInvestmentProfit } from "@/lib/tenstack-hooks/useAddInvestmentProfit";
 
-type UserInvestmentData = {
+export type UserInvestmentData = {
   id: string;
   userId: string;
   user: {
@@ -70,12 +71,54 @@ export function DataTable() {
   );
 
   const deleteInvestmentMutation = useDeleteUserInvestment();
+  const addProfitMutation = useAddInvestmentProfit();
+
+  // State to track which investment payouts are pending
+  const [pendingPayouts, setPendingPayouts] = useState<Set<string>>(new Set());
+  // State to track which investment payouts have been completed
+  const [completedPayouts, setCompletedPayouts] = useState<Set<string>>(new Set());
 
   const handleDelete = async (id: string) => {
     try {
       await deleteInvestmentMutation.mutateAsync(id);
     } catch (error) {
       console.error("Error deleting investment:", error);
+    }
+  };
+
+  const handleAddProfit = async (userInvestmentId: string) => {
+    // Add the ID to pending state
+    setPendingPayouts(prev => new Set(prev).add(userInvestmentId));
+    try {
+      await addProfitMutation.mutateAsync(userInvestmentId, {
+        onSuccess: () => {
+          // On success, move from pending to completed
+          setPendingPayouts(prev => {
+            const newState = new Set(prev);
+            newState.delete(userInvestmentId);
+            return newState;
+          });
+          setCompletedPayouts(prev => new Set(prev).add(userInvestmentId));
+        },
+        onError: () => {
+          // On error, remove from pending
+           setPendingPayouts(prev => {
+            const newState = new Set(prev);
+            newState.delete(userInvestmentId);
+            return newState;
+          });
+           // The mutation hook's onError already shows an alert
+        }
+      });
+    } catch (error) {
+      console.error("Error initiating add profit mutation:", error);
+      // This catch block will primarily catch errors *before* the mutation function runs.
+      // Errors from the API call itself are handled by the onError in mutateAsync options.
+       setPendingPayouts(prev => {
+        const newState = new Set(prev);
+        newState.delete(userInvestmentId);
+        return newState;
+      });
     }
   };
 
@@ -128,20 +171,36 @@ export function DataTable() {
     {
       id: "actions",
       header: () => <span className="md:text-md text-xs font-semibold">Actions</span>,
-      cell: ({ row }) => (
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={() => handleDelete(row.original.id)}
-          disabled={deleteInvestmentMutation.isPending}
-        >
-          Delete
-        </Button>
-      ),
+      cell: ({ row }) => {
+        const userInvestmentId = row.original.id;
+        const isPayoutPending = pendingPayouts.has(userInvestmentId);
+        const isPayoutCompleted = completedPayouts.has(userInvestmentId);
+
+        return (
+          <div className="flex space-x-2">
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => handleAddProfit(userInvestmentId)}
+              disabled={isPayoutPending || isPayoutCompleted} // Disable if pending or completed
+            >
+              {isPayoutPending ? "Sending..." : isPayoutCompleted ? "Profit Sent" : "Send Profit"}
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => handleDelete(row.original.id)}
+              disabled={deleteInvestmentMutation.isPending}
+            >
+              Delete
+            </Button>
+          </div>
+        );
+      },
     },
   ];
 
-  const tableInstance = useReactTable({
+  const tableInstance = useReactTable<UserInvestmentData>({
     data: data?.investments ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
@@ -181,7 +240,7 @@ export function DataTable() {
               </TableHeader>
               <TableBody>
                 {tableInstance.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id}>
+                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
                         {flexRender(

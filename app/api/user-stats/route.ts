@@ -1,4 +1,3 @@
-
 import { db } from "@/lib/db";
 import { 
   users, 
@@ -8,7 +7,8 @@ import {
   pendingWithdrawals,
   investments,
   TransactionTypeEnum, 
-  userInvestments
+  userInvestments,
+  investmentProfitPayouts
 } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq, and, sum, count, sql } from "drizzle-orm";
@@ -42,7 +42,7 @@ export async function GET() {
       deposits,
       withdrawals,
       tradesData,
-      investmentProfits,
+      investmentProfitsPayouts,
       pendingDepositsData,
       pendingWithdrawalsData
     ] = await Promise.all([
@@ -70,38 +70,26 @@ export async function GET() {
         )
         .execute(),
 
-      // Get trades count
+      // Get trades profit (sum of profit from completed trades)
       db
-      .select({ 
-        total: sum(trades.profit) 
+      .select({
+        total: sum(trades.profit)
       })
       .from(trades)
       .where(
         and(
           eq(trades.userId, userId),
-          eq(trades.status, 'completed') // Only count settled trades
+          eq(trades.status, 'completed') // Only sum profit from settled trades
         )
       )
       .execute(),
 
-
-
-
-// Calculate profits from user investments
-db
-.select({
-total: sql`SUM((${userInvestments.amount} * ${investments.profitPercent}) / 100)`
-})
-.from(userInvestments)
-.innerJoin(
-investments,
-eq(userInvestments.investmentId, investments.id)
-)
-.where(eq(userInvestments.userId, userId))
-.execute(),
-
-
-
+      // Calculate total profits from investment profit payouts
+      db
+        .select({ total: sum(investmentProfitPayouts.amount) })
+        .from(investmentProfitPayouts)
+        .where(eq(investmentProfitPayouts.userId, userId))
+        .execute(),
 
       // Get pending deposits
       db
@@ -130,21 +118,19 @@ eq(userInvestments.investmentId, investments.id)
 
     const totalDeposits = toNumber(deposits[0]?.total);
     const totalWithdrawals = toNumber(withdrawals[0]?.total);
-    const totalProfits = toNumber(investmentProfits[0]?.total);
-    const totalTrades = toNumber(tradesData[0]?.total);
+    const totalProfits = toNumber(investmentProfitsPayouts[0]?.total);
+    const totalTradesProfit = toNumber(tradesData[0]?.total);
     const pendingDepositsTotal = toNumber(pendingDepositsData[0]?.total);
     const pendingWithdrawalsTotal = toNumber(pendingWithdrawalsData[0]?.total);
     
     // Calculate net profit (deposits - withdrawals)
     const netProfit = totalDeposits - totalWithdrawals;
 
-  
-
     const response: StatsResponse = {
       totalDeposits,
       totalWithdrawals,
       totalProfits,
-      totalTrades,
+      totalTrades: totalTradesProfit,
       netProfit,
       pendingDeposits: pendingDepositsTotal,
       pendingWithdrawals: pendingWithdrawalsTotal
