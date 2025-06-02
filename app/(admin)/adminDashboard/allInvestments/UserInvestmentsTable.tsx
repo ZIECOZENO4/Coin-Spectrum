@@ -44,6 +44,7 @@ export function UserInvestmentsTable({ search }: UserInvestmentsTableProps) {
             <TableHead className="text-black font-bold">Investment</TableHead>
             <TableHead className="text-black font-bold">Amount</TableHead>
             <TableHead className="text-black font-bold">Date</TableHead>
+            <TableHead className="text-black font-bold">Actions</TableHead> {/* Added Actions Header */}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -63,6 +64,16 @@ export function UserInvestmentsTable({ search }: UserInvestmentsTableProps) {
               </TableCell>
               <TableCell className="text-black">
                 {formatDistanceToNow(new Date(item.createdAt))} ago
+              </TableCell>
+              <TableCell className="text-black"> {/* Added Actions Cell */}
+                <Button 
+                   variant="outline" 
+                   size="sm"
+                   className="bg-black text-yellow-50 hover:bg-gray-700"
+                   onClick={() => console.log("View details for:", item.id)} // Placeholder action
+                >
+                   View Details
+                </Button>
               </TableCell>
             </TableRow>
           ))}
