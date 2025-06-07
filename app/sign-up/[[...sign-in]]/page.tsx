@@ -123,7 +123,7 @@ export default function SignupFormDemo() {
     switch (fieldName) {
       case 'firstName':
       case 'lastName':
-        return formData[fieldName as keyof typeof formData].length >= 2;
+        return typeof formData[fieldName as keyof typeof formData] === 'string' && (formData[fieldName as keyof typeof formData] as string).length >= 2;
       case 'username':
         return formData.username.length >= 3 && /^[a-zA-Z0-9_]+$/.test(formData.username);
       case 'email':
