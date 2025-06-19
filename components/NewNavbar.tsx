@@ -301,7 +301,7 @@ const Navbar = () => {
               height={40}
               alt="Logo"
             />
-            <span className="text-sm tracking-tight dark:text-neutral-100">
+            <span className="text-xl md:text-2xl font-bold tracking-tight dark:text-neutral-100">
               Coin Spectrum
             </span>
           </Link>
