@@ -15,7 +15,7 @@ interface ReferralData {
 
 export default function ReferralCard() {
   const [particles, setParticles] = useState<{ x: number; y: number }[]>([])
-  const { data: referralData } = useReferralData<ReferralData>()
+  const { data: referralData } = useReferralData()
   const [copied, setCopied] = useState(false)
   const [_, copyToClipboard] = useCopyToClipboard()
 
@@ -38,17 +38,18 @@ export default function ReferralCard() {
   }
 
   return (
-    <div className="h-auto bg-slate-900 flex items-center p-4 rounded-lg justify-center">
+    <div className="w-full flex justify-center items-center py-6 px-2">
       <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
+        initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: "spring", duration: 0.5 }}
+        transition={{ type: 'spring', duration: 0.5 }}
+        className="w-full max-w-md"
       >
-        <Card className="w-full max-w-md bg-slate-900 space-y-4">
+        <Card className="w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 shadow-2xl border border-slate-700 rounded-2xl p-6 space-y-5 transition-all duration-300">
           <motion.h2
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="text-xl font-semibold text-white"
+            className="text-2xl font-bold text-white mb-1 tracking-tight"
           >
             Your Referral Link
           </motion.h2>
@@ -59,8 +60,8 @@ export default function ReferralCard() {
             transition={{ delay: 0.2 }}
             className="relative"
           >
-            <div className="p-3 bg-gray-800 rounded-lg border border-gray-700 font-mono text-sm break-all text-white">
-              {referralData?.referralLink}
+            <div className="p-3 bg-gray-900 rounded-lg border border-gray-700 font-mono text-sm break-all text-yellow-300 flex items-center justify-between">
+              <span className="truncate max-w-[70%]">{referralData?.referralLink}</span>
             </div>
           </motion.div>
 
