@@ -38,7 +38,7 @@ export default function ReferralCard() {
   }
 
   return (
-    <div className="w-[80vw] md:w-full flex justify-center items-center py-6 px-2">
+    <div className="w-[95vw] md:w-full flex justify-center items-center py-6 px-2">
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
