@@ -21,11 +21,11 @@ interface ProcessedData {
   withdrawableBalance: number
   totalWithdrawal: number
   totalProfit: number
-  totalDeposit: number // Added this field
+  totalDeposit: number
 }
 
 interface ReferralData {
-  referrals: Array<any> // Replace 'any' with your referral type
+  referrals: Array<any>
 }
 
 interface StatsDashboardProps {
