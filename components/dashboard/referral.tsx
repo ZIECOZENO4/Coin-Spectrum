@@ -33,7 +33,7 @@ export default function ReferralCard() {
       await copyToClipboard(referralData.referralLink)
       setCopied(true)
       createParticles(window.innerWidth / 2, window.innerHeight / 2)
-      setTimeout(() => setCopied(false), 2000) // Reset copied state after 2 seconds
+      setTimeout(() => setCopied(false), 2000)
     }
   }
 

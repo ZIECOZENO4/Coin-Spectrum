@@ -81,9 +81,7 @@ export default function Home() {
         <div className="flex flex-col md:flex-row justify-center md:justify-between">
           <InvestmentDashboard userId={userId}/>
           <StatsDashboard userId={userId} />
-          <ReferralCard />
         </div>
-
         <UserBalances />
         <div>
           <div className="">
