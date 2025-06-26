@@ -109,7 +109,7 @@ export default function KYCForm() {
       router.push('/verifying');
   
     } catch (error) {
-      toast.error(error.message || 'An error occurred while submitting KYC');
+      toast.error('An error occurred while submitting KYC');
       console.error('KYC submission error:', error);
     }
   };
@@ -133,6 +133,17 @@ export default function KYCForm() {
       setFormData(prev => ({ ...prev, [field]: file }));
       toast.success(`${field} selected successfully`);
     }
+  };
+  
+  const renderImagePreview = (file: File | undefined) => {
+    if (!file) return null;
+    if (!file.type.startsWith('image/')) return null;
+    const url = URL.createObjectURL(file);
+    return (
+      <div className="flex justify-center mt-2">
+        <img src={url} alt="Preview" className="max-h-32 rounded shadow border" onLoad={() => URL.revokeObjectURL(url)} />
+      </div>
+    );
   };
   
   const renderStep = (step: number) => {
@@ -333,6 +344,7 @@ export default function KYCForm() {
                     Upload ID Document
                   </span>
                 </label>
+                {renderImagePreview(formData.idDocument)}
               </div>
             </div>
 
@@ -355,6 +367,7 @@ export default function KYCForm() {
                     Upload Proof of Address
                   </span>
                 </label>
+                {renderImagePreview(formData.proofOfAddress)}
               </div>
             </div>
 
@@ -377,6 +390,7 @@ export default function KYCForm() {
                     Upload Selfie
                   </span>
                 </label>
+                {renderImagePreview(formData.selfie)}
               </div>
             </div>
           </motion.div>
