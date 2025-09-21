@@ -60,15 +60,22 @@ export async function POST(req: NextRequest) {
       description: description || `${paymentType === "profit" ? "Profit" : "Bonus"} payment of $${amount}`,
     });
 
-    // If this is a profit payment, also record it in investment profit payouts
-    if (paymentType === "profit") {
-      await db.insert(investmentProfitPayouts).values({
-        id: crypto.randomUUID(),
-        userId: userId,
-        userInvestmentId: crypto.randomUUID(), // Use provided ID or generate one
-        amount: amount,
-        payoutDate: new Date(),
-      });
+    // If this is a profit payment and we have a valid userInvestmentId, record it in investment profit payouts
+    // Note: We only insert into investment_profit_payouts if we have a valid userInvestmentId
+    // For general profit/bonus payments without specific investment context, we skip this table
+    if (paymentType === "profit" && body.userInvestmentId) {
+      try {
+        await db.insert(investmentProfitPayouts).values({
+          id: crypto.randomUUID(),
+          userId: userId,
+          userInvestmentId: body.userInvestmentId,
+          amount: amount,
+          payoutDate: new Date(),
+        });
+      } catch (investmentError) {
+        console.warn("Could not insert into investment_profit_payouts (userInvestmentId may not exist):", investmentError);
+        // Continue with the payment processing even if this fails
+      }
     }
 
     // Send email notifications
@@ -112,7 +119,7 @@ export async function POST(req: NextRequest) {
               userEmail: userData.email,
               profitAmount: amount.toFixed(2),
               investmentName: paymentType === "profit" ? "Investment Profit" : "Bonus Payment",
-              userInvestmentId: crypto.randomUUID(),
+              userInvestmentId: body.userInvestmentId || "Investment Payment",
               companyName: companyName,
               companyLogoUrl: companyLogoUrl,
             }),
