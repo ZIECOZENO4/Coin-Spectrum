@@ -19,16 +19,6 @@ interface Investment {
   durationDays: number;
 }
 
-interface InvestmentPlan {
-  id: string;
-  name: string;
-  minAmount: number;
-  maxAmount: number | null;
-  roi: number;
-  durationHours: number;
-  instantWithdrawal: boolean;
-}
-
 interface InvestmentStatus {
   id: string;
   status: string;
@@ -41,7 +31,6 @@ interface UserInvestment {
   createdAt: Date;
   updatedAt: Date;
   investment: Investment | null;
-  plan: InvestmentPlan | null;
   status: InvestmentStatus | null;
 }
 
@@ -100,17 +89,17 @@ const InfiniteScrollComponent = () => {
               <InvestmentCard
                 key={userInvestment.id}
                 id={userInvestment.id}
-                name={userInvestment.investment?.name || userInvestment.plan?.name || "Unknown Investment"}
+                name={userInvestment.investment?.name || "Unknown Investment"}
                 createdAt={new Intl.DateTimeFormat('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'
                 }).format(new Date(userInvestment.createdAt))}
-                status={userInvestment.status?.status || (userInvestment.plan?.instantWithdrawal ? "Active" : "Pending")}
-                minAmount={userInvestment.plan?.minAmount || 0}
-                maxAmount={userInvestment.plan?.maxAmount || null}
-                roi={userInvestment.plan?.roi || 0}
-                durationHours={userInvestment.plan?.durationHours || 0}
+                status={userInvestment.status?.status || (userInvestment.investment?.principalReturn ? "Active" : "Pending")}
+                minAmount={userInvestment.investment?.price || 0}
+                maxAmount={userInvestment.investment?.price || null}
+                roi={userInvestment.investment?.profitPercent || 0}
+                durationHours={(userInvestment.investment?.durationDays || 0) * 24}
               />
             ))}
           </React.Fragment>

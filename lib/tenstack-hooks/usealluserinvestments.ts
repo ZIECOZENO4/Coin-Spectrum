@@ -18,16 +18,6 @@ type Investment = {
   durationDays: number;
 };
 
-type InvestmentPlan = {
-  id: string;
-  name: string;
-  minAmount: number;
-  maxAmount: number | null;
-  roi: number;
-  durationHours: number;
-  instantWithdrawal: boolean;
-};
-
 type InvestmentStatus = {
   id: string;
   status: string;
@@ -41,7 +31,6 @@ type UserInvestmentWithRelations = {
   createdAt: Date;
   updatedAt: Date;
   investment: Investment | null;
-  plan: InvestmentPlan | null;
   status: InvestmentStatus | null;
 };
 

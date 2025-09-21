@@ -3,8 +3,8 @@
 import { getUserId } from "./../../../../lib/auth/utils";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { userInvestments, investments, investmentPlans, investmentStatuses } from "@/lib/db/schema";
-import { eq, sql } from "drizzle-orm";
+import { userInvestments, investments, investmentStatuses } from "@/lib/db/schema";
+import { eq, sql, desc } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
@@ -45,15 +45,6 @@ export async function GET(req: NextRequest) {
           debitAmount: investments.debitAmount,
           durationDays: investments.durationDays,
         },
-        plan: {
-          id: investmentPlans.id,
-          name: investmentPlans.name,
-          minAmount: investmentPlans.minAmount,
-          maxAmount: investmentPlans.maxAmount,
-          roi: investmentPlans.roi,
-          durationHours: investmentPlans.durationHours,
-          instantWithdrawal: investmentPlans.instantWithdrawal
-        },
         status: {
           id: investmentStatuses.id,
           status: investmentStatuses.status
@@ -61,12 +52,11 @@ export async function GET(req: NextRequest) {
       })
       .from(userInvestments)
       .leftJoin(investments, eq(userInvestments.investmentId, investments.id))
-      .leftJoin(investmentPlans, eq(investments.id, investmentPlans.id))
       .leftJoin(investmentStatuses, eq(userInvestments.id, investmentStatuses.id))
       .where(eq(userInvestments.userId, userId))
       .limit(pageSize)
       .offset(skip)
-      .orderBy(userInvestments.createdAt),
+      .orderBy(desc(userInvestments.createdAt)),
 
       // Count total user investments
       db.select({ 
