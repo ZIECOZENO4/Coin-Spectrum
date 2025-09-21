@@ -33,7 +33,7 @@ import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { useDataTableStore } from "@/lib/zuustand-store";
 import NoData from "../../../../components/noData";
-import { useAddInvestmentProfit } from "@/lib/tenstack-hooks/useAddInvestmentProfit";
+import { useProcessPayment } from "@/lib/tenstack-hooks/useProcessPayment";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "@/app/loading";
 
@@ -89,7 +89,7 @@ export function DataTable() {
     },
   });
 
-  const addProfitMutation = useAddInvestmentProfit();
+  const processPaymentMutation = useProcessPayment();
 
   // State to track which user payments are pending
   const [pendingPayments, setPendingPayments] = useState<Set<string>>(new Set());
@@ -102,11 +102,11 @@ export function DataTable() {
     setPendingPayments(prev => new Set(prev).add(userId));
     
     try {
-      // For now, we'll use the existing addInvestmentProfit hook
-      // You might need to create a new hook for general payments
-      await addProfitMutation.mutateAsync({ 
-        userInvestmentId: selectedUser.latestInvestment?.id || userId, 
-        amount 
+      await processPaymentMutation.mutateAsync({ 
+        userId: userId,
+        amount: amount,
+        paymentType: type,
+        description: `${type === "profit" ? "Profit" : "Bonus"} payment of $${amount}`
       }, {
         onSuccess: () => {
           setPendingPayments(prev => {
@@ -382,7 +382,7 @@ export function DataTable() {
                   }
                   handlePayment(selectedUser.id, amount, paymentType);
                 }}
-                disabled={pendingPayments.has(selectedUser.id) || completedPayments.has(selectedUser.id) || addProfitMutation.isPending}
+                disabled={pendingPayments.has(selectedUser.id) || completedPayments.has(selectedUser.id) || processPaymentMutation.isPending}
                 className="transition-all duration-150 ease-in-out hover:scale-105 active:scale-95"
               >
                 {pendingPayments.has(selectedUser.id)

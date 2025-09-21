@@ -23,7 +23,7 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "@/app/loading";
-import { useAddInvestmentProfit } from "@/lib/tenstack-hooks/useAddInvestmentProfit";
+import { useProcessPayment } from "@/lib/tenstack-hooks/useProcessPayment";
 
 interface UserPaymentsTableProps {
   search: string;
@@ -73,17 +73,17 @@ export function UserPaymentsTable({ search }: UserPaymentsTableProps) {
     },
   });
 
-  const addProfitMutation = useAddInvestmentProfit();
+  const processPaymentMutation = useProcessPayment();
 
   const handlePayment = async (userId: string, amount: number, type: "profit" | "bonus") => {
     if (!selectedUser) return;
     
     try {
-      // For now, we'll use the existing addInvestmentProfit hook
-      // You might need to create a new hook for general payments
-      await addProfitMutation.mutateAsync({ 
-        userInvestmentId: selectedUser.latestInvestment?.id || userId, 
-        amount 
+      await processPaymentMutation.mutateAsync({ 
+        userId: userId,
+        amount: amount,
+        paymentType: type,
+        description: `${type === "profit" ? "Profit" : "Bonus"} payment of $${amount}`
       }, {
         onSuccess: () => {
           setActionedRows(prev => new Set(prev).add(userId));
@@ -253,10 +253,10 @@ export function UserPaymentsTable({ search }: UserPaymentsTableProps) {
                   }
                   handlePayment(selectedUser.id, amount, paymentType);
                 }}
-                disabled={addProfitMutation.isPending}
+                disabled={processPaymentMutation.isPending}
                 className="bg-green-500 hover:bg-green-600 text-white disabled:opacity-50 dark:bg-green-600 dark:hover:bg-green-700"
               >
-                {addProfitMutation.isPending ? "Processing..." : `Process ${paymentType === "profit" ? "Profit" : "Bonus"} Payment`}
+                {processPaymentMutation.isPending ? "Processing..." : `Process ${paymentType === "profit" ? "Profit" : "Bonus"} Payment`}
               </Button>
             </DialogFooter>
             <DialogClose asChild>
