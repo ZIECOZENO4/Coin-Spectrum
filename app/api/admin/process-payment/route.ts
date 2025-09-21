@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { users, transactionHistory, investmentProfitPayouts } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { users, transactionHistory, investmentProfitPayouts, userInvestments, investments } from "@/lib/db/schema";
+import { eq, and } from "drizzle-orm";
 import { Resend } from "resend";
 import { InvestmentProfitUserEmail } from "@/emails/InvestmentProfitUserEmail";
 import { InvestmentProfitAdminEmail } from "@/emails/InvestmentProfitAdminEmail";
@@ -60,20 +60,72 @@ export async function POST(req: NextRequest) {
       description: description || `${paymentType === "profit" ? "Profit" : "Bonus"} payment of $${amount}`,
     });
 
-    // If this is a profit payment and we have a valid userInvestmentId, record it in investment profit payouts
-    // Note: We only insert into investment_profit_payouts if we have a valid userInvestmentId
-    // For general profit/bonus payments without specific investment context, we skip this table
-    if (paymentType === "profit" && body.userInvestmentId) {
+    // For profit payments, always record in investment profit payouts for totalProfits calculation
+    if (paymentType === "profit") {
       try {
+        let userInvestmentId = body.userInvestmentId;
+        
+        // If no specific userInvestmentId provided, create or find a general profit tracking investment
+        if (!userInvestmentId) {
+          // Check if user already has a general profit tracking investment
+          const existingGeneralInvestment = await db
+            .select({ id: userInvestments.id })
+            .from(userInvestments)
+            .where(
+              and(
+                eq(userInvestments.userId, userId),
+                eq(userInvestments.investmentId, "general-profit-tracking")
+              )
+            )
+            .limit(1);
+
+          if (existingGeneralInvestment.length > 0) {
+            userInvestmentId = existingGeneralInvestment[0].id;
+          } else {
+            // Create a general investment record for profit tracking
+            const generalInvestmentId = "general-profit-tracking";
+            
+            // First, ensure the general investment exists in investments table
+            await db.insert(investments).values({
+              id: generalInvestmentId,
+              name: "General Profit Tracking",
+              price: 0,
+              profitPercent: 0,
+              rating: 0,
+              principalReturn: true,
+              principalWithdraw: true,
+              creditAmount: 0,
+              depositFee: "0",
+              debitAmount: 0,
+              durationDays: 0,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            }).onConflictDoNothing();
+
+            // Create user investment record for profit tracking
+            const [newUserInvestment] = await db.insert(userInvestments).values({
+              id: crypto.randomUUID(),
+              userId: userId,
+              investmentId: generalInvestmentId,
+              amount: 0,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            }).returning();
+
+            userInvestmentId = newUserInvestment.id;
+          }
+        }
+
+        // Insert into investment profit payouts
         await db.insert(investmentProfitPayouts).values({
           id: crypto.randomUUID(),
           userId: userId,
-          userInvestmentId: body.userInvestmentId,
+          userInvestmentId: userInvestmentId,
           amount: amount,
           payoutDate: new Date(),
         });
       } catch (investmentError) {
-        console.warn("Could not insert into investment_profit_payouts (userInvestmentId may not exist):", investmentError);
+        console.warn("Could not insert into investment_profit_payouts:", investmentError);
         // Continue with the payment processing even if this fails
       }
     }
