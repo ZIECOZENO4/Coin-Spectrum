@@ -1,9 +1,9 @@
 // app/admin/payinvestment/page.tsx
 "use client";
 import { Input } from "@/components/ui/input";
-import { useDebounce } from "@/hookp/useDebounce";
 import { useEffect, useState } from "react";
 import { UserPaymentsTable } from "./UserPaymentsTable";
+import { useDebounce } from "@/hook/useDebounce";
 
 export default function PayInvestmentPage() {
   const [search, setSearch] = useState("");
