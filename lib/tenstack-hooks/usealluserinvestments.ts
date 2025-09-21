@@ -1,39 +1,4 @@
-// import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
-// import { Investment, InvestmentPlan, InvestmentStatus } from "@prisma/client";
 
-// type InvestmentsResponse = {
-//   investments: (Investment & {
-//     plan: InvestmentPlan;
-//     status: InvestmentStatus | null;
-//   })[];
-//   totalPages: number;
-// };
-
-// const fetchInvestments = async ({ pageParam = 1 }: { pageParam?: number }) => {
-//   const url = `/api/allAUserInvestment?page=${pageParam}`;
-
-//   const response = await fetch(url);
-//   if (!response.ok) {
-//     const dataError = await response.json();
-//     throw new Error(dataError.error);
-//   }
-//   const data: InvestmentsResponse = await response.json();
-//   return data;
-// };
-
-// export function useAUserAllInvestments() {
-//   return useSuspenseInfiniteQuery({
-//     queryKey: ["all-a-user-investment"],
-//     queryFn: fetchInvestments,
-//     getNextPageParam: (lastPage, pages) => {
-//       if (pages.length < lastPage.totalPages) {
-//         return pages.length + 1;
-//       }
-//       return undefined;
-//     },
-//     initialPageParam: 1,
-//   });
-// }
 
 
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
@@ -41,16 +6,26 @@ import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 // Define proper types for the investment data
 type Investment = {
   id: string;
-  userId: string;
-  amount: number;
-  createdAt: Date;
-  updatedAt: Date;
+  name: string;
+  price: number;
+  profitPercent: number;
+  rating: number;
+  principalReturn: boolean;
+  principalWithdraw: boolean;
+  creditAmount: number;
+  depositFee: string;
+  debitAmount: number;
+  durationDays: number;
 };
 
 type InvestmentPlan = {
   id: string;
   name: string;
-  description: string;
+  minAmount: number;
+  maxAmount: number | null;
+  roi: number;
+  durationHours: number;
+  instantWithdrawal: boolean;
 };
 
 type InvestmentStatus = {
@@ -59,18 +34,19 @@ type InvestmentStatus = {
 };
 
 // Update the response type to match the API response
-type InvestmentWithRelations = {
+type UserInvestmentWithRelations = {
   id: string;
   userId: string;
   amount: number;
   createdAt: Date;
   updatedAt: Date;
+  investment: Investment | null;
   plan: InvestmentPlan | null;
   status: InvestmentStatus | null;
 };
 
 type InvestmentsResponse = {
-  investments: InvestmentWithRelations[];
+  investments: UserInvestmentWithRelations[];
   totalPages: number;
   currentPage: number;
   totalItems: number;
@@ -98,7 +74,7 @@ export function useAUserAllInvestments() {
   return useSuspenseInfiniteQuery({
     queryKey: ["all-a-user-investment"],
     queryFn: fetchInvestments,
-    getNextPageParam: (lastPage, allPages) => {
+    getNextPageParam: (lastPage: InvestmentsResponse, allPages: InvestmentsResponse[]) => {
       const nextPage = allPages.length + 1;
       return nextPage <= lastPage.totalPages ? nextPage : undefined;
     },

@@ -8,17 +8,45 @@ import InvestmentCard from "./investmentCard";
 interface Investment {
   id: string;
   name: string;
+  price: number;
+  profitPercent: number;
+  rating: number;
+  principalReturn: boolean;
+  principalWithdraw: boolean;
+  creditAmount: number;
+  depositFee: string;
+  debitAmount: number;
+  durationDays: number;
+}
+
+interface InvestmentPlan {
+  id: string;
+  name: string;
   minAmount: number;
   maxAmount: number | null;
   roi: number;
   durationHours: number;
   instantWithdrawal: boolean;
-  createdAt: string;
-  updatedAt: string;
+}
+
+interface InvestmentStatus {
+  id: string;
+  status: string;
+}
+
+interface UserInvestment {
+  id: string;
+  userId: string;
+  amount: number;
+  createdAt: Date;
+  updatedAt: Date;
+  investment: Investment | null;
+  plan: InvestmentPlan | null;
+  status: InvestmentStatus | null;
 }
 
 interface InvestmentsResponse {
-  investments: Investment[];
+  investments: UserInvestment[];
 }
 
 interface InvestmentCardProps {
@@ -64,25 +92,25 @@ const InfiniteScrollComponent = () => {
 
   return (
     <div className="flex flex-col justify-center gap-4">
-      <h1 className="text-2xl font-extrabold text-center">YOUR INVESTMENTS</h1>
+      <h1 className="text-2xl mt-3 font-extrabold text-center">YOUR INVESTMENTS</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
         {data.pages.map((page: InvestmentsResponse, pageIndex: number) => (
           <React.Fragment key={pageIndex}>
-            {page.investments?.map((investment: Investment) => (
+            {page.investments?.map((userInvestment: UserInvestment) => (
               <InvestmentCard
-                key={investment.id}
-                id={investment.id}
-                name={investment.name}
+                key={userInvestment.id}
+                id={userInvestment.id}
+                name={userInvestment.investment?.name || userInvestment.plan?.name || "Unknown Investment"}
                 createdAt={new Intl.DateTimeFormat('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'
-                }).format(new Date(investment.createdAt))}
-                status={investment.instantWithdrawal ? "Active" : "Pending"}
-                minAmount={investment.minAmount}
-                maxAmount={investment.maxAmount}
-                roi={investment.roi}
-                durationHours={investment.durationHours}
+                }).format(new Date(userInvestment.createdAt))}
+                status={userInvestment.status?.status || (userInvestment.plan?.instantWithdrawal ? "Active" : "Pending")}
+                minAmount={userInvestment.plan?.minAmount || 0}
+                maxAmount={userInvestment.plan?.maxAmount || null}
+                roi={userInvestment.plan?.roi || 0}
+                durationHours={userInvestment.plan?.durationHours || 0}
               />
             ))}
           </React.Fragment>
