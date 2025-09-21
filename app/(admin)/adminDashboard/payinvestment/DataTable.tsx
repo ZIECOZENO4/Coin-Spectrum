@@ -172,7 +172,7 @@ export function DataTable() {
       header: () => <span className="md:text-md text-xs font-semibold">Total Investment</span>,
       cell: ({ row }) => (
         <span className="md:text-md text-xs font-medium">
-          ${row.original.totalInvestmentAmount.toLocaleString()}
+          ${(row.original.totalInvestmentAmount || 0).toLocaleString()}
         </span>
       ),
     },
@@ -181,7 +181,7 @@ export function DataTable() {
       header: () => <span className="md:text-md text-xs font-semibold">Investments</span>,
       cell: ({ row }) => (
         <Badge variant="secondary" className="md:text-md text-xs">
-          {row.original.investmentCount}
+          {row.original.investmentCount || 0}
         </Badge>
       ),
     },
@@ -196,7 +196,7 @@ export function DataTable() {
                 {row.original.latestInvestment.name}
               </span>
               <span className="text-xs text-gray-500">
-                ${row.original.latestInvestment.amount.toLocaleString()}
+                ${(row.original.latestInvestment.amount || 0).toLocaleString()}
               </span>
             </>
           ) : (
@@ -321,18 +321,18 @@ export function DataTable() {
               </div>
               <div>
                 <h3 className="text-sm font-medium text-muted-foreground dark:text-neutral-500">Total Investment</h3>
-                <p className="text-lg dark:text-white">${selectedUser.totalInvestmentAmount.toLocaleString()}</p>
+                <p className="text-lg dark:text-white">${(selectedUser.totalInvestmentAmount || 0).toLocaleString()}</p>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-muted-foreground dark:text-neutral-500">Investment Count</h3>
-                <p className="text-lg dark:text-white">{selectedUser.investmentCount}</p>
+                <p className="text-lg dark:text-white">{selectedUser.investmentCount || 0}</p>
               </div>
               {selectedUser.latestInvestment && (
                 <div>
                   <h3 className="text-sm font-medium text-muted-foreground dark:text-neutral-500">Latest Investment</h3>
                   <p className="text-lg dark:text-white">{selectedUser.latestInvestment.name}</p>
                   <p className="text-sm text-muted-foreground dark:text-neutral-400">
-                    ${selectedUser.latestInvestment.amount.toLocaleString()}
+                    ${(selectedUser.latestInvestment.amount || 0).toLocaleString()}
                   </p>
                 </div>
               )}

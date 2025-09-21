@@ -1,7 +1,7 @@
 // app/admin/payinvestment/page.tsx
 "use client";
 import { Input } from "@/components/ui/input";
-import { useDebounce } from "@/hook/useDebounce";
+import { useDebounce } from "@/hookp/useDebounce";
 import { useEffect, useState } from "react";
 import { UserPaymentsTable } from "./UserPaymentsTable";
 

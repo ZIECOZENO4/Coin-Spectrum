@@ -146,17 +146,17 @@ export function UserPaymentsTable({ search }: UserPaymentsTableProps) {
                 </div>
               </TableCell>
               <TableCell className="text-black font-medium">
-                ${user.totalInvestmentAmount.toLocaleString()}
+                ${(user.totalInvestmentAmount || 0).toLocaleString()}
               </TableCell>
               <TableCell className="text-black">
-                {user.investmentCount}
+                {user.investmentCount || 0}
               </TableCell>
               <TableCell className="text-black">
                 {user.latestInvestment ? (
                   <div className="flex flex-col">
                     <span className="font-medium">{user.latestInvestment.name}</span>
                     <span className="text-sm text-gray-600">
-                      ${user.latestInvestment.amount.toLocaleString()}
+                      ${(user.latestInvestment.amount || 0).toLocaleString()}
                     </span>
                   </div>
                 ) : (
@@ -197,11 +197,11 @@ export function UserPaymentsTable({ search }: UserPaymentsTableProps) {
               <DialogDescription className="text-gray-600 dark:text-gray-400">
                 Process payment for {selectedUser.fullName || "N/A"} ({selectedUser.email}).
                 <br />
-                Total Investment: ${selectedUser.totalInvestmentAmount.toLocaleString()}
+                Total Investment: ${(selectedUser.totalInvestmentAmount || 0).toLocaleString()}
                 {selectedUser.latestInvestment && (
                   <>
                     <br />
-                    Latest Investment: {selectedUser.latestInvestment.name} - ${selectedUser.latestInvestment.amount.toLocaleString()}
+                    Latest Investment: {selectedUser.latestInvestment.name} - ${(selectedUser.latestInvestment.amount || 0).toLocaleString()}
                   </>
                 )}
               </DialogDescription>
