@@ -81,7 +81,7 @@ const InfiniteScrollComponent = () => {
 
   return (
     <div className="flex flex-col justify-center gap-4">
-      <h1 className="text-2xl mt-3 font-extrabold text-center">YOUR INVESTMENTS</h1>
+      <h1 className="text-2xl mt-3 font-extrabold text-center">ALL INVESTMENTS</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
         {data.pages.map((page: InvestmentsResponse, pageIndex: number) => (
           <React.Fragment key={pageIndex}>

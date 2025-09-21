@@ -139,6 +139,18 @@ const Sidebar: React.FC = () => {
             </Link>
 
             <Link
+              href={"/adminDashboard/payinvestment"}
+              className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                "/adminDashboard/payinvestment"
+              )}`}
+            >
+              <FaMoneyBillWave />
+              <span className="text-[15px] ml-4 text-gray-200">
+                Pay Investment
+              </span>
+            </Link>
+
+            <Link
               href={"/adminDashboard/allWithdrawal"}
               className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
                 "/adminDashboard/allWithdrawal"
@@ -328,6 +340,18 @@ const Sidebar: React.FC = () => {
               <FaChartArea />
               <span className="text-[15px] ml-4 text-gray-200">
                 All Investments
+              </span>
+            </Link>
+
+            <Link
+              href={"/adminDashboard/payinvestment"}
+              className={`p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-orange-500 ${isActive(
+                "/adminDashboard/payinvestment"
+              )}`}
+            >
+              <FaMoneyBillWave />
+              <span className="text-[15px] ml-4 text-gray-200">
+                Pay Investment
               </span>
             </Link>
 
