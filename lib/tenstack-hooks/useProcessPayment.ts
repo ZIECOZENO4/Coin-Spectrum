@@ -8,7 +8,7 @@ interface ProcessPaymentData {
 }
 
 async function processPayment(data: ProcessPaymentData): Promise<{ success: boolean; message: string }> {
-  const response = await fetch("/api/(admin)/process-payment", {
+  const response = await fetch("/api/admin/process-payment", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
