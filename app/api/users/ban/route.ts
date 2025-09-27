@@ -2,19 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { createClient } from "@/lib/supabaseClient";
+import { getUserAuth } from "@/lib/auth/utils";
 
 export async function PATCH(request: NextRequest) {
   try {
-    const supabase = createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !user) {
+    // Get authenticated user
+    const { session } = await getUserAuth();
+    if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Check if the current user is an admin
-    const currentUser = await db.select().from(users).where(eq(users.id, user.id)).limit(1);
+    const currentUser = await db.select().from(users).where(eq(users.id, session.user.id)).limit(1);
     if (!currentUser[0] || currentUser[0].role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }

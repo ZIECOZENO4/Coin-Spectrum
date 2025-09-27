@@ -42,7 +42,10 @@ export function UsersTable({ search }: UsersTableProps) {
     mutationFn: async ({ id, balance }: { id: string; balance: number }) => {
       const res = await fetch("/api/users", {
         method: "PUT",
-        body: JSON.stringify({ id, balance }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: id, balance }),
       });
       if (!res.ok) throw new Error("Failed to update");
       return res.json();
