@@ -16,6 +16,7 @@ import Loading from "./loading";
 import Rate3 from "@/components/rate3";
 import GoogleTranslate from "@/components/GoogleTranslate";
 import SmartSuppScript from './smartsupp'
+import { ReferralProvider } from "./(user)/ReferralProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -120,7 +121,9 @@ export default function RootLayout({
                   <NotificationComponent disabledPaths={[]} />
                   <div className="bg-neutral-200 dark:bg-neutral-950 min-h-screen">
                     <Rate3 />
-                    {children}
+                    <ReferralProvider>  
+                      {children}
+                     </ReferralProvider>
                   </div>
                   <div className="w-full align-middle items-center flex flex-row justify-center flex-wrap">
                     <GoogleTranslate />

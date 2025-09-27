@@ -14,7 +14,7 @@ export default async function AppLayout({
             <Navigation />
           </div>
           <div className="flex-grow flex justify-center items-center">
-            <div className="w-full max-w-4xl">   <ReferralProvider>{children}    </ReferralProvider></div>
+            <div className="w-full max-w-4xl">   {children} </div>
           </div>
         </div>
         <Toaster richColors />
