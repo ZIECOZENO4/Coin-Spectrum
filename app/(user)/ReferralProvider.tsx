@@ -19,13 +19,39 @@ export function ReferralProvider({ children }: { children: React.ReactNode }) {
   const [referralId, setReferralId] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // Function to extract referral ID from URL
+  const getReferralFromUrl = () => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const ref = urlParams.get('ref');
+      return ref;
+    }
+    return null;
+  };
+
   const createReferral = async (ref: string) => {
     setIsProcessing(true);
-    toast.info('Processing your referral...', {
+    
+    // Step 1: Show initial processing toast
+    toast.info('🔗 Referral link detected! Processing...', {
       duration: 2000,
     });
 
+    // Step 2: Show validation toast
+    setTimeout(() => {
+      toast.info('✅ Validating referral code...', {
+        duration: 2000,
+      });
+    }, 500);
+
     try {
+      // Step 3: Show API call toast
+      setTimeout(() => {
+        toast.info('📡 Connecting to server...', {
+          duration: 2000,
+        });
+      }, 1000);
+
       const response = await fetch('/api/referrals', {
         method: 'POST',
         headers: {
@@ -40,19 +66,23 @@ export function ReferralProvider({ children }: { children: React.ReactNode }) {
         throw new Error(data.error || 'Failed to process referral');
       }
 
-      localStorage.removeItem('ref');
-      setReferralId(null);
-      toast.success('Referral processed successfully', {
-        duration: 3000,
+      // Step 4: Show success toast
+      toast.success('🎉 Referral processed successfully! Welcome to Coin Spectrum!', {
+        duration: 4000,
       });
 
+      // Clean up
+      localStorage.removeItem('ref');
+      setReferralId(null);
+
     } catch (error) {
+      // Step 5: Show error toast
       if (error instanceof Error) {
-        toast.error(error.message, {
+        toast.error(`❌ ${error.message}`, {
           duration: 4000,
         });
       } else {
-        toast.error('Failed to process referral', {
+        toast.error('❌ Failed to process referral. Please try again.', {
           duration: 4000,
         });
       }
@@ -63,14 +93,37 @@ export function ReferralProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    const ref = localStorage.getItem('ref');
-    if (ref) {
-      toast.info('Referral link detected!', {
+    // Check for referral in URL first
+    const urlRef = getReferralFromUrl();
+    if (urlRef) {
+      toast.info('🔗 Referral link detected in URL!', {
         duration: 3000,
       });
-      setReferralId(ref);
+      setReferralId(urlRef);
+      localStorage.setItem('ref', urlRef);
+      
+      // Clean the URL
+      if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('ref');
+        window.history.replaceState({}, '', url.toString());
+      }
+      
       if (!isProcessing) {
-        createReferral(ref);
+        createReferral(urlRef);
+      }
+      return;
+    }
+
+    // Check localStorage as fallback
+    const storedRef = localStorage.getItem('ref');
+    if (storedRef) {
+      toast.info('🔗 Referral link detected from storage!', {
+        duration: 3000,
+      });
+      setReferralId(storedRef);
+      if (!isProcessing) {
+        createReferral(storedRef);
       }
     }
   }, []);
