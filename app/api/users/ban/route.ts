@@ -12,11 +12,6 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Check if the current user is an admin
-    const currentUser = await db.select().from(users).where(eq(users.id, session.user.id)).limit(1);
-    if (!currentUser[0] || currentUser[0].role !== "admin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
 
     const { userId, banned } = await request.json();
 

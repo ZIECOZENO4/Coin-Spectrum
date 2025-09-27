@@ -1,47 +1,4 @@
-// // app/api/users/route.ts
-// import { NextRequest, NextResponse } from "next/server";
-// import { db } from "@/lib/db";
-// import { users } from "@/lib/db/schema";
-// import { desc, eq, ilike, or, sql, and } from "drizzle-orm";
 
-// export async function GET(req: NextRequest) {
-//   const { searchParams } = req.nextUrl;
-//   const page = parseInt(searchParams.get("page") || "1");
-//   const search = searchParams.get("search") || "";
-//   const limit = 100000;
-
-//   try {
-//     const skip = (page - 1) * limit;
-
-//     const baseCondition = search ? 
-//       or(
-//         ilike(users.fullName, `%${search}%`),
-//         ilike(users.email, `%${search}%`),
-//         ilike(users.username, `%${search}%`)
-//       ) : undefined;
-
-//     const usersList = await db
-//       .select()
-//       .from(users)
-//       .where(baseCondition)
-//       .orderBy(desc(users.createdAt))
-//       .limit(limit)
-//       .offset(skip);
-
-//     const totalCount = await db
-//       .select({ count: sql<number>`count(*)` })
-//       .from(users)
-//       .where(baseCondition);
-
-//     return NextResponse.json({
-//       users: usersList,
-//       totalPages: Math.ceil(totalCount[0].count / limit),
-//       currentPage: page,
-//     });
-//   } catch (error) {
-//     return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
-//   }
-// }
 
 
 // app/api/users/route.ts
@@ -49,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { desc, eq, ilike, or } from "drizzle-orm";
+import { getUserAuth } from "@/lib/auth/utils";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
@@ -80,6 +38,13 @@ export async function GET(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
+    // Add authentication check
+    const { session } = await getUserAuth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+
     const { userId, balance } = await req.json();
 
     if (!userId || typeof balance !== "number") {
@@ -125,6 +90,13 @@ export async function PUT(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
+    // Add authentication check
+    const { session } = await getUserAuth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+
     const { searchParams } = req.nextUrl;
     const userId = searchParams.get("id");
 
@@ -132,6 +104,15 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json(
         { error: "User ID is required" },
         { status: 400 }
+      );
+    }
+
+    // Check if user exists first
+    const existingUser = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+    if (!existingUser[0]) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
       );
     }
 
@@ -143,8 +124,8 @@ export async function DELETE(req: NextRequest) {
 
     if (!deletedUser) {
       return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
+        { error: "Failed to delete user" },
+        { status: 500 }
       );
     }
 
