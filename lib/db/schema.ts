@@ -76,6 +76,7 @@ export const users = pgTable("user", {
   .notNull()
   .default("unfulfilled"),
   transactionPin: text("transaction_pin").$type<string | null>(),
+  banned: boolean("banned").notNull().default(false),
 }, (users) => ({
   usernameIndex: uniqueIndex("user_username_key").on(users.username),
   emailIndex: uniqueIndex("user_email_key").on(users.email),

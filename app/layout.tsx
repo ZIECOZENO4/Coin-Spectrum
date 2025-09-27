@@ -17,6 +17,7 @@ import Rate3 from "@/components/rate3";
 import GoogleTranslate from "@/components/GoogleTranslate";
 import SmartSuppScript from './smartsupp'
 import { ReferralProvider } from "./(user)/ReferralProvider";
+import { BannedProvider } from "@/components/BannedProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -116,19 +117,21 @@ export default function RootLayout({
           >
             <Providers>
               <ProvidersProgressBar>
-                <Navbar />
-                  <AdminMessage />
-                  <NotificationComponent disabledPaths={[]} />
-                  <div className="bg-neutral-200 dark:bg-neutral-950 min-h-screen">
-                    <Rate3 />
-                    <ReferralProvider>  
-                      {children}
-                     </ReferralProvider>
-                  </div>
-                  <div className="w-full align-middle items-center flex flex-row justify-center flex-wrap">
-                    <GoogleTranslate />
-                  </div>
-                <Toaster richColors />
+                <BannedProvider>
+                  <Navbar />
+                    <AdminMessage />
+                    <NotificationComponent disabledPaths={[]} />
+                    <div className="bg-neutral-200 dark:bg-neutral-950 min-h-screen">
+                      <Rate3 />
+                      <ReferralProvider>  
+                        {children}
+                       </ReferralProvider>
+                    </div>
+                    <div className="w-full align-middle items-center flex flex-row justify-center flex-wrap">
+                      <GoogleTranslate />
+                    </div>
+                  <Toaster richColors />
+                </BannedProvider>
               </ProvidersProgressBar>
             </Providers>
           </ThemeProvider>

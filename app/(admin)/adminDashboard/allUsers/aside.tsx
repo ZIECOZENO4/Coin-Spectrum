@@ -15,6 +15,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import Loading from "@/app/loading";
+import { useBanUser } from "@/hook/useBanUser";
 
 interface UsersTableProps {
   search: string;
@@ -25,6 +26,7 @@ export function UsersTable({ search }: UsersTableProps) {
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [newBalance, setNewBalance] = useState("");
   const queryClient = useQueryClient();
+  const banUserMutation = useBanUser();
 
   const { data, isLoading } = useQuery({
     queryKey: ["users", page, search],
@@ -96,12 +98,25 @@ export function UsersTable({ search }: UsersTableProps) {
                   {formatDistanceToNow(new Date(user.createdAt))} ago
                 </TableCell>
                 <TableCell>
-                  <div className="space-x-2 flex gap-8">
+                  <div className="space-x-2 flex gap-4">
                     <Button
                       onClick={() => setSelectedUser(user)}
                       className="bg-black text-yellow-50 hover:bg-gray-800"
                     >
                       Update
+                    </Button>
+                    <Button
+                      onClick={() => banUserMutation.mutate({ 
+                        userId: user.id, 
+                        banned: !user.banned 
+                      })}
+                      className={user.banned 
+                        ? "bg-green-600 hover:bg-green-700 text-white" 
+                        : "bg-orange-600 hover:bg-orange-700 text-white"
+                      }
+                      disabled={banUserMutation.isPending}
+                    >
+                      {user.banned ? "Unban" : "Ban"}
                     </Button>
                     <Button
                       onClick={() => deleteMutation.mutate(user.id)}
