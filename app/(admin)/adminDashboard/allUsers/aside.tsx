@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import Loading from "@/app/loading";
 import { useBanUser } from "@/hook/useBanUser";
+import { ReasonDialog } from "@/components/ui/reason-dialog";
 
 interface UsersTableProps {
   search: string;
@@ -25,6 +26,11 @@ export function UsersTable({ search }: UsersTableProps) {
   const [page, setPage] = useState(1);
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [newBalance, setNewBalance] = useState("");
+  const [reasonDialog, setReasonDialog] = useState<{
+    open: boolean;
+    action: 'ban' | 'unban' | 'delete';
+    user: any;
+  }>({ open: false, action: 'ban', user: null });
   const queryClient = useQueryClient();
   const banUserMutation = useBanUser();
 
@@ -56,14 +62,35 @@ export function UsersTable({ search }: UsersTableProps) {
     },
   });
 
+  const banMutation = useMutation({
+    mutationFn: async ({ userId, banned, reason }: { userId: string; banned: boolean; reason: string }) => {
+      const res = await fetch("/api/users/ban", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId, banned, reason }),
+      });
+      if (!res.ok) throw new Error("Failed to ban/unban user");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      setReasonDialog({ open: false, action: 'ban', user: null });
+    },
+  });
+
   const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const res = await fetch(`/api/users?id=${id}`, { method: "DELETE" });
+    mutationFn: async ({ id, reason }: { id: string; reason: string }) => {
+      const res = await fetch(`/api/users?id=${id}&reason=${encodeURIComponent(reason)}`, { 
+        method: "DELETE" 
+      });
       if (!res.ok) throw new Error("Failed to delete");
       return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      setReasonDialog({ open: false, action: 'delete', user: null });
     },
   });
 
@@ -109,20 +136,24 @@ export function UsersTable({ search }: UsersTableProps) {
                       Update
                     </Button>
                     <Button
-                      onClick={() => banUserMutation.mutate({ 
-                        userId: user.id, 
-                        banned: !user.banned 
+                      onClick={() => setReasonDialog({
+                        open: true,
+                        action: user.banned ? 'unban' : 'ban',
+                        user: user
                       })}
                       className={user.banned 
                         ? "bg-green-600 hover:bg-green-700 text-white" 
                         : "bg-orange-600 hover:bg-orange-700 text-white"
                       }
-                      disabled={banUserMutation.isPending}
                     >
                       {user.banned ? "Unban" : "Ban"}
                     </Button>
                     <Button
-                      onClick={() => deleteMutation.mutate(user.id)}
+                      onClick={() => setReasonDialog({
+                        open: true,
+                        action: 'delete',
+                        user: user
+                      })}
                       variant="destructive"
                       className="bg-red-600 hover:bg-red-700"
                     >
@@ -163,6 +194,30 @@ export function UsersTable({ search }: UsersTableProps) {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Reason Dialog */}
+      <ReasonDialog
+        open={reasonDialog.open}
+        onOpenChange={(open) => setReasonDialog({ ...reasonDialog, open })}
+        onConfirm={(reason) => {
+          if (reasonDialog.action === 'delete') {
+            deleteMutation.mutate({ 
+              id: reasonDialog.user.id, 
+              reason 
+            });
+          } else {
+            banMutation.mutate({ 
+              userId: reasonDialog.user.id, 
+              banned: reasonDialog.action === 'ban',
+              reason 
+            });
+          }
+        }}
+        action={reasonDialog.action}
+        userEmail={reasonDialog.user?.email || ''}
+        userName={reasonDialog.user?.fullName || reasonDialog.user?.firstName || 'User'}
+        isLoading={banMutation.isPending || deleteMutation.isPending}
+      />
     </>
   );
 }

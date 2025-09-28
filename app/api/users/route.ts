@@ -22,6 +22,7 @@ import {
 } from "@/lib/db/schema";
 import { desc, eq, ilike, or } from "drizzle-orm";
 import { getUserAuth } from "@/lib/auth/utils";
+import { sendUserActionEmails } from "@/lib/email-utils";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
@@ -113,10 +114,18 @@ export async function DELETE(req: NextRequest) {
 
     const { searchParams } = req.nextUrl;
     const userId = searchParams.get("id");
+    const reason = searchParams.get("reason");
 
     if (!userId) {
       return NextResponse.json(
         { error: "User ID is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!reason || reason.trim().length === 0) {
+      return NextResponse.json(
+        { error: "Reason is required" },
         { status: 400 }
       );
     }
@@ -128,6 +137,26 @@ export async function DELETE(req: NextRequest) {
         { error: "User not found" },
         { status: 404 }
       );
+    }
+
+    // Send email notifications BEFORE deleting the user
+    try {
+      const emailResult = await sendUserActionEmails({
+        action: 'delete',
+        userName: existingUser[0].fullName || existingUser[0].firstName || 'User',
+        userEmail: existingUser[0].email,
+        reason: reason.trim(),
+        adminName: session.user.firstName || 'Admin',
+        adminEmail: process.env.ADMIN_EMAIL || 'admin@coinspectrum.net'
+      });
+
+      if (!emailResult.success) {
+        console.error('Failed to send email notifications:', emailResult.error);
+        // Don't fail the request if email fails, just log it
+      }
+    } catch (emailError) {
+      console.error('Error sending email notifications:', emailError);
+      // Don't fail the request if email fails, just log it
     }
 
     // Start a transaction to handle foreign key constraints
@@ -180,7 +209,8 @@ export async function DELETE(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: "User and all related data deleted successfully"
+      message: "User and all related data deleted successfully",
+      emailSent: true
     });
 
   } catch (error) {
