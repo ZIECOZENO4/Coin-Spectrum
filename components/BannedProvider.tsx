@@ -14,12 +14,12 @@ interface BannedContextType {
 
 const BannedContext = createContext<BannedContextType>({
   isBanned: false,
-  isLoading: true,
+  isLoading: false,
 });
 
 export function BannedProvider({ children }: { children: React.ReactNode }) {
   const [isBanned, setIsBanned] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const checkBanStatus = async () => {
@@ -28,42 +28,38 @@ export function BannedProvider({ children }: { children: React.ReactNode }) {
         const { data: { user }, error } = await supabase.auth.getUser();
         
         if (error || !user) {
-          setIsLoading(false);
           return;
         }
 
-        // Check if user is banned
-        const userData = await db
-          .select({ banned: users.banned })
-          .from(users)
-          .where(eq(users.id, user.id))
-          .limit(1);
+        // Use a more efficient API call instead of direct database access
+        const response = await fetch('/api/user/ban-status', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
-        if (userData[0]?.banned) {
-          setIsBanned(true);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.banned) {
+            setIsBanned(true);
+          }
         }
       } catch (error) {
         console.error("Error checking ban status:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
+    // Run ban check in background without blocking the UI
     checkBanStatus();
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-white">Loading...</div>
-      </div>
-    );
-  }
-
+  // If user is banned, show banned page
   if (isBanned) {
     return <BannedPage />;
   }
 
+  // Always render children while checking ban status in background
   return (
     <BannedContext.Provider value={{ isBanned, isLoading }}>
       {children}
