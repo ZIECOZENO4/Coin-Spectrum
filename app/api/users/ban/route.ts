@@ -12,7 +12,6 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-
     const { userId, banned } = await request.json();
 
     if (!userId || typeof banned !== "boolean") {

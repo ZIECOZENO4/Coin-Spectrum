@@ -4,7 +4,22 @@
 // app/api/users/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { users } from "@/lib/db/schema";
+import { 
+  users, 
+  userTrackers, 
+  userReferrals, 
+  userInvestments, 
+  transactionHistory, 
+  transferHistory, 
+  pendingDeposits, 
+  pendingWithdrawals, 
+  kyc, 
+  withdrawals, 
+  userCopyTrades, 
+  signalPurchases, 
+  trades, 
+  investmentProfitPayouts 
+} from "@/lib/db/schema";
 import { desc, eq, ilike, or } from "drizzle-orm";
 import { getUserAuth } from "@/lib/auth/utils";
 
@@ -96,7 +111,6 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-
     const { searchParams } = req.nextUrl;
     const userId = searchParams.get("id");
 
@@ -116,22 +130,57 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    // Delete user
-    const [deletedUser] = await db
-      .delete(users)
-      .where(eq(users.id, userId))
-      .returning();
-
-    if (!deletedUser) {
-      return NextResponse.json(
-        { error: "Failed to delete user" },
-        { status: 500 }
-      );
-    }
+    // Start a transaction to handle foreign key constraints
+    await db.transaction(async (tx) => {
+      // Delete all related records first to avoid foreign key constraint violations
+      // Delete user trackers
+      await tx.delete(userTrackers).where(eq(userTrackers.userId, userId));
+      
+      // Delete user referrals (both as referrer and referred user)
+      await tx.delete(userReferrals).where(eq(userReferrals.referrerId, userId));
+      await tx.delete(userReferrals).where(eq(userReferrals.referredUserId, userId));
+      
+      // Delete user investments
+      await tx.delete(userInvestments).where(eq(userInvestments.userId, userId));
+      
+      // Delete transaction history
+      await tx.delete(transactionHistory).where(eq(transactionHistory.userId, userId));
+      
+      // Delete transfer history (both as sender and receiver)
+      await tx.delete(transferHistory).where(eq(transferHistory.senderId, userId));
+      await tx.delete(transferHistory).where(eq(transferHistory.receiverId, userId));
+      
+      // Delete pending deposits
+      await tx.delete(pendingDeposits).where(eq(pendingDeposits.userId, userId));
+      
+      // Delete pending withdrawals
+      await tx.delete(pendingWithdrawals).where(eq(pendingWithdrawals.userId, userId));
+      
+      // Delete KYC records
+      await tx.delete(kyc).where(eq(kyc.userId, userId));
+      
+      // Delete withdrawals
+      await tx.delete(withdrawals).where(eq(withdrawals.userId, userId));
+      
+      // Delete user copy trades
+      await tx.delete(userCopyTrades).where(eq(userCopyTrades.userId, userId));
+      
+      // Delete signal purchases
+      await tx.delete(signalPurchases).where(eq(signalPurchases.userId, userId));
+      
+      // Delete trades
+      await tx.delete(trades).where(eq(trades.userId, userId));
+      
+      // Delete investment profit payouts
+      await tx.delete(investmentProfitPayouts).where(eq(investmentProfitPayouts.userId, userId));
+      
+      // Finally, delete the user
+      await tx.delete(users).where(eq(users.id, userId));
+    });
 
     return NextResponse.json({
       success: true,
-      message: "User deleted successfully"
+      message: "User and all related data deleted successfully"
     });
 
   } catch (error) {
