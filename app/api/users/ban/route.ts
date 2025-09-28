@@ -51,7 +51,7 @@ export async function PATCH(request: NextRequest) {
         userEmail: userDetails[0].email,
         reason: reason.trim(),
         adminName: session.user.firstName || 'Admin',
-        adminEmail: process.env.ADMIN_EMAIL || 'admin@coinspectrum.net'
+        adminEmail: 'coinspectrum40@gmail.com'
       });
 
       if (!emailResult.success) {

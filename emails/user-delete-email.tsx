@@ -64,7 +64,7 @@ export function UserDeleteEmail({
           </h2>
 
           <p style={{ fontSize: '16px', marginBottom: '20px' }}>
-            Dear <strong>{userName}</strong>,
+            Dear <strong>User</strong>,
           </p>
 
           <p style={{ fontSize: '16px', marginBottom: '20px' }}>

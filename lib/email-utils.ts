@@ -86,7 +86,7 @@ export async function sendDeleteEmail({
     });
 
     const result = await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL || 'noreply@coinspectrum.net',
+      from: 'noreply@coinspectrum.net',
       to: userEmail,
       subject: 'Account Deletion Confirmation - Coin Spectrum',
       react: emailComponent
@@ -135,7 +135,7 @@ export async function sendAdminNotification({
     });
 
     const result = await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL || 'noreply@coinspectrum.net',
+      from:'noreply@coinspectrum.net',
       to: adminEmail,
       subject: `Admin Action: ${action === 'ban' ? 'User Banned' : action === 'unban' ? 'User Unbanned' : 'User Deleted'} - ${userName}`,
       react: emailComponent
