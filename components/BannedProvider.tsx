@@ -1,10 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { createClient } from "@/lib/supabaseClient";
-import { db } from "@/lib/db";
-import { users } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { useUser } from "@clerk/nextjs";
 import BannedPage from "./BannedPage";
 
 interface BannedContextType {
@@ -20,16 +17,20 @@ const BannedContext = createContext<BannedContextType>({
 export function BannedProvider({ children }: { children: React.ReactNode }) {
   const [isBanned, setIsBanned] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { user, isLoaded } = useUser();
 
   useEffect(() => {
     const checkBanStatus = async () => {
       console.log("🔍 BannedProvider: Starting ban status check...");
       try {
-        const supabase = createClient();
-        const { data: { user }, error } = await supabase.auth.getUser();
-        
-        if (error || !user) {
-          console.log("❌ BannedProvider: No authenticated user found:", error?.message || "No user");
+        // Wait for Clerk to load
+        if (!isLoaded) {
+          console.log("⏳ BannedProvider: Waiting for Clerk to load...");
+          return;
+        }
+
+        if (!user) {
+          console.log("❌ BannedProvider: No authenticated user found");
           return;
         }
 
@@ -67,7 +68,7 @@ export function BannedProvider({ children }: { children: React.ReactNode }) {
     // Run ban check in background without blocking the UI
     console.log("🚀 BannedProvider: Starting background ban check...");
     checkBanStatus();
-  }, []);
+  }, [user, isLoaded]);
 
   // If user is banned, show banned page
   if (isBanned) {

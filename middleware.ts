@@ -31,36 +31,9 @@ export default clerkMiddleware(
       console.log("🌐 Middleware: Request URL:", request.url);
       console.log("🛡️ Middleware: Is admin route:", isAdminRoute(request));
       
-      try {
-        const banStatusUrl = `${request.nextUrl.origin}/api/user/ban-status`;
-        console.log("📡 Middleware: Making request to:", banStatusUrl);
-        
-        const response = await fetch(banStatusUrl, {
-          headers: {
-            'Authorization': request.headers.get('authorization') || '',
-            'Cookie': request.headers.get('cookie') || '',
-          },
-        });
-
-        console.log("📊 Middleware: Ban status response:", response.status);
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log("📋 Middleware: Ban status data:", data);
-          
-          if (data.banned) {
-            console.log("🚫 Middleware: User is BANNED - redirecting to /banned");
-            return NextResponse.redirect(new URL('/banned', request.url));
-          } else {
-            console.log("✅ Middleware: User is NOT banned - allowing access");
-          }
-        } else {
-          console.log("❌ Middleware: Ban status check failed with status:", response.status);
-        }
-      } catch (error) {
-        console.error("💥 Middleware: Error checking ban status:", error);
-        // Continue with request if ban check fails
-      }
+      // For now, let the BannedProvider handle the ban check
+      // This avoids circular API calls in middleware
+      console.log("⏭️ Middleware: Delegating ban check to BannedProvider component");
     } else {
       console.log("⏭️ Middleware: Skipping ban check - User:", auth().userId, "Admin route:", isAdminRoute(request));
     }
